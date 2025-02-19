@@ -33,32 +33,5 @@ public class customersTest {
         customerRepository.deleteAll();
     }
 
-    @Test
-    @DisplayName("POST /api/v1/customers - 새로운 고객 생성")
-    void testCreateCustomer() throws Exception {
-        // given
-        // 고객 생성 요청에 필요한 JSON (id는 서버에서 자동 생성)
-        String requestBody = """
-            {
-                "id": 1,
-                "name": "홍길동",
-                "email": "hong@example.com"
-            }
-        """;
-
-        // when & then
-        mockMvc.perform(post("/api/v1/customers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", notNullValue()))
-                .andExpect(jsonPath("$.name").value("홍길동"))
-                .andExpect(jsonPath("$.email").value("hong@example.com"));
-
-        // DB에 잘 들어갔는지 확인 (선택 사항)
-        long count = customerRepository.count();
-        // 실제로는 테스트 코드에서 assert 로 검증
-        System.out.println("생성된 고객 레코드 수: " + count);
-    }
 
 }

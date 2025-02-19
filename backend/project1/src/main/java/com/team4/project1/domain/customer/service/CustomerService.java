@@ -15,11 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
 
     // customer 객체 생성
     public Customer createCustomer(CustomerDto customerDto) {
