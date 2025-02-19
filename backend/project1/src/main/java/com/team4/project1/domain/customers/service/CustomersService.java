@@ -30,7 +30,7 @@ public class CustomersService {
     }
 
     // Cusotmers id 기반 조회
-    public Optional<Customers> getCustomersById(long id) {
+    public Optional<Customers> getCustomersById(Long id) {
         return customersRepository.findById(id);
     }
 
