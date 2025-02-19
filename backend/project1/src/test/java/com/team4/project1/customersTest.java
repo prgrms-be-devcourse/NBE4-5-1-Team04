@@ -1,7 +1,7 @@
 package com.team4.project1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.project1.domain.customers.repository.CustomersRepository;
+import com.team4.project1.domain.customer.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class customersTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private CustomersRepository customersRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -30,7 +30,7 @@ public class customersTest {
     @BeforeEach
     void setUp() {
         // 각 테스트 시작 전, DB 비우기 (Customers 테이블)
-        customersRepository.deleteAll();
+        customerRepository.deleteAll();
     }
 
     @Test
@@ -56,7 +56,7 @@ public class customersTest {
                 .andExpect(jsonPath("$.email").value("hong@example.com"));
 
         // DB에 잘 들어갔는지 확인 (선택 사항)
-        long count = customersRepository.count();
+        long count = customerRepository.count();
         // 실제로는 테스트 코드에서 assert 로 검증
         System.out.println("생성된 고객 레코드 수: " + count);
     }
