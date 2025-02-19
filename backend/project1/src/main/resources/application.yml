@@ -4,3 +4,4 @@ spring:
     url: jdbc:mysql://localhost:3306/project1
     username: dbuser
     password: 1234
+
