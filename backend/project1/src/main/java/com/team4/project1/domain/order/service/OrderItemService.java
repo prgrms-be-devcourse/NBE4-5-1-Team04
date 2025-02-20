@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +38,14 @@ public class OrderItemService {
         } else {
             throw new IllegalArgumentException("Invalid order or item ID.");
         }
+    }
+
+    public List<OrderItem> getAllOrderItems() {
+        return orderItemRepository.findAll();
+    }
+
+    public Optional<OrderItem> getOrderItemById(Long id) {
+        return orderItemRepository.findById(id);
     }
 }
 
