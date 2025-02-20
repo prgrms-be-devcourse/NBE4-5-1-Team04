@@ -37,12 +37,12 @@ public class CustomerService {
     }
 
     // Cusotmers id 기반 조회
-    public Optional<Customer> getcustomerById(Long id) {
+    public Optional<Customer> getCustomerById(Long id) {
         return customerRepository.findById(id);
     }
 
     // customer 전체 조회
-    public List<Customer> getAllcustomer() {
+    public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
