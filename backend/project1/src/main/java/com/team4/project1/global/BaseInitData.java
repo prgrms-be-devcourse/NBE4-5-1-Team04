@@ -4,9 +4,11 @@ import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
@@ -15,6 +17,10 @@ public class BaseInitData {
 
     private final CustomerService customerService;
     private final ItemService itemService;
+
+    @Autowired
+    @Lazy
+    private BaseInitData self;
 
     @Bean
     public ApplicationRunner applicationRunner() {
@@ -34,6 +40,7 @@ public class BaseInitData {
         customerService.createCustomer(new CustomerDto("철수", "cheolsu@example.com"));
         customerService.createCustomer(new CustomerDto("유리", "yuli@example.com"));
         customerService.createCustomer(new CustomerDto("맹구", "maeng9@example.com"));
+    }
 
     @Transactional
     public void itemInit() {
