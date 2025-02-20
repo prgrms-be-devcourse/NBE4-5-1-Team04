@@ -4,6 +4,7 @@ package com.team4.project1.domain.customer.controller;
 import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.global.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
         Optional<Customer> Opcustomer = customerervice.getcustomerById(id);
 
-        return Opcustomer.map(customer -> ResponseEntity.ok(new CustomerDto(customer))).orElse(ResponseEntity.notFound().build());
+        return Opcustomer.map(customer -> ResponseEntity.ok(new CustomerDto(customer))).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @PutMapping("/{id}")
