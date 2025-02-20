@@ -14,8 +14,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
-public class CutomerController {
+public class CustomerController {
     private final CustomerService customerervice;
+    private final CustomerService customerService;
 
     @PostMapping
     public ResponseEntity<Customer> createCustomer(@RequestBody CustomerDto customerDto) {
@@ -35,5 +36,11 @@ public class CutomerController {
         Optional<Customer> Opcustomer = customerervice.getcustomerById(id);
 
         return Opcustomer.map(customer -> ResponseEntity.ok(new CustomerDto(customer))).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
+        Customer updated = customerService.updateCustomer(id,customerDto);
+        return ResponseEntity.ok(new CustomerDto(updated));
     }
 }

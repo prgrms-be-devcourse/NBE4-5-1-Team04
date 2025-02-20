@@ -37,4 +37,11 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
+    public Customer updateCustomer(Long id, CustomerDto customerDto) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No customer found for id: " + id));
+        customer.setName(customerDto.getName());
+        customer.setEmail(customerDto.getEmail());
+        return customer;
+    }
 }
