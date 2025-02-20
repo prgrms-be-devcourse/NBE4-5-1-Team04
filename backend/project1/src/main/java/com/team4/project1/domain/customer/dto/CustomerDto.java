@@ -3,29 +3,17 @@ package com.team4.project1.domain.customer.dto;
 import com.team4.project1.domain.customer.entity.Customer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Getter
 @NoArgsConstructor
 public class CustomerDto {
-    @NonNull
     private Long id;
-
-    @NonNull
     private String name;
-
-    @NonNull
     private String email;
 
     public CustomerDto(Customer customer) {
         this.id = customer.getId();
         this.name = customer.getName();
         this.email = customer.getEmail();
-
-    }
-    //신규 고객 생성용 생성자
-    public CustomerDto(String name, String email) {
-        this.name = name;
-        this.email = email;
     }
 }
