@@ -2,40 +2,34 @@ package com.team4.project1.domain.order.entity;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
-@Table(name = "OrderTbl")
+@AllArgsConstructor
+@Builder
+@Table(name = "order_tb") // 테이블 이름 명시
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
-    public Order(Customer customer, Date date, Long totalPrice) {
-        this.customer = customer;
-        this.date = date;
-        this.totalPrice = totalPrice;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 고객과 다대일 관계
+    @JoinColumn(name = "customer_id") // 외래키 설정
     private Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true) // 올바른 설정
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @Column(nullable = false)
-    private Date date;
+    private Date orderDate;
 
     @Column(nullable = false)
     private Long totalPrice;
