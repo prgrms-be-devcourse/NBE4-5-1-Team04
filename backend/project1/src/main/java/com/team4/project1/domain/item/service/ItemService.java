@@ -19,8 +19,8 @@ public class ItemService {
 
     public List<ItemDto> getAllItems() {
         return itemRepository.findAll().stream()
+                .sorted(Comparator.comparing(Item::getPrice))
                 .map(ItemDto::from)
-                .sorted(Comparator.comparingInt(ItemDto::getprice))
                 .collect(Collectors.toList());
     }
 

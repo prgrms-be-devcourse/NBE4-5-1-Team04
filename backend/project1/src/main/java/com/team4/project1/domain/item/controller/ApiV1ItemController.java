@@ -24,8 +24,5 @@ public class ApiV1ItemController {
         return itemService.getItemById(itemId).orElse(null);
     }
 
-    @GetMapping
-    public List<ItemDto> getitems(@RequestParam(defaultValue = "id") String sortBy) {
-        return itemService.getAllItems();
-    }
+
 }

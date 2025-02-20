@@ -16,11 +16,11 @@ public class ItemDto {
     }
 
     public static ItemDto from(Item item) {
+
         return new ItemDto(item);
     }
 
-
-    public Integer getprice() {
+    public Integer getPrice() {
         return price;
     }
 }
