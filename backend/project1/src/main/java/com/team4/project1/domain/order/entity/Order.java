@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +30,9 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
 
     @Column(nullable = false)
     private Date date;

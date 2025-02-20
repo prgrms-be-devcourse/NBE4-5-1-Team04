@@ -3,6 +3,7 @@ package com.team4.project1.global;
 import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.service.ItemService;
+import com.team4.project1.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -17,6 +18,7 @@ public class BaseInitData {
 
     private final CustomerService customerService;
     private final ItemService itemService;
+    private final OrderRepository orderRepository;
 
     @Autowired
     @Lazy
@@ -53,4 +55,6 @@ public class BaseInitData {
         itemService.addItem("공유커피",2500);
         itemService.addItem("컴포즈커피",38000);
     }
+
+
 }
