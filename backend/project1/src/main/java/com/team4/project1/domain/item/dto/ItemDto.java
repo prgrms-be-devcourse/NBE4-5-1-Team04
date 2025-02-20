@@ -20,7 +20,5 @@ public class ItemDto {
         return new ItemDto(item);
     }
 
-    public Integer getPrice() {
-        return price;
-    }
+
 }
