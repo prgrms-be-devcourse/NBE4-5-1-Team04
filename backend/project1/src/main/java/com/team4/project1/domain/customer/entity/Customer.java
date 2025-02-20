@@ -16,6 +16,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 100, unique = true)
+    private String username;
+
+    @Column(length = 100)
+    private String password;
+
     @Column(nullable =false)
     private String name;
 
