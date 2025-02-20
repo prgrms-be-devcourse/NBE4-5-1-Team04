@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
-    @Query("SELECT i FROM Item i ORDER BY i.price ASC")
-    List<Item> findAllSortedByPrice();
-    @Query("SELECT i FROM Item i ORDER BY i.name ASC")
-    List<Item> findAllSortedByName();
+    List<Item> findAllByOrderByPriceAsc();
+    List<Item> findAllByOrderByNameAsc();
 }

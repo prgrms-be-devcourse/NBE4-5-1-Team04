@@ -20,9 +20,9 @@ public class ItemService {
         List<Item> items;
 
         if ("price".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllSortedByPrice();
+            items = itemRepository.findAllByOrderByPriceAsc();
         } else if ("name".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllSortedByName();
+            items = itemRepository.findAllByOrderByNameAsc();
         } else {
             items = itemRepository.findAll();
         }

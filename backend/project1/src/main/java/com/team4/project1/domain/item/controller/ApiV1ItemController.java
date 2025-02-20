@@ -16,13 +16,13 @@ public class ApiV1ItemController {
 
     @GetMapping
     public List<ItemDto> items(@RequestParam(value = "sortBy", required = false) String sortBy) {
-
         if (sortBy == null || sortBy.isEmpty()) {
             return itemService.getAllItems();
         } else {
             return itemService.getAllItemsSorted(sortBy);
         }
     }
+
 
     @GetMapping("/{itemId}")
     public ItemDto item(@PathVariable Integer itemId) {
