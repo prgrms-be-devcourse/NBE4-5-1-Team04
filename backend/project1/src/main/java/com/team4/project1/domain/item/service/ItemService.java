@@ -6,6 +6,7 @@ import com.team4.project1.domain.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class ItemService {
     public List<ItemDto> getAllItems() {
         return itemRepository.findAll().stream()
                 .map(ItemDto::from)
+                .sorted(Comparator.comparingInt(ItemDto::getprice))
                 .collect(Collectors.toList());
     }
 

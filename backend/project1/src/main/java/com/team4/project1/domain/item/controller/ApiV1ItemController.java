@@ -3,10 +3,7 @@ package com.team4.project1.domain.item.controller;
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,10 @@ public class ApiV1ItemController {
     @GetMapping("/{itemId}")
     public ItemDto item(@PathVariable Integer itemId) {
         return itemService.getItemById(itemId).orElse(null);
+    }
+
+    @GetMapping
+    public List<ItemDto> getitems(@RequestParam(defaultValue = "id") String sortBy) {
+        return itemService.getAllItems();
     }
 }

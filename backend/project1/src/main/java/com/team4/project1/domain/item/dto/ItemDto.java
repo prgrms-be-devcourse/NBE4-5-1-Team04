@@ -18,4 +18,9 @@ public class ItemDto {
     public static ItemDto from(Item item) {
         return new ItemDto(item);
     }
+
+
+    public Integer getprice() {
+        return price;
+    }
 }
