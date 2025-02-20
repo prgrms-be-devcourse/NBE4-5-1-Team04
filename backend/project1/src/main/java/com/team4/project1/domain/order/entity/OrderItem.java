@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "order_item")
+@Table(name = "order_item") // 테이블 이름 명시
 public class OrderItem {
 
     @Id
@@ -28,4 +28,3 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;
 }
-

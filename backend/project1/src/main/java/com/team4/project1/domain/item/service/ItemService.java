@@ -1,8 +1,9 @@
 package com.team4.project1.domain.item.service;
 
-import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.dto.ItemDto;
+import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
+import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,33 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    public List<ItemDto> getAllItemsSorted(String sortBy) {
+        List<Item> items;
+
+        if ("price".equalsIgnoreCase(sortBy)) {
+            items = itemRepository.findAllByOrderByPriceAsc();
+        } else if ("name".equalsIgnoreCase(sortBy)) {
+            items = itemRepository.findAllByOrderByNameAsc();
+        } else {
+            items = itemRepository.findAll();
+        }
+
+        return items.stream()
+                .map(ItemDto::from)
+                .collect(Collectors.toList());
+    }
+
     public List<ItemDto> getAllItems() {
         return itemRepository.findAll().stream()
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
 
+
+
+
     public Optional<ItemDto> getItemById(Integer itemId) {
-        Item item = itemRepository.findById(itemId).orElse(null);
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         if (item == null) { return Optional.empty(); }
         return Optional.of(ItemDto.from(item));
     }
@@ -40,4 +60,6 @@ public class ItemService {
 
         return itemRepository.save(item);
     }
+
+
 }

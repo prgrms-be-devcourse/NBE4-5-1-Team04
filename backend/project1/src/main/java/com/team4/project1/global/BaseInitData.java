@@ -1,6 +1,5 @@
 package com.team4.project1.global;
 
-import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.domain.order.repository.OrderRepository;
@@ -34,14 +33,14 @@ public class BaseInitData {
 
     @Transactional
     public void customerInit() {
-        if (customerService.getAllcustomer().size() > 0) {
+        if (customerService.count() > 0) {
             return;
         }
 
-        customerService.createCustomer(new CustomerDto("짱구", "jjang9@example.com"));
-        customerService.createCustomer(new CustomerDto("철수", "cheolsu@example.com"));
-        customerService.createCustomer(new CustomerDto("유리", "yuli@example.com"));
-        customerService.createCustomer(new CustomerDto("맹구", "maeng9@example.com"));
+        customerService.join("jjang9", "jjang1234", "짱구", "jjang9@example.com");
+        customerService.join("cheolsu", "cheolsu1234", "철수", "cheolsu@example.com");
+        customerService.join("yuli", "yuli1234", "유리", "yuli@example.com");
+        customerService.join("maeng9", "maeng1234", "맹구", "maeng9@example.com");
     }
 
     @Transactional
