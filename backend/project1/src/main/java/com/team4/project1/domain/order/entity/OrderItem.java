@@ -19,9 +19,15 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     @Column(nullable = false)
     private Integer quantity;
+
+    public OrderItem(Order order, Item item, Integer quantity) {
+        this.order = order;
+        this.item = item;
+        this.quantity = quantity;
+    }
 }
