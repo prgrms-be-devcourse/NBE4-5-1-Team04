@@ -17,9 +17,15 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public List<ItemDto> getAllItems() {
+    public List<ItemDto> getAllItemsSorted() {
         return itemRepository.findAll().stream()
                 .sorted(Comparator.comparing(Item::getPrice))
+                .map(ItemDto::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<ItemDto> getAllItems() {
+        return itemRepository.findAll().stream()
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
@@ -42,4 +48,6 @@ public class ItemService {
 
         return itemRepository.save(item);
     }
+
+
 }
