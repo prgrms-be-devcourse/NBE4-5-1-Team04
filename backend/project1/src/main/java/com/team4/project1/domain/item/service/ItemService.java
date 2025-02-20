@@ -1,7 +1,7 @@
 package com.team4.project1.domain.item.service;
 
-import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.dto.ItemDto;
+import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,17 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public List<ItemDto> getAllItemsSorted() {
+    public List<ItemDto> getAllItemsSorted(String sortBy) {
+        Comparator<Item> comparator;
+
+        if ("price".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Item::getPrice);
+        } else {
+            comparator = Comparator.comparing(Item::getName);
+        }
+
         return itemRepository.findAll().stream()
-                .sorted(Comparator.comparing(Item::getPrice))
+                .sorted(comparator)
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
@@ -29,6 +37,9 @@ public class ItemService {
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
+
+
+
 
     public Optional<ItemDto> getItemById(Integer itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
