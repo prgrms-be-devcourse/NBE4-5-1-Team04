@@ -2,9 +2,11 @@ package com.team4.project1.domain.customer.dto;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Getter
+@NoArgsConstructor
 public class CustomerDto {
     @NonNull
     private Long id;
