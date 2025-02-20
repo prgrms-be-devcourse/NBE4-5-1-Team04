@@ -1,7 +1,10 @@
 package com.team4.project1.domain.customer.entity;
 
+import com.team4.project1.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @Entity
@@ -16,10 +19,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable =false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable =false, unique=true)
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @OneToMany
+    private List<Order> orders;
 }
