@@ -2,6 +2,7 @@ package com.team4.project1.domain.customer.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
+import com.team4.project1.global.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,8 @@ public class CustomerService {
 
     // Cusotmers id 기반 조회
     public Optional<Customer> getCustomerById(Long id) {
-        return customerRepository.findById(id);
+        return Optional.ofNullable(customerRepository.findById(id))
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     // customer 전체 조회
@@ -48,7 +50,7 @@ public class CustomerService {
 
     public Customer updateCustomer(Long id, CustomerDto customerDto) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No customer found for id: " + id));
+                .orElseThrow(() -> new CustomerNotFoundException(id));
         customer.setName(customerDto.getName());
         customer.setEmail(customerDto.getEmail());
         return customer;

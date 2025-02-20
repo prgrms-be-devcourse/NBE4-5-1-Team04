@@ -3,6 +3,7 @@ package com.team4.project1.domain.customer.controller;
 import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.global.exception.CustomerNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -69,10 +70,7 @@ public class CutomerController {
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
 
-        return opCustomer.map(
-                customer -> ResponseEntity.ok(
-                        new CustomerDto(customer))).orElse(ResponseEntity.notFound().build()
-        );
+        return opCustomer.map(customer -> ResponseEntity.ok(new CustomerDto(customer))).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @PutMapping("/{id}")
