@@ -59,4 +59,24 @@ public class ItemService {
 
         return itemRepository.save(item);
     }
+
+    public ItemDto updateItem(Long id, ItemDto itemDto) {
+        // 1. 기존 아이템을 찾습니다.
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));  // 아이템을 찾지 못하면 예외를 던짐
+
+        // 2. ItemDto의 데이터를 Item 엔티티에 반영합니다.
+        item.setName(itemDto.getName());
+        item.setPrice(itemDto.getPrice());
+
+        // 3. 수정된 아이템을 저장하고, ItemDto로 반환합니다.
+        Item updatedItem = itemRepository.save(item);
+        return ItemDto.from(updatedItem);  // 수정된 아이템을 반환
+    }
+
+    public void deleteItem(Long id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+        itemRepository.delete(item);
+    }
 }

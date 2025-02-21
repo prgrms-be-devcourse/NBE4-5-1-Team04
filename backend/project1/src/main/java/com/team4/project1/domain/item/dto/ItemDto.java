@@ -3,11 +3,15 @@ package com.team4.project1.domain.item.dto;
 import com.team4.project1.domain.item.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Locale;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
     private Long id;
     private String name;
