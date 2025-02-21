@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class CustomerController {
-public class CutomerController {
 
     private final CustomerService customerService;
 
@@ -30,13 +29,18 @@ public class CutomerController {
 
     @PostMapping
     public ResponseEntity<CustomerDto> join(@RequestBody @Valid JoinReqBody reqBody) {
-
         customerService.findByUsername(reqBody.username())
                 .ifPresent(existingCustomer -> {
                     throw new IllegalStateException("Username already exists");
                 });
 
-        Customer customer = customerService.join(reqBody.username(), reqBody.password(), reqBody.name(), reqBody.email());
+        Customer customer = customerService.join(
+                reqBody.username(),
+                reqBody.password(),
+                reqBody.name(),
+                reqBody.email()
+        );
+
         CustomerDto customerDto = new CustomerDto(customer);
 
         return ResponseEntity.ok(customerDto);
@@ -47,8 +51,13 @@ public class CutomerController {
             @NotBlank String password
     ) {}
 
+    record LoginResBody(
+            CustomerDto item,
+            String apiKey
+    ) {}
+
     @PostMapping("/login")
-    public ResponseEntity<CustomerDto> login(@RequestBody @Valid LoginReqBody reqBody) {
+    public ResponseEntity<LoginResBody> login(@RequestBody @Valid LoginReqBody reqBody) {
         Customer customer = customerService.findByUsername(reqBody.username()).orElseThrow(
                 () -> new IllegalArgumentException("잘못된 아이디 입니다.")
         );
@@ -57,7 +66,12 @@ public class CutomerController {
             throw new IllegalArgumentException ("비밀번호가 일치하지 않습니다.");
         }
 
-        return ResponseEntity.ok(new CustomerDto(customer));
+        return ResponseEntity.ok(
+                new LoginResBody(
+                        new CustomerDto(customer),
+                        customer.getApiKey()
+                )
+        );
     }
 
     @GetMapping
