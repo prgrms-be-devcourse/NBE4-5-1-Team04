@@ -18,11 +18,11 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    // customer 객체 생성
     public Customer join(String username, String password, String name, String email) {
         Customer customer = Customer.builder()
                 .username(username)
                 .password(password)
+                .apiKey(username)
                 .name(name)
                 .email(email)
                 .build();
@@ -38,13 +38,15 @@ public class CustomerService {
         return customerRepository.findByUsername(username);
     }
 
-    // Cusotmers id 기반 조회
+    public Optional<Customer> findByApiKey(String apiKey) {
+        return customerRepository.findByApiKey(apiKey);
+    }
+
     public Optional<Customer> getCustomerById(Long id) {
         return Optional.ofNullable(customerRepository.findById(id))
                 .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
-    // customer 전체 조회
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }

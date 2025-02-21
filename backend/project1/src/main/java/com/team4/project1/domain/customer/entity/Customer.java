@@ -25,6 +25,9 @@ public class Customer {
     @Column(length = 100)
     private String password;
 
+    @Column(length = 100, unique = true)
+    private String apiKey;
+
     @Column(nullable = false)
     private String name;
 
@@ -33,4 +36,9 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
+
+    public boolean isAdmin() {
+        return username.equals("admin");
+    }
+
 }
