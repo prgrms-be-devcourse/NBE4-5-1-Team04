@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // Mockito 확장 기능 활성화
-class ApiV1CustomerControllerTest {
+class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository; // 가짜 객체 (Mock) 생성

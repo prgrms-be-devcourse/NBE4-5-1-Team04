@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ApiV1ItemControllerTest {
+class ItemServiceTest {
 
     @Mock
     private ItemRepository itemRepository;  // 가짜 객체 (Mock)
