@@ -88,7 +88,7 @@ class OrderServiceTest {
         when(orderItemRepository.findByOrderId(anyLong())).thenReturn(List.of(orderItem));  // Mock findByOrderId
 
         // When
-        OrderWithOrderItemsDto createdOrder = orderService.createOrder(List.of(orderItemDto), customer);
+        OrderWithOrderItemsDto createdOrder = orderService.createOrder(List.of(orderItemDto), customer.getId());
 
         // Then
         assertThat(createdOrder).isNotNull();

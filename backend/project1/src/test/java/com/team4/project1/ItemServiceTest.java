@@ -61,35 +61,37 @@ class ItemServiceTest {
     @DisplayName("정렬 기준(price)에 따라 아이템을 정렬하여 조회할 수 있다.")
     void getAllItemsSortedByPrice() {
         // Given
-        when(itemRepository.findAllByOrderByPriceAsc()).thenReturn(List.of(item));
+        when(itemRepository.findAllByNameContainingOrderByPriceAsc("Test")).thenReturn(List.of(item));
 
         // When
-        List<ItemDto> items = itemService.getAllItemsSorted("price");
+        List<ItemDto> items = itemService.searchAllItemsSortedBy("price", "Test");
 
         // Then
         assertThat(items).isNotEmpty();
         assertThat(items).hasSize(1);
         assertThat(items.get(0).getPrice()).isEqualTo(1000);
 
-        verify(itemRepository, times(1)).findAllByOrderByPriceAsc();
+        verify(itemRepository, times(1)).findAllByNameContainingOrderByPriceAsc("Test");
     }
+
 
     @Test
     @DisplayName("정렬 기준(name)에 따라 아이템을 정렬하여 조회할 수 있다.")
     void getAllItemsSortedByName() {
         // Given
-        when(itemRepository.findAllByOrderByNameAsc()).thenReturn(List.of(item));
+        when(itemRepository.findAllByNameContainingOrderByNameAsc("Test")).thenReturn(List.of(item));
 
         // When
-        List<ItemDto> items = itemService.getAllItemsSorted("name");
+        List<ItemDto> items = itemService.searchAllItemsSortedBy("name", "Test");
 
         // Then
         assertThat(items).isNotEmpty();
         assertThat(items).hasSize(1);
         assertThat(items.get(0).getName()).isEqualTo("Test Item");
 
-        verify(itemRepository, times(1)).findAllByOrderByNameAsc();
+        verify(itemRepository, times(1)).findAllByNameContainingOrderByNameAsc("Test");
     }
+
 
     @Test
     @DisplayName("특정 ID의 아이템을 조회할 수 있다.")
