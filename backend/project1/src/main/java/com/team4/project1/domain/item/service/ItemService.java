@@ -75,4 +75,10 @@ public class ItemService {
         Item updatedItem = itemRepository.save(item);
         return new ItemDto(updatedItem);  // 수정된 아이템을 반환
     }
+
+    public void deleteItem(Long id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+        itemRepository.delete(item);
+    }
 }

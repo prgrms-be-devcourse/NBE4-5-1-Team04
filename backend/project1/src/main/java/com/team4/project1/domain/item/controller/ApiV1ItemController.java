@@ -41,4 +41,10 @@ public class ApiV1ItemController {
         ItemDto updatedItem = itemService.updateItem(id, itemDto);
         return ResponseEntity.ok(updatedItem);
     }
+
+    @DeleteMapping("/{id}")
+public ResponseEntity<String> deleteItem(@PathVariable("id") Long id) {
+        itemService.deleteItem(id);
+        return ResponseEntity.ok("삭제가 완료되었습니다.");
+    }
 }
