@@ -116,4 +116,15 @@ class ApiV1CustomerControllerTest {
         assertThat(updatedCustomer.getEmail()).isEqualTo("updated@example.com");
         verify(customerRepository, times(1)).findById(1L);
     }
+
+    @Test
+    @DisplayName("고객 수를 조회할 수 있다.")
+    void countCustomers() {
+        when(customerRepository.count()).thenReturn(5L);
+
+        long customerCount = customerService.count();
+
+        assertThat(customerCount).isEqualTo(5);
+        verify(customerRepository, times(1)).count();
+    }
 }
