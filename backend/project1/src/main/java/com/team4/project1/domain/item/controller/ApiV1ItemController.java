@@ -16,7 +16,7 @@ public class ApiV1ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{itemId}")
-    public ItemDto item(@PathVariable Integer itemId) {
+    public ItemDto item(@PathVariable Long itemId) {
         return itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 

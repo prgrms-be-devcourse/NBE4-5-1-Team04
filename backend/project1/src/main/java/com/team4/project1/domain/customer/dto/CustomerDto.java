@@ -16,4 +16,10 @@ public class CustomerDto {
         this.name = customer.getName();
         this.email = customer.getEmail();
     }
+
+    public CustomerDto(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
 }

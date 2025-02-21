@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderItemDto {
 
-    private Integer itemId;
+    private Long itemId;
     private Integer quantity;
 
-    public OrderItemDto(Integer itemId, Integer quantity) {
+    public OrderItemDto(Long itemId, Integer quantity) {
         this.itemId = itemId;
         this.quantity = quantity;
     }
