@@ -118,4 +118,21 @@ class ApiV1ItemControllerTest {
 
         verify(itemRepository, times(1)).findById(2);
     }
+
+    @Test
+    @DisplayName("새로운 아이템을 추가할 수 있다.")
+    void addItem() {
+        // Given
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
+
+        // When
+        Item newItem = itemService.addItem("Test Item", 1000);
+
+        // Then
+        assertThat(newItem).isNotNull();
+        assertThat(newItem.getName()).isEqualTo("Test Item");
+        assertThat(newItem.getPrice()).isEqualTo(1000);
+
+        verify(itemRepository, times(1)).save(any(Item.class));
+    }
 }
