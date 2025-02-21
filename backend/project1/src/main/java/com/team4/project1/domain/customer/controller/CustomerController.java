@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class CustomerController {
-public class CutomerController {
 
     private final CustomerService customerService;
 
@@ -75,7 +74,7 @@ public class CutomerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
-        Customer updated = customerService.updateCustomer(id,customerDto);
+        Customer updated = customerService.updateCustomer(id, customerDto);
         return ResponseEntity.ok(new CustomerDto(updated));
     }
 }

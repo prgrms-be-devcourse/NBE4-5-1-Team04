@@ -1,5 +1,6 @@
 package com.team4.project1.domain.customer.service;
 
+import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
 import com.team4.project1.global.exception.CustomerNotFoundException;
