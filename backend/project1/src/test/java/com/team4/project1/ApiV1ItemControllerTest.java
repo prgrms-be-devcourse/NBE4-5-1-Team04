@@ -135,4 +135,19 @@ class ApiV1ItemControllerTest {
 
         verify(itemRepository, times(1)).save(any(Item.class));
     }
+
+    @Test
+    @DisplayName("전체 아이템 개수를 조회할 수 있다.")
+    void countItems() {
+        // Given
+        when(itemRepository.count()).thenReturn(5L);
+
+        // When
+        long itemCount = itemService.count();
+
+        // Then
+        assertThat(itemCount).isEqualTo(5);
+
+        verify(itemRepository, times(1)).count();
+    }
 }
