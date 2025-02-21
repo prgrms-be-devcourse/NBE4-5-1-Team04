@@ -39,4 +39,9 @@ public class Order {
         this.date = date;
         this.totalPrice = totalPrice;
     }
+
+    // setter 추가
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
