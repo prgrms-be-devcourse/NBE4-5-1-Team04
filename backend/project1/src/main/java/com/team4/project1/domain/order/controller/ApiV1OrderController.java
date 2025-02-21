@@ -46,4 +46,5 @@ public class ApiV1OrderController {
     public ResponseEntity<List<OrderItemDto>> getOrderItemsByOrderId(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderItemService.getOrderItemsByOrderId(orderId));
     }
+
 }
