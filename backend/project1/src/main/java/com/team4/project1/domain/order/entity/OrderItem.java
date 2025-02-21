@@ -16,7 +16,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 주문과 다대일 관계
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
