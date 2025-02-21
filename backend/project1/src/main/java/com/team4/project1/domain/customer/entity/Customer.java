@@ -17,12 +17,13 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE) // id 수정 불가능
     private Long id;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100, unique = true,nullable = false)
     private String username;
 
-    @Column(length = 100)
+    @Column(length = 100,nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -31,6 +32,6 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private List<Order> orders;
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class ItemDto {
-    private Integer id;
+    private Long id;
     private String name;
     private Integer price;
 
@@ -16,6 +16,7 @@ public class ItemDto {
     }
 
     public static ItemDto from(Item item) {
+
         return new ItemDto(item);
     }
 
