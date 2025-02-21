@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -86,5 +87,21 @@ class ApiV1ItemControllerTest {
         assertThat(items.get(0).getName()).isEqualTo("Test Item");
 
         verify(itemRepository, times(1)).findAllByOrderByNameAsc();
+    }
+
+    @Test
+    @DisplayName("특정 ID의 아이템을 조회할 수 있다.")
+    void getItemById() {
+        // Given
+        when(itemRepository.findById(1)).thenReturn(Optional.of(item));
+
+        // When
+        Optional<ItemDto> foundItem = itemService.getItemById(1);
+
+        // Then
+        assertThat(foundItem).isPresent();
+        assertThat(foundItem.get().getName()).isEqualTo("Test Item");
+
+        verify(itemRepository, times(1)).findById(1);
     }
 }
