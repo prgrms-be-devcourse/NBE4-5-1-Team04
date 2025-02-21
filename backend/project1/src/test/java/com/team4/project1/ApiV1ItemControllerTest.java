@@ -4,6 +4,7 @@ import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.domain.item.service.ItemService;
+import com.team4.project1.global.exception.ItemNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,5 +105,17 @@ class ApiV1ItemControllerTest {
         assertThat(foundItem.get().getName()).isEqualTo("Test Item");
 
         verify(itemRepository, times(1)).findById(1);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID의 아이템을 조회하면 예외가 발생한다.")
+    void getItemById_NotFound() {
+        // Given
+        when(itemRepository.findById(2)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(2));
+
+        verify(itemRepository, times(1)).findById(2);
     }
 }
