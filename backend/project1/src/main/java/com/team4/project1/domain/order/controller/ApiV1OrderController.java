@@ -8,7 +8,6 @@ import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

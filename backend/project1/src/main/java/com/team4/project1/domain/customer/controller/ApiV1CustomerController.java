@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class ApiV1CustomerController {
-
     private final CustomerService customerService;
 
     record JoinReqBody(

@@ -4,8 +4,8 @@ import com.team4.project1.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Getter
@@ -17,12 +17,13 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE) // id 수정 불가능
     private Long id;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100, unique = true,nullable = false)
     private String username;
 
-    @Column(length = 100)
+    @Column(length = 100,nullable = false)
     private String password;
 
     @Column(length = 100, unique = true)
@@ -34,11 +35,17 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
+
+    public Customer(String username, String password, String name, String email) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
 
     public boolean isAdmin() {
         return username.equals("admin");
     }
-
 }
