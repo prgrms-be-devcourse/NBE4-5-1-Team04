@@ -74,6 +74,13 @@ public class OrderService {
         return orderId;
     }
 
+    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        return orders.stream()
+                .map(OrderWithOrderItemsDto::from)
+                .toList();
+    }
+
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         // 새 주문을 받았을때, 주문 가능한 제품만 남긴다.
         return orderItemDtos.stream()
