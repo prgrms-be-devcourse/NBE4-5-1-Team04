@@ -2,9 +2,11 @@ package com.team4.project1.domain.item.dto;
 
 import com.team4.project1.domain.item.entity.Item;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
 public class ItemDto {
     private Long id;
     private String name;
