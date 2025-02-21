@@ -40,8 +40,7 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    // setter 추가
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(long l) {
     }
+
 }
