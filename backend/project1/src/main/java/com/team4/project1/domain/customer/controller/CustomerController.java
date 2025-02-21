@@ -40,11 +40,7 @@ public class CustomerController {
         Customer customer = customerService.join(reqBody.username(), reqBody.password(), reqBody.name(), reqBody.email());
         CustomerDto customerDto = new CustomerDto(customer);
 
-        return ResponseEntity.ok(new ResponseDto<>(
-                HttpStatus.OK.toString(),
-                HttpStatus.OK.getReasonPhrase(),
-                customerDto
-        ));
+        return ResponseEntity.ok(ResponseDto.ok(customerDto));
     }
 
     record LoginReqBody(
@@ -62,11 +58,7 @@ public class CustomerController {
             throw new IllegalArgumentException ("비밀번호가 일치하지 않습니다.");
         }
 
-        return ResponseEntity.ok(new ResponseDto<>(
-                HttpStatus.OK.toString(),
-                HttpStatus.OK.getReasonPhrase(),
-                new CustomerDto(customer)
-        ));
+        return ResponseEntity.ok(ResponseDto.ok(new CustomerDto(customer)));
     }
 
     @GetMapping
