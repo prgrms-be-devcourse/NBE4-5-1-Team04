@@ -1,6 +1,7 @@
 package com.team4.project1.domain.item.controller;
 
 import com.team4.project1.domain.item.dto.ItemDto;
+import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,13 @@ public class ApiV1ItemController {
                 .orElseThrow(() -> new ItemNotFoundException(id));
         return ResponseEntity.ok(itemDto);
     }
+
+    @PostMapping
+    public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto itemDto) {
+        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice());
+        return ResponseEntity.ok(ItemDto.from(item));
+    }
+
 
     // 아이템 수정
     @PutMapping("/{id}")

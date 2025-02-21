@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ItemDto {
     private Long id;
@@ -17,6 +18,8 @@ public class ItemDto {
         this.name = item.getName();
         this.price = item.getPrice();
     }
+
+
 
     public static ItemDto from(Item item) {
         return new ItemDto(item);
