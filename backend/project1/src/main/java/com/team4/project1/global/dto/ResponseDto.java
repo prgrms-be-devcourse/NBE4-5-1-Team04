@@ -19,13 +19,12 @@ public class ResponseDto<T> {
         return new ResponseDto<>(code, message, data);
     }
 
-    // HTTP 응답코드별 static 메소드
-    // 2xx
+    // 2xx 성공 응답
     public static <T> ResponseDto<T> ok(T data) {
         return new ResponseDto<>(HttpStatus.OK.value() + "", HttpStatus.OK.getReasonPhrase(), data);
     }
 
-    // 4xx
+    // 4xx 클라이언트 오류
     public static <T> ResponseDto<T> badRequest(T data) {
         return new ResponseDto<>(HttpStatus.BAD_REQUEST.value() + "", HttpStatus.BAD_REQUEST.getReasonPhrase(), data);
     }
@@ -38,7 +37,7 @@ public class ResponseDto<T> {
         return new ResponseDto<>(HttpStatus.METHOD_NOT_ALLOWED.value() + "", HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), data);
     }
 
-    // 5xx
+    // 5xx 서버 오류
     public static <T> ResponseDto<T> internalServerError(T data) {
         return new ResponseDto<>(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), data);
     }
