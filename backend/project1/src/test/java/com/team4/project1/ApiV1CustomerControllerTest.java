@@ -2,32 +2,39 @@ package com.team4.project1.domain.customer.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
+import com.team4.project1.global.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // Mockito 확장 기능 활성화
 class ApiV1CustomerControllerTest {
 
     @Mock
-    private CustomerRepository customerRepository;
+    private CustomerRepository customerRepository; // 가짜 객체 (Mock) 생성
 
     @InjectMocks
-    private CustomerService customerService;
+    private CustomerService customerService; // customerRepository를 주입받을 실제 서비스 객체 생성
 
     private Customer customer;
 
     @BeforeEach
     void setUp() {
+        // Mockito 초기화 (선택적: MockitoExtension 사용하면 생략 가능)
+        MockitoAnnotations.openMocks(this);
+
+        // 테스트용 고객 객체 생성
         customer = Customer.builder()
                 .id(1L)
                 .username("testUser")
@@ -50,7 +57,6 @@ class ApiV1CustomerControllerTest {
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
-
     @Test
     @DisplayName("고객 ID로 고객을 조회할 수 있다.")
     void getCustomerById() {
@@ -63,4 +69,22 @@ class ApiV1CustomerControllerTest {
         assertThat(foundCustomer.getUsername()).isEqualTo("testUser");
         verify(customerRepository, times(1)).findById(1L);
     }
+
+    @Test
+    @DisplayName("존재하지 않는 고객 ID 조회 시 예외가 발생한다.")
+    void getCustomerByIdNotFound() {
+        // Given
+        Long nonExistentId = 2L;
+        when(customerRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        // When & Then
+        Exception exception = assertThrows(CustomerNotFoundException.class, () -> {
+            customerService.getCustomerById(nonExistentId);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("해당 고객을 찾을 수 없습니다. (ID: " + nonExistentId + ")");
+        verify(customerRepository, times(1)).findById(nonExistentId);
+    }
+
+
 }
