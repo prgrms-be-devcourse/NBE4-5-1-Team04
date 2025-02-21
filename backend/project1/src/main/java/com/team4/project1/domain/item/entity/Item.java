@@ -1,6 +1,7 @@
 package com.team4.project1.domain.item.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -22,10 +23,13 @@ public class Item {
     private Integer price;
 
     @Column(nullable = false)
-    private Integer quantity;
+    @NotNull
+    private Integer stock;
 
     public Item(String name, Integer price) {
         this.name = name;
         this.price = price;
     }
+
+
 }

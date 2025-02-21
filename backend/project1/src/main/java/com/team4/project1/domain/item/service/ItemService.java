@@ -55,6 +55,7 @@ public class ItemService {
         Item item = Item.builder()
                 .name(name)
                 .price(price)
+                .stock(0)
                 .build();
 
         return itemRepository.save(item);
