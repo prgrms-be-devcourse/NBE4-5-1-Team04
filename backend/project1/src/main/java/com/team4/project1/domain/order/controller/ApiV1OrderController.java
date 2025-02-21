@@ -4,6 +4,7 @@ import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.service.OrderItemService;
 import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.CustomerNotFoundException;
@@ -21,6 +22,7 @@ public class ApiV1OrderController {
 
     private final CustomerService customerService;
     private final OrderService orderService;
+    private final OrderItemService orderItemService;
 
     @PostMapping
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(@RequestParam("cust_id") Long customerId, @RequestBody List<OrderItemDto> orderItemDtos) {
@@ -39,5 +41,9 @@ public class ApiV1OrderController {
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
+    }
+    @GetMapping("/{orderId}")
+    public ResponseEntity<List<OrderItemDto>> getOrderItemsByOrderId(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderItemService.getOrderItemsByOrderId(orderId));
     }
 }
