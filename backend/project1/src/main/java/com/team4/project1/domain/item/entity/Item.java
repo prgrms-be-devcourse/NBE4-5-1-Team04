@@ -21,4 +21,9 @@ public class Item {
     @Column(nullable = false)
     private Integer price;
 
+    public Item(String name, Integer price) {
+        this.name = name;
+        this.price = price;
+    }
+
 }

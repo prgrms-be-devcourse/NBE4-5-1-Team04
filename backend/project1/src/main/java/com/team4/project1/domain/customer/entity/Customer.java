@@ -36,4 +36,11 @@ public class Customer {
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
+    public Customer(String username, String password, String name, String email) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
+
 }
