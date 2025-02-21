@@ -1,6 +1,5 @@
 package com.team4.project1.domain.order.service;
 
-import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
@@ -9,12 +8,13 @@ import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
 import com.team4.project1.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,23 +25,27 @@ public class OrderService {
     public final ItemRepository itemRepository;
 
     // TODO: 작업 성공/실패 여부를 어떤 형식으로든 반환하게끔 개선
-    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Customer customer) {
-        Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
-        orderItemDtos = validateNewOrder(orderItemDtos);
+    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos) {
+        log.info("Creating new order...");
+
+        Order newOrder = new Order();
         long totalPrice = 0L;
-        for(OrderItemDto orderItemDto : orderItemDtos) {
+
+        for (OrderItemDto orderItemDto : orderItemDtos) {
             OrderItem newOrderItem = new OrderItem(
                     newOrder,
-                    itemRepository.getReferenceById(orderItemDto.getItemId()),
+                    itemRepository.findById(orderItemDto.getItemId())
+                            .orElseThrow(() -> new RuntimeException("Item not found: " + orderItemDto.getItemId())),
                     orderItemDto.getQuantity()
             );
             newOrder.getOrderItems().add(newOrderItem);
-            totalPrice += (long) newOrderItem.getItem().getPrice() * newOrderItem.getQuantity();
-            // TODO: cascade 옵션으로 orderRepository.save(order)로 order이 가지고 있는 orderItem까지 DB에 반영되도록 개
-            orderItemRepository.save(newOrderItem);
+            totalPrice += newOrderItem.getItem().getPrice() * newOrderItem.getQuantity();
         }
+
         newOrder.setTotalPrice(totalPrice);
         orderRepository.save(newOrder);
+
+        log.info("Order created successfully, orderId={}", newOrder.getId());
         return OrderWithOrderItemsDto.from(newOrder);
     }
 
