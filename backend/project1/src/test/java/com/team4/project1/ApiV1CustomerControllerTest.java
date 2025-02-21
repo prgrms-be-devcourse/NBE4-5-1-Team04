@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -48,4 +50,17 @@ class ApiV1CustomerControllerTest {
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
+
+    @Test
+    @DisplayName("고객 ID로 고객을 조회할 수 있다.")
+    void getCustomerById() {
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+
+        Customer foundCustomer = customerService.getCustomerById(1L).orElseThrow();
+
+        assertThat(foundCustomer).isNotNull();
+        assertThat(foundCustomer.getId()).isEqualTo(1L);
+        assertThat(foundCustomer.getUsername()).isEqualTo("testUser");
+        verify(customerRepository, times(1)).findById(1L);
+    }
 }
