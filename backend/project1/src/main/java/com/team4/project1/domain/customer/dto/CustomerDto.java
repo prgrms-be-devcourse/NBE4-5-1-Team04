@@ -16,4 +16,5 @@ public class CustomerDto {
         this.name = customer.getName();
         this.email = customer.getEmail();
     }
+
 }

@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class CustomerController {
-public class CutomerController {
 
     private final CustomerService customerService;
 

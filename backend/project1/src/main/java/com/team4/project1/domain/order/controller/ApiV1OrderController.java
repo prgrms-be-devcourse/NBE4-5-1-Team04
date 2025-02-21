@@ -22,7 +22,7 @@ public class ApiV1OrderController {
     @PostMapping()
     public OrderWithOrderItemsDto createOrder(@RequestParam("cust_id") Long customerId, @RequestBody List<OrderItemDto> orderItemDtos) {
         // TODO: customerId에 해당하는 Customer 엔티티가 없을 때 던지는 예외를 커스텀 구현체로 변경
-        Optional<Customer> customer = customerService.getcustomerById(customerId);
+        Optional<Customer> customer = customerService.getCustomerById(customerId);
         if(customer.isEmpty()) {
             throw new RuntimeException("Customer with id %d not found".formatted(customerId));
         }
