@@ -1,5 +1,6 @@
 package com.team4.project1;
 
+import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
 import com.team4.project1.domain.customer.service.CustomerService;
@@ -99,5 +100,20 @@ class ApiV1CustomerControllerTest {
         assertThat(customers.get(0).getUsername()).isEqualTo("testUser");
 
         verify(customerRepository, times(1)).findAll();
+    }
+
+
+    @Test
+    @DisplayName("고객 정보를 수정할 수 있다.")
+    void updateCustomer() {
+        CustomerDto updatedDto = new CustomerDto("Updated Name", "updated@example.com");
+
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+
+        Customer updatedCustomer = customerService.updateCustomer(1L, updatedDto);
+
+        assertThat(updatedCustomer.getName()).isEqualTo("Updated Name");
+        assertThat(updatedCustomer.getEmail()).isEqualTo("updated@example.com");
+        verify(customerRepository, times(1)).findById(1L);
     }
 }
