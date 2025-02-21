@@ -4,3 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/project1
     username: dbuser
     password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
