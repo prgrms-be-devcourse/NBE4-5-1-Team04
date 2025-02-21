@@ -1,7 +1,8 @@
-package com.team4.project1.domain.customer.service;
+package com.team4.project1;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
+import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.global.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,10 +32,6 @@ class ApiV1CustomerControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mockito 초기화 (선택적: MockitoExtension 사용하면 생략 가능)
-        MockitoAnnotations.openMocks(this);
-
-        // 테스트용 고객 객체 생성
         customer = Customer.builder()
                 .id(1L)
                 .username("testUser")
@@ -87,4 +84,20 @@ class ApiV1CustomerControllerTest {
     }
 
 
+    @Test
+    @DisplayName("고객의 전체 목록을 조회할 수 있다.")
+    void getAllCustomers() {
+        // Given
+        when(customerRepository.findAll()).thenReturn(List.of(customer));
+
+        // When
+        List<Customer> customers = customerService.getAllCustomers();
+
+        // Then
+        assertThat(customers).isNotEmpty();
+        assertThat(customers).hasSize(1);
+        assertThat(customers.get(0).getUsername()).isEqualTo("testUser");
+
+        verify(customerRepository, times(1)).findAll();
+    }
 }
