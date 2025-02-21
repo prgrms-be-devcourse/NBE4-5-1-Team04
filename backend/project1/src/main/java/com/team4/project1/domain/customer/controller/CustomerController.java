@@ -3,10 +3,12 @@ package com.team4.project1.domain.customer.controller;
 import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.CustomerNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,7 @@ public class CustomerController {
     ) {}
 
     @PostMapping
-    public ResponseEntity<CustomerDto> join(@RequestBody @Valid JoinReqBody reqBody) {
+    public ResponseEntity<ResponseDto<CustomerDto>> join(@RequestBody @Valid JoinReqBody reqBody) {
 
         customerService.findByUsername(reqBody.username())
                 .ifPresent(existingCustomer -> {
@@ -38,7 +40,11 @@ public class CustomerController {
         Customer customer = customerService.join(reqBody.username(), reqBody.password(), reqBody.name(), reqBody.email());
         CustomerDto customerDto = new CustomerDto(customer);
 
-        return ResponseEntity.ok(customerDto);
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.toString(),
+                HttpStatus.OK.getReasonPhrase(),
+                customerDto
+        ));
     }
 
     record LoginReqBody(
@@ -47,7 +53,7 @@ public class CustomerController {
     ) {}
 
     @PostMapping("/login")
-    public ResponseEntity<CustomerDto> login(@RequestBody @Valid LoginReqBody reqBody) {
+    public ResponseEntity<ResponseDto<CustomerDto>> login(@RequestBody @Valid LoginReqBody reqBody) {
         Customer customer = customerService.findByUsername(reqBody.username()).orElseThrow(
                 () -> new IllegalArgumentException("잘못된 아이디 입니다.")
         );
@@ -56,25 +62,31 @@ public class CustomerController {
             throw new IllegalArgumentException ("비밀번호가 일치하지 않습니다.");
         }
 
-        return ResponseEntity.ok(new CustomerDto(customer));
+        return ResponseEntity.ok(new ResponseDto<>(
+                HttpStatus.OK.toString(),
+                HttpStatus.OK.getReasonPhrase(),
+                new CustomerDto(customer)
+        ));
     }
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
+    public ResponseEntity<ResponseDto<List<Customer>>> getAllCustomers() {
         List<Customer> customer = customerService.getAllCustomers();
-        return ResponseEntity.ok(customer);
+        return ResponseEntity.ok(ResponseDto.ok(customer));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto<CustomerDto>> getCustomerById(@PathVariable Long id) {
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
 
-        return opCustomer.map(customer -> ResponseEntity.ok(new CustomerDto(customer))).orElseThrow(() -> new CustomerNotFoundException(id));
+        return opCustomer
+                .map(customer -> ResponseEntity.ok(ResponseDto.ok(new CustomerDto(customer))))
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto<CustomerDto>> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         Customer updated = customerService.updateCustomer(id, customerDto);
-        return ResponseEntity.ok(new CustomerDto(updated));
+        return ResponseEntity.ok(ResponseDto.ok(new CustomerDto(updated)));
     }
 }

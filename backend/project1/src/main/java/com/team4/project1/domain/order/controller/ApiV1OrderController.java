@@ -5,7 +5,11 @@ import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.service.OrderService;
+import com.team4.project1.global.dto.ResponseDto;
+import com.team4.project1.global.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,23 +23,22 @@ public class ApiV1OrderController {
     private final CustomerService customerService;
     private final OrderService orderService;
 
-    @PostMapping()
-    public OrderWithOrderItemsDto createOrder(@RequestParam("cust_id") Long customerId, @RequestBody List<OrderItemDto> orderItemDtos) {
-        // TODO: customerId에 해당하는 Customer 엔티티가 없을 때 던지는 예외를 커스텀 구현체로 변경
+    @PostMapping
+    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(@RequestParam("cust_id") Long customerId, @RequestBody List<OrderItemDto> orderItemDtos) {
         Optional<Customer> customer = customerService.getCustomerById(customerId);
         if(customer.isEmpty()) {
-            throw new RuntimeException("Customer with id %d not found".formatted(customerId));
+            throw new CustomerNotFoundException(customerId);
         }
-        return orderService.createOrder(orderItemDtos, customer.get());
+        return ResponseEntity.ok(ResponseDto.ok(orderService.createOrder(orderItemDtos, customer.get())));
     }
 
     @PutMapping("/{orderId}")
-    public OrderWithOrderItemsDto updateOrder(@PathVariable Long orderId, @RequestBody List<OrderItemDto> orderItemDtos) {
-        return orderService.updateOrder(orderItemDtos, orderId);
+    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(@PathVariable Long orderId, @RequestBody List<OrderItemDto> orderItemDtos) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.updateOrder(orderItemDtos, orderId)));
     }
 
     @DeleteMapping("/{orderId}")
-    public Long cancelOrder(@PathVariable Long orderId) {
-        return orderService.cancelOrder(orderId);
+    public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
     }
 }
