@@ -1,7 +1,5 @@
 package com.team4.project1.global.security;
 
-import com.team4.project1.global.dto.RsData;
-import com.team4.project1.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,31 +44,31 @@ public class SecurityConfig {
                         customAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
-                .exceptionHandling(
-                        exceptionHandling -> exceptionHandling
-                                .authenticationEntryPoint(
-                                        (request, response, authException) -> {
-                                            response.setContentType("application/json;charset=UTF-8");
-                                            response.setStatus(401);
-                                            response.getWriter().write(
-                                                    Ut.Json.toString(
-                                                            new RsData("401-1", "잘못된 인증키 입니다.")
-                                                    )
-                                            );
-                                        }
-                                )
-                                .accessDeniedHandler(
-                                        (request, response, accessDeniedException) -> {
-                                            response.setContentType("application/json;charset=UTF-8");
-                                            response.setStatus(403);
-                                            response.getWriter().write(
-                                                    Ut.Json.toString(
-                                                            new RsData("403-1", "접근 권한이 없습니다.")
-                                                    )
-                                            );
-                                        }
-                                )
-                )
+//                .exceptionHandling(
+//                        exceptionHandling -> exceptionHandling
+//                                .authenticationEntryPoint(
+//                                        (request, response, authException) -> {
+//                                            response.setContentType("application/json;charset=UTF-8");
+//                                            response.setStatus(401);
+//                                            response.getWriter().write(
+//                                                    Ut.Json.toString(
+//                                                            new RsData("401-1", "잘못된 인증키 입니다.")
+//                                                    )
+//                                            );
+//                                        }
+//                                )
+//                                .accessDeniedHandler(
+//                                        (request, response, accessDeniedException) -> {
+//                                            response.setContentType("application/json;charset=UTF-8");
+//                                            response.setStatus(403);
+//                                            response.getWriter().write(
+//                                                    Ut.Json.toString(
+//                                                            new RsData("403-1", "접근 권한이 없습니다.")
+//                                                    )
+//                                            );
+//                                        }
+//                                )
+//                )
         ;
 
         return http.build();
