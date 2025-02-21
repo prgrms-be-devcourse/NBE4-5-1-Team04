@@ -1,4 +1,4 @@
-package com.team4.project1.domain.order.Controller;
+package com.team4.project1.domain.order.controller;
 
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;

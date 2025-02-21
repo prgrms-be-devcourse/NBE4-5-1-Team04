@@ -39,8 +39,4 @@ public class Order {
         this.date = date;
         this.totalPrice = totalPrice;
     }
-
-    public void setId(long l) {
-    }
-
 }
