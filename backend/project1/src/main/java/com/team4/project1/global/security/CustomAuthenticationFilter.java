@@ -2,6 +2,7 @@ package com.team4.project1.global.security;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.global.Rq;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
+    private final Rq rq;
     private final CustomerService customerService;
 
     @Override
@@ -48,7 +50,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         Customer actor = opCustomer.get();
 
-        // rq.setLogin(actor.getUsername());
+         rq.setLogin(actor.getUsername());
 
         filterChain.doFilter(request, response);
     }
