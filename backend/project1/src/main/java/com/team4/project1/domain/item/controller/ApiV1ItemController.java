@@ -19,7 +19,7 @@ public class ApiV1ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Integer itemId) {
+    public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Long itemId) {
         return ResponseEntity.ok(ResponseDto.ok(
                 itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId)
                 )
