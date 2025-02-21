@@ -34,7 +34,7 @@ class ApiV1ItemControllerTest {
     @BeforeEach
     void setUp() {
         item = Item.builder()
-                .id(1)
+                .id(1L)
                 .name("Test Item")
                 .price(1000)
                 .build();
@@ -95,28 +95,28 @@ class ApiV1ItemControllerTest {
     @DisplayName("특정 ID의 아이템을 조회할 수 있다.")
     void getItemById() {
         // Given
-        when(itemRepository.findById(1)).thenReturn(Optional.of(item));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
 
         // When
-        Optional<ItemDto> foundItem = itemService.getItemById(1);
+        Optional<ItemDto> foundItem = itemService.getItemById(1L);
 
         // Then
         assertThat(foundItem).isPresent();
         assertThat(foundItem.get().getName()).isEqualTo("Test Item");
 
-        verify(itemRepository, times(1)).findById(1);
+        verify(itemRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("존재하지 않는 ID의 아이템을 조회하면 예외가 발생한다.")
     void getItemById_NotFound() {
         // Given
-        when(itemRepository.findById(2)).thenReturn(Optional.empty());
+        when(itemRepository.findById(2L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(2));
+        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(2L));
 
-        verify(itemRepository, times(1)).findById(2);
+        verify(itemRepository, times(1)).findById(2L);
     }
 
     @Test

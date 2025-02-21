@@ -42,7 +42,7 @@ public class ItemService {
 
 
 
-    public Optional<ItemDto> getItemById(Integer itemId) {
+    public Optional<ItemDto> getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         if (item == null) { return Optional.empty(); }
         return Optional.of(ItemDto.from(item));

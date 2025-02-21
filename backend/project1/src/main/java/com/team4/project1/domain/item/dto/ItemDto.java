@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class ItemDto {
-    private Integer id;
+    private Long id;
     private String name;
     private Integer price;
 

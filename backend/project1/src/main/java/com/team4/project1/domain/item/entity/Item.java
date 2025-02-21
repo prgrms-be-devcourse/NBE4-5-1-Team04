@@ -12,8 +12,7 @@ import lombok.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    private Integer id;
+    private Long id;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -23,4 +22,5 @@ public class Item {
         this.name = name;
         this.price = price;
     }
+
 }
