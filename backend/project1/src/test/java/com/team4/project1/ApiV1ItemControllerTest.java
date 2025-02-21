@@ -70,4 +70,21 @@ class ApiV1ItemControllerTest {
 
         verify(itemRepository, times(1)).findAllByOrderByPriceAsc();
     }
+
+    @Test
+    @DisplayName("정렬 기준(name)에 따라 아이템을 정렬하여 조회할 수 있다.")
+    void getAllItemsSortedByName() {
+        // Given
+        when(itemRepository.findAllByOrderByNameAsc()).thenReturn(List.of(item));
+
+        // When
+        List<ItemDto> items = itemService.getAllItemsSorted("name");
+
+        // Then
+        assertThat(items).isNotEmpty();
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0).getName()).isEqualTo("Test Item");
+
+        verify(itemRepository, times(1)).findAllByOrderByNameAsc();
+    }
 }
