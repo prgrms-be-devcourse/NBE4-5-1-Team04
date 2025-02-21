@@ -25,10 +25,10 @@ public class Customer {
     @Column(length = 100)
     private String password;
 
-    @Column(nullable =false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable =false, unique=true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany(mappedBy = "customer")

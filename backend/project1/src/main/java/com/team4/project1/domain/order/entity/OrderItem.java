@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "order_item") // 테이블 이름 명시
 public class OrderItem {
 
     @Id
@@ -18,13 +17,17 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY) // 주문과 다대일 관계
-    @JoinColumn(name = "order_id") // 외래키 지정
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY) // 상품과 일대일 관계
-    @JoinColumn(name = "item_id") // 외래키 지정
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     @Column(nullable = false)
     private Integer quantity;
+
+    public OrderItem(Order order, Item item, Integer quantity) {
+        this.order = order;
+        this.item = item;
+        this.quantity = quantity;
+    }
 }
