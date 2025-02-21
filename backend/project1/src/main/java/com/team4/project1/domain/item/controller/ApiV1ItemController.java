@@ -15,18 +15,22 @@ public class ApiV1ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping
-    public List<ItemDto> items(@RequestParam(value = "sortBy", required = false) String sortBy) {
-        if (sortBy == null || sortBy.isEmpty()) {
-            return itemService.getAllItems();
-        } else {
-            return itemService.getAllItemsSorted(sortBy);
-        }
-    }
-
-
     @GetMapping("/{itemId}")
     public ItemDto item(@PathVariable Integer itemId) {
         return itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+    }
+
+    @GetMapping
+    public List<ItemDto> sortedItems(
+            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "searchKeyword", required = false) String keyword
+            ) {
+        if (keyword == null) { keyword = ""; }
+        if (sortBy == null || sortBy.isEmpty() && keyword.isEmpty()) {
+            return itemService.getAllItems();
+        }
+        else {
+            return itemService.searchAllItemsSortedBy(sortBy, keyword);
+        }
     }
 }
