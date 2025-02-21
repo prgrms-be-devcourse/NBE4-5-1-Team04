@@ -31,8 +31,10 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));  // ✅ 예외를 서비스에서 처리
 
         Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
+
         orderItemDtos = validateNewOrder(orderItemDtos);
         long totalPrice = 0L;
+
         for (OrderItemDto orderItemDto : orderItemDtos) {
             OrderItem newOrderItem = new OrderItem(
                     newOrder,
@@ -55,7 +57,9 @@ public class OrderService {
         orderItemDtos = validateUpdatedOrder(orderItemDtos, existingOrder);
         existingOrder.getOrderItems().clear();
         orderRepository.save(existingOrder);
+
         long totalPrice = 0L;
+
         for (OrderItemDto orderItemDto : orderItemDtos) {
             OrderItem newOrderItem = new OrderItem(
                     existingOrder,
