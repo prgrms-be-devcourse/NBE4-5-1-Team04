@@ -4,6 +4,7 @@ import com.team4.project1.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,5 +34,6 @@ public class Customer {
     private String email;
 
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
+
 }
