@@ -5,6 +5,7 @@ import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
+import com.team4.project1.global.exception.ItemAlreadyExistsException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,11 +54,16 @@ public class ItemService {
     }
 
     public Item addItem(String name, Integer price) {
+        Optional<Item> existingItem = itemRepository.findByName(name);
+        if (existingItem.isPresent()) {
+            System.out.println("이미 존재하는 상품: " + name);
+            throw new ItemAlreadyExistsException(name); // 예외 던짐
+        }
+
         Item item = Item.builder()
                 .name(name)
                 .price(price)
                 .build();
-
 
         return itemRepository.save(item);
     }

@@ -3,6 +3,7 @@ package com.team4.project1.global;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.domain.order.repository.OrderRepository;
+import com.team4.project1.global.exception.ItemAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -49,11 +50,13 @@ public class BaseInitData {
             return;
         }
 
-        itemService.addItem("스타벅스커피",48000);
-        itemService.addItem("믹스커피",1000);
-        itemService.addItem("공유커피",2500);
-        itemService.addItem("컴포즈커피",38000);
+        try {
+            itemService.addItem("스타벅스커피", 48000);
+            itemService.addItem("믹스커피", 1000);
+            itemService.addItem("공유커피", 2500);
+            itemService.addItem("컴포즈커피", 38000);
+        } catch (ItemAlreadyExistsException e) {
+            System.out.println("상품이 이미 존재합니다: " + e.getMessage());
+        }
     }
-
-
 }
