@@ -17,14 +17,16 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public List<ItemDto> getAllItemsSorted(String sortBy) {
+    public List<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword) {
         List<Item> items;
 
         if ("price".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllByOrderByPriceAsc();
-        } else if ("name".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllByOrderByNameAsc();
-        } else {
+            items = itemRepository.findAllByNameContainingOrderByPriceAsc(keyword);
+        }
+        else if ("name".equalsIgnoreCase(sortBy)) {
+            items = itemRepository.findAllByNameContainingOrderByNameAsc(keyword);
+        }
+        else {
             items = itemRepository.findAll();
         }
 
@@ -38,9 +40,6 @@ public class ItemService {
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
-
-
-
 
     public Optional<ItemDto> getItemById(Integer itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
@@ -60,6 +59,4 @@ public class ItemService {
 
         return itemRepository.save(item);
     }
-
-
 }
