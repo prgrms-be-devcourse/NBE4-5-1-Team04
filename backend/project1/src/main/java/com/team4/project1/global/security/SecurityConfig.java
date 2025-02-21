@@ -28,6 +28,11 @@ public class SecurityConfig {
                                         "/api/v1/items/{itemId:\\d+}"
                                 )
                                 .permitAll()
+                                .requestMatchers(
+                                        "/api/v1/customer/login",
+                                        "api/v1/customer/join"
+                                )
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
