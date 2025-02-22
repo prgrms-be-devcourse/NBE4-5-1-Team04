@@ -36,12 +36,12 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+    private DeliveryStatus deliveryStatus = DeliveryStatus.준비중;
 
     public Order(Customer customer, LocalDateTime date, Long totalPrice) {
         this.customer = customer;
         this.date = date;
         this.totalPrice = totalPrice;
-        this.deliveryStatus = DeliveryStatus.PENDING;
+        this.deliveryStatus = DeliveryStatus.준비중;
     }
 }
