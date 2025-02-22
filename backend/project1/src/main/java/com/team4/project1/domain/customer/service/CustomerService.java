@@ -17,6 +17,7 @@ import java.util.Optional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final EmailService emailService;
 
     public Customer join(String username, String password, String name, String email) {
         Customer customer = Customer.builder()
@@ -58,5 +59,20 @@ public class CustomerService {
         customer.setName(customerDto.getName());
         customer.setEmail(customerDto.getEmail());
         return customer;
+    }
+
+    public Customer register(Customer customer) {
+        // 회원 DB 저장
+        Customer savedCustomer = customerRepository.save(customer);
+
+        // 이메일 발송 예시
+        String subject = "[Team4] 회원가입을 환영합니다!";
+        String text = "안녕하세요, " + savedCustomer.getName() + " 님!\n"
+                + "Team4 서비스를 이용해주셔서 감사합니다.\n"
+                + "더 좋은 서비스로 보답하겠습니다.";
+
+        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
+
+        return savedCustomer;
     }
 }
