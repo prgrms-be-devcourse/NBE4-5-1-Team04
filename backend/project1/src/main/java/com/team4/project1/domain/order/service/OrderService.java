@@ -2,16 +2,16 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
+import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
 import com.team4.project1.domain.order.repository.OrderRepository;
-import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.global.exception.CustomerNotFoundException;
-import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,9 +26,10 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;  // ItemService 의존성 주입
     private final CustomerService customerService;
 
+    // 주문 생성 메소드
     public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Long customerId) {
         Customer customer = customerService.getCustomerById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));
@@ -38,14 +39,13 @@ public class OrderService {
         long totalPrice = 0L;
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            Item item = itemRepository.findById(orderItemDto.getItemId())
+            // ItemDto를 Item으로 변환
+            Item item = itemService.getItemById(orderItemDto.getItemId())
+                    .map(Item::fromDto)  // ItemDto를 Item으로 변환
                     .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
 
-            //  재고 수량 체크 및 감소
-            if (orderItemDto.getQuantity() > item.getStock()) {
-                throw new InsufficientStockException(item.getId(), item.getStock());
-            }
-            item.reduceStock(orderItemDto.getQuantity());  //  재고 감소 처리
+            // ✅ 재고 수량 체크 및 감소
+            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리
 
             // 주문 아이템 추가
             OrderItem newOrderItem = new OrderItem(newOrder, item, orderItemDto.getQuantity());
@@ -59,6 +59,7 @@ public class OrderService {
         return OrderWithOrderItemsDto.from(newOrder);
     }
 
+    // 주문 수정 메소드
     public OrderWithOrderItemsDto updateOrder(List<OrderItemDto> orderItemDtos, Long orderId) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
@@ -70,14 +71,13 @@ public class OrderService {
         long totalPrice = 0L;
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            Item item = itemRepository.findById(orderItemDto.getItemId())
+            // ItemDto를 Item으로 변환
+            Item item = itemService.getItemById(orderItemDto.getItemId())
+                    .map(Item::fromDto)  // ItemDto를 Item으로 변환
                     .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
 
             // ✅ 재고 수량 체크 및 감소
-            if (orderItemDto.getQuantity() > item.getStock()) {
-                throw new InsufficientStockException(item.getId(), item.getStock());
-            }
-            item.reduceStock(orderItemDto.getQuantity());
+            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리
 
             OrderItem newOrderItem = new OrderItem(existingOrder, item, orderItemDto.getQuantity());
             existingOrder.getOrderItems().add(newOrderItem);
@@ -91,21 +91,24 @@ public class OrderService {
         return OrderWithOrderItemsDto.from(existingOrder);
     }
 
+    // 주문 취소 메소드
     public Long cancelOrder(Long orderId) {
         orderRepository.deleteById(orderId);
         return orderId;
     }
 
+    // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
-                .filter(dto -> itemRepository.existsById(dto.getItemId()))
+                .filter(dto -> itemService.getItemById(dto.getItemId()).isPresent())  // 아이템 존재 여부 검증
                 .toList();
     }
 
+    // 주문 수정 검증
     private List<OrderItemDto> validateUpdatedOrder(List<OrderItemDto> orderItemDtos, Order existingOrder) {
         return orderItemDtos.stream()
                 .filter(dto -> existingOrder.getOrderItems().stream()
-                        .anyMatch(orderItem -> orderItem.getItem().getId().equals(dto.getItemId())))
+                        .anyMatch(orderItem -> orderItem.getItem().getId().equals(dto.getItemId())))  // 아이템 존재 여부 검증
                 .toList();
     }
 }

@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/v1/orders")  // POST 요청 허용
                                 .permitAll()
                                 .requestMatchers(
-                                        "/api/v1/order-items"
+                                        "/api/v1/orders/{orderId:\\d+}"
                                 )
                                 .permitAll()
                                 .anyRequest()

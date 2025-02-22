@@ -57,6 +57,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ResponseDto.internalServerError("An unexpected error occurred"));
     }
+    // 재고 부족 예외 처리
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ResponseDto<String>> handleInsufficientStockException(InsufficientStockException ex) {
         log.warn("InsufficientStockException: {}", ex.getMessage());

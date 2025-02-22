@@ -1,5 +1,6 @@
 package com.team4.project1.domain.item.entity;
 
+import com.team4.project1.domain.item.dto.ItemDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -23,20 +24,14 @@ public class Item {
     private Integer price;
 
     @Column(nullable = false)
-    @NotNull
     private Integer stock;
 
     public Item(String name, Integer price) {
         this.name = name;
         this.price = price;
     }
-
-    //  재고 감소 메소드
-    public void reduceStock(int quantity) {
-        if (stock < quantity) {
-            throw new IllegalArgumentException("재고가 부족합니다. 현재 재고: " + stock);
-        }
-        stock -= quantity;
+    public static Item fromDto(ItemDto itemDto) {
+        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
     }
 
 }
