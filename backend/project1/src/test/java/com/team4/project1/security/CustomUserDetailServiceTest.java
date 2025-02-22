@@ -1,4 +1,4 @@
-package com.team4.project1;
+package com.team4.project1.security;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
@@ -19,18 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SpringSecurityTest {
-
+public class CustomUserDetailServiceTest {
     @InjectMocks
     private CustomUserDetailService customUserDetailService;
 
     @Mock
     private CustomerRepository customerRepository;
 
-    // CustomUserDetailService Test
-
     @Test
-    @DisplayName("CustomUserDetailService - User O")
+    @DisplayName("사용자가 존재하는 경우")
     public void t1() {
         String username = "test";
         String password = "test1234";
@@ -46,8 +43,8 @@ public class SpringSecurityTest {
     }
 
     @Test
-    @DisplayName("CustomUserDetailService - User X")
-    void t2() {
+    @DisplayName("사용자가 존재하지 않는 경우")
+    public void t2() {
         String username = "unknown";
 
         when(customerRepository.findByUsername(username)).thenReturn(Optional.empty());
@@ -56,5 +53,4 @@ public class SpringSecurityTest {
                 customUserDetailService.loadUserByUsername(username)
         );
     }
-
 }
