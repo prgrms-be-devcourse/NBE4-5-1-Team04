@@ -34,6 +34,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));  //
 
         Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
+
         orderItemDtos = validateNewOrder(orderItemDtos);
         long totalPrice = 0L;
         for (OrderItemDto orderItemDto : orderItemDtos) {
@@ -47,6 +48,7 @@ public class OrderService {
             orderItemRepository.save(newOrderItem);
         }
         newOrder.setTotalPrice(totalPrice);
+        newOrder.setDeliveryStatus(DeliveryStatus.준비중);
         orderRepository.save(newOrder);
         return OrderWithOrderItemsDto.from(newOrder);
     }
@@ -82,6 +84,11 @@ public class OrderService {
 
     public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
         List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+
+        // 주문을 조회할 때 최신 배송 상태 반영
+        orders.forEach(this::updateSingleOrderStatus);
+
+
         return orders.stream()
                 .map(OrderWithOrderItemsDto::from)
                 .toList();
@@ -105,12 +112,28 @@ public class OrderService {
         LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0);
 
         List<Order> ordersToDeliver = orderRepository.findAllByDateBetween(yesterday2PM, today2PM);
-        for(Order order : ordersToDeliver) {
-            order.setDeliveryStatus(DeliveryStatus.DELIVERED);
+
+        for (Order order : ordersToDeliver) {
+
+            if (order.getDate().isBefore(today2PM)) {
+                order.setDeliveryStatus(DeliveryStatus.배송);
+            }
         }
         orderRepository.saveAll(ordersToDeliver);
     }
     public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
-        return orderRepository.findById(orderId).map(OrderWithOrderItemsDto::from);
+        return orderRepository.findById(orderId).map(order -> {
+            // 특정 주문만 상태 업데이트
+            updateSingleOrderStatus(order);
+            return OrderWithOrderItemsDto.from(order);
+        });
     }
-}
+    private void updateSingleOrderStatus(Order order) {
+        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0);
+
+        if (order.getDate().isBefore(today2PM) && order.getDeliveryStatus() == DeliveryStatus.준비중) {
+            order.setDeliveryStatus(DeliveryStatus.배송);
+            orderRepository.save(order);
+        }
+    }
+    }

@@ -21,58 +21,24 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(
-                        (authorizeHttpRequests) ->
-                                authorizeHttpRequests
-                                        .requestMatchers(HttpMethod.GET,
-                                                "/api/v1/items",
-                                                "/api/v1/items/{itemId:\\d+}",
-                                                "/api/v1/orders/**"
-                                        )
-                                        .permitAll()
-                                        .requestMatchers(
-                                                "/api/v1/customer/login",
-                                                "api/v1/customer/join"
-                                        )
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated()
+                        (authorizeHttpRequests) -> authorizeHttpRequests
+                                .requestMatchers(HttpMethod.GET,
+                                        "/api/v1/items",
+                                        "/api/v1/items/{itemId:\\d+}",
+                                        "/api/v1/orders/**"
+                                ).permitAll()  // ✅ GET 요청은 모두 허용
+                                .requestMatchers(HttpMethod.POST, "/api/v1/orders").permitAll() // ✅ 주문 생성 API 허용
+                                .requestMatchers("/api/v1/customer/login", "/api/v1/customer/join").permitAll()
+                                .anyRequest().authenticated() // ❗ 그 외 요청은 인증 필요
                 )
-                .headers((headers) -> headers
-                        .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // ✅ CSRF 비활성화
                 .addFilterBefore(
                         customAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
-                )
-//                .exceptionHandling(
-//                        exceptionHandling -> exceptionHandling
-//                                .authenticationEntryPoint(
-//                                        (request, response, authException) -> {
-//                                            response.setContentType("application/json;charset=UTF-8");
-//                                            response.setStatus(401);
-//                                            response.getWriter().write(
-//                                                    Ut.Json.toString(
-//                                                            new RsData("401-1", "잘못된 인증키 입니다.")
-//                                                    )
-//                                            );
-//                                        }
-//                                )
-//                                .accessDeniedHandler(
-//                                        (request, response, accessDeniedException) -> {
-//                                            response.setContentType("application/json;charset=UTF-8");
-//                                            response.setStatus(403);
-//                                            response.getWriter().write(
-//                                                    Ut.Json.toString(
-//                                                            new RsData("403-1", "접근 권한이 없습니다.")
-//                                                    )
-//                                            );
-//                                        }
-//                                )
-//                )
-        ;
+                );
 
         return http.build();
     }
+
 
 }
