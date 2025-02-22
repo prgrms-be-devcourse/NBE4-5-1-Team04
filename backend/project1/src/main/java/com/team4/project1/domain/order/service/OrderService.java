@@ -4,6 +4,7 @@ import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.entity.DeliveryStatus;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -95,5 +97,16 @@ public class OrderService {
                 .filter(dto -> existingOrder.getOrderItems().stream()
                         .anyMatch(orderItem -> orderItem.getItem().getId().equals(dto.getItemId())))
                 .toList();
+    }
+
+    public void updateDeliveryStatus() {
+        LocalDateTime yesterday2PM = LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0);
+        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0);
+
+        List<Order> ordersToDeliver = orderRepository.findAllByDateBetween(yesterday2PM, today2PM);
+        for(Order order : ordersToDeliver) {
+            order.setDeliveryStatus(DeliveryStatus.DELIVERED);
+        }
+        orderRepository.saveAll(ordersToDeliver);
     }
 }
