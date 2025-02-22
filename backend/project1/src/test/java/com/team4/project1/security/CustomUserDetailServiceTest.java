@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomUserDetailServiceTest {
+
     @InjectMocks
     private CustomUserDetailService customUserDetailService;
 
@@ -53,4 +54,5 @@ public class CustomUserDetailServiceTest {
                 customUserDetailService.loadUserByUsername(username)
         );
     }
+
 }
