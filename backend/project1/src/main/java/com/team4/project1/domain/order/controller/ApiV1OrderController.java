@@ -42,9 +42,11 @@ public class ApiV1OrderController {
     public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
     }
-    @GetMapping("/{orderId}")
-    public ResponseEntity<List<OrderItemDto>> getOrderItemsByOrderId(@PathVariable Long orderId) {
-        return ResponseEntity.ok(orderItemService.getOrderItemsByOrderId(orderId));
+    @GetMapping(value = "", params = "cust_id")
+    public ResponseEntity<ResponseDto<List<OrderWithOrderItemsDto>>> getOrdersByCustomerId(
+            @RequestParam("cust_id") Long customerId) {
+        List<OrderWithOrderItemsDto> orders = orderService.getOrdersByCustomerId(customerId);
+        return ResponseEntity.ok(ResponseDto.ok(orders));
     }
 
 }
