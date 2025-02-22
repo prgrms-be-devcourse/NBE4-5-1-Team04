@@ -25,7 +25,8 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(HttpMethod.GET,
                                         "/api/v1/items",
-                                        "/api/v1/items/{itemId:\\d+}"
+                                        "/api/v1/items/{itemId:\\d+}",
+                                        "/api/v1/orders/**"
                                 )
                                 .permitAll()
                                 .requestMatchers(

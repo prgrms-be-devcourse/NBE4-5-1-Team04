@@ -26,7 +26,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemService itemService;  // ItemService 의존성 주입
+    private final ItemService itemService;
     private final CustomerService customerService;
 
     // 주문 생성 메소드
@@ -97,6 +97,13 @@ public class OrderService {
         return orderId;
     }
 
+    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        return orders.stream()
+                .map(OrderWithOrderItemsDto::from)
+                .toList();
+    }
+  
     // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
