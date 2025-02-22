@@ -25,7 +25,7 @@ public class OrderItemService {
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
 
         return orderItems.stream()
-                .map(OrderItemDto::from)  // OrderItemDto.from() 메서드를 활용하여 변환
+                .map(OrderItemDto::from)
                 .collect(Collectors.toList());
     }
 

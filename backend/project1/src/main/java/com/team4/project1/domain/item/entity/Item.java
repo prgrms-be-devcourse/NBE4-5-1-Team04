@@ -31,5 +31,12 @@ public class Item {
         this.price = price;
     }
 
+    //  재고 감소 메소드
+    public void reduceStock(int quantity) {
+        if (stock < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다. 현재 재고: " + stock);
+        }
+        stock -= quantity;
+    }
 
 }
