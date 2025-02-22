@@ -25,6 +25,7 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;
 
+
     public OrderItem(Order order, Item item, Integer quantity) {
         this.order = order;
         this.item = item;

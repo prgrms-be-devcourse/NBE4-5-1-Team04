@@ -43,7 +43,7 @@ public class ApiV1ItemController {
 
     @PostMapping
     public ResponseEntity<ResponseDto<ItemDto>> createItem(@RequestBody ItemDto itemDto) {
-        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice());
+        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice(),itemDto.getStock());
         return ResponseEntity.ok(ResponseDto.ok(ItemDto.from(item)));
     }
 

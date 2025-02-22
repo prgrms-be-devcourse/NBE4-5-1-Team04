@@ -31,7 +31,14 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         "/api/v1/customer/login",
-                                        "api/v1/customer/join"
+                                        "api/v1/customer/join",
+                                        "api/v1/customer"
+                                )
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/orders")  // POST 요청 허용
+                                .permitAll()
+                                .requestMatchers(
+                                        "/api/v1/orders/{orderId:\\d+}"
                                 )
                                 .permitAll()
                                 .anyRequest()
