@@ -25,20 +25,7 @@ public class ApiV1OrderController {
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(
             @RequestParam("cust_id") Long customerId,
             @RequestBody List<OrderItemDto> orderItemDtos) {
-
-        OrderWithOrderItemsDto newOrder = orderService.createOrder(orderItemDtos, customerId);
-        orderService.updateDeliveryStatus();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime today2PM = now.withHour(14).withMinute(0).withSecond(0).withNano(0);
-        if (now.isAfter(today2PM)) {
-            return ResponseEntity.ok(ResponseDto.of(
-                    HttpStatus.OK.value() + "",
-                    "당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.",
-                    newOrder
-            ));
-        } else {
-            return ResponseEntity.ok(ResponseDto.ok(newOrder));
-        }
+        return ResponseEntity.ok(ResponseDto.ok(orderService.createOrder(orderItemDtos, customerId)));
     }
 
 
