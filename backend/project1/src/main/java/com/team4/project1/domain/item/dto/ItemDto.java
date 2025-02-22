@@ -24,4 +24,8 @@ public class ItemDto {
                 item.getPrice()
         );
     }
+
+    public static ItemDto of(Long id, String name, Integer price) {
+        return new ItemDto(id, name, price);
+    }
 }
