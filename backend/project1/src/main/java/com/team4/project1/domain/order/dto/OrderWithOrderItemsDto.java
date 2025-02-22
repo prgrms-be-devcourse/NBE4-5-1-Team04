@@ -13,6 +13,7 @@ public class OrderWithOrderItemsDto {
     private Long id;
     private LocalDateTime date;
     private Long totalPrice;
+    private String deliveryStatus;
     private List<OrderItemDto> orderedItems;
 
     public static OrderWithOrderItemsDto from(Order order) {
@@ -20,6 +21,7 @@ public class OrderWithOrderItemsDto {
                 order.getId(),
                 order.getDate(),
                 order.getTotalPrice(),
+                order.getDeliveryStatus().name(),
                 order.getOrderItems().stream()
                         .map(OrderItemDto::from)
                         .toList()

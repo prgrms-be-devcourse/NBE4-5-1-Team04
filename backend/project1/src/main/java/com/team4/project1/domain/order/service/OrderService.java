@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,7 +31,7 @@ public class OrderService {
 
     public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Long customerId) {
         Customer customer = customerService.getCustomerById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));  // ✅ 예외를 서비스에서 처리
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));  //
 
         Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
         orderItemDtos = validateNewOrder(orderItemDtos);
@@ -108,5 +109,8 @@ public class OrderService {
             order.setDeliveryStatus(DeliveryStatus.DELIVERED);
         }
         orderRepository.saveAll(ordersToDeliver);
+    }
+    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
+        return orderRepository.findById(orderId).map(OrderWithOrderItemsDto::from);
     }
 }

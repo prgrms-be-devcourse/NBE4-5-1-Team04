@@ -22,20 +22,20 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         (authorizeHttpRequests) ->
-                        authorizeHttpRequests
-                                .requestMatchers(HttpMethod.GET,
-                                        "/api/v1/items",
-                                        "/api/v1/items/{itemId:\\d+}",
-                                        "/api/v1/orders/**"
-                                )
-                                .permitAll()
-                                .requestMatchers(
-                                        "/api/v1/customer/login",
-                                        "api/v1/customer/join"
-                                )
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
+                                authorizeHttpRequests
+                                        .requestMatchers(HttpMethod.GET,
+                                                "/api/v1/items",
+                                                "/api/v1/items/{itemId:\\d+}",
+                                                "/api/v1/orders/**"
+                                        )
+                                        .permitAll()
+                                        .requestMatchers(
+                                                "/api/v1/customer/login",
+                                                "api/v1/customer/join"
+                                        )
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated()
                 )
                 .headers((headers) -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
