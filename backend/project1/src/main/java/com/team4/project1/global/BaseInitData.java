@@ -82,7 +82,7 @@ public class BaseInitData {
         orderItemDtos.add(new OrderItemDto(2L, 2));
 
         // OrderService의 createOrder() 메서드를 호출하여 주문 생성
-        OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, customer);
+        OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, customer.getId());
         System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
     }
 
