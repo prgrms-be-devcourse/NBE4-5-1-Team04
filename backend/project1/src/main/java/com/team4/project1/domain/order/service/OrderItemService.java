@@ -1,6 +1,8 @@
 package com.team4.project1.domain.order.service;
 
+import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
+import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +37,12 @@ public class OrderItemService {
     public Optional<OrderItemDto> getOrderItemById(Long id) {
         return orderItemRepository.findById(id)
                 .map(OrderItemDto::from);
+    }
+
+    public List<OrderDto> getOrders(Long customerId) {
+        List<Order> orders = orderItemRepository.findByCustomerId(customerId);
+        return orders.stream()
+                .map(order -> new OrderDto(order.getId(), order.getDate(), order.getTotalPrice()))
+                .collect(Collectors.toList());
     }
 }
