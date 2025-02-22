@@ -52,14 +52,14 @@ class OrderServiceTest {
 
         // 기본 객체 생성
         customer = new Customer();
-        customer.setId(1L);
+//        customer.setId(1L);
 
         item = new Item();
-        item.setId(1L);
+//        item.setId(1L);
         item.setPrice(10000);
 
         order = new Order(customer, LocalDateTime.now(), 0L);
-        order.setId(1L);
+//        order.setId(1L);
 
         orderItem = new OrderItem(order, item, 2);  // 수량 2
         orderItem.setId(1L);
@@ -75,7 +75,7 @@ class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order savedOrder = invocation.getArgument(0);
-            savedOrder.setId(1L);  // 저장된 Order의 ID 설정
+//            savedOrder.setId(1L);  // 저장된 Order의 ID 설정
             return savedOrder;
         });
 

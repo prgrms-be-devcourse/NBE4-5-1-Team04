@@ -1,56 +1,57 @@
 package com.team4.project1;
 
+import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
-import com.team4.project1.domain.customer.service.CustomerService;
-import com.team4.project1.global.Rq;
-import com.team4.project1.global.security.CustomAuthenticationFilter;
 import com.team4.project1.global.security.CustomUserDetailService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class SpringSecurityTest {
-
-    @Autowired
-    private MockMvc mvc;
 
     @InjectMocks
     private CustomUserDetailService customUserDetailService;
 
-    @InjectMocks
-    private CustomAuthenticationFilter customAuthenticationFilter;
-
     @Mock
     private CustomerRepository customerRepository;
 
-    @Mock
-    private CustomerService customerService;
+    // CustomUserDetailService Test
 
-    @Mock
-    private HttpServletRequest request;
+    @Test
+    @DisplayName("CustomUserDetailService - User O")
+    public void t1() {
+        Customer customer = new Customer();
+        customer.setUsername("test");
+        customer.setPassword("test1234");
 
-    @Mock
-    private HttpServletResponse response;
+        when(customerRepository.findByUsername("test")).thenReturn(Optional.of(customer));
 
-    @Mock
-    private FilterChain filterChain;
+        UserDetails userDetails = customUserDetailService.loadUserByUsername("test");
 
-    @Autowired
-    private Rq rq;
+        assertEquals("test", userDetails.getUsername());
+        assertEquals("test1234", userDetails.getPassword());
+    }
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+    @DisplayName("CustomUserDetailService - User X")
+    void t2() {
+        when(customerRepository.findByUsername("unknown")).thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () ->
+                customUserDetailService.loadUserByUsername("unknown")
+        );
     }
 
 }
