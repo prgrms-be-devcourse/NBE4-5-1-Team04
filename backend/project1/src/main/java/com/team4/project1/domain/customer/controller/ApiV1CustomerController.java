@@ -41,7 +41,7 @@ public class ApiV1CustomerController {
                 reqBody.email()
         );
 
-        CustomerDto customerDto = new CustomerDto(customer);
+        CustomerDto customerDto = CustomerDto.from(customer);
 
         return ResponseEntity.ok(ResponseDto.ok(customerDto));
     }
@@ -68,7 +68,7 @@ public class ApiV1CustomerController {
 
         return ResponseEntity.ok(
                 new LoginResBody(
-                        new CustomerDto(customer),
+                        CustomerDto.from(customer),
                         customer.getApiKey()
                 )
         );
@@ -85,13 +85,13 @@ public class ApiV1CustomerController {
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
 
         return opCustomer
-                .map(customer -> ResponseEntity.ok(ResponseDto.ok(new CustomerDto(customer))))
+                .map(customer -> ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(customer))))
                 .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto<CustomerDto>> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         Customer updated = customerService.updateCustomer(id, customerDto);
-        return ResponseEntity.ok(ResponseDto.ok(new CustomerDto(updated)));
+        return ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(updated)));
     }
 }
