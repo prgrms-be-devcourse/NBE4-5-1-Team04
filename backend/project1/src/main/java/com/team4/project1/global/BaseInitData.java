@@ -49,10 +49,10 @@ public class BaseInitData {
             return;
         }
 
-        itemService.addItem("스타벅스커피",48000);
-        itemService.addItem("믹스커피",1000);
-        itemService.addItem("공유커피",2500);
-        itemService.addItem("컴포즈커피",38000);
+        itemService.addItem("스타벅스커피",48000,10);
+        itemService.addItem("믹스커피",1000,10);
+        itemService.addItem("공유커피",2500,10);
+        itemService.addItem("컴포즈커피",38000,10);
     }
 
 
