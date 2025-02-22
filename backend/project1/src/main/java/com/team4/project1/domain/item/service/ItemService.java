@@ -66,11 +66,11 @@ public class ItemService {
         return itemRepository.count();
     }
 
-    public Item addItem(String name, Integer price,Integer quantity) {
+    public Item addItem(String name, Integer price,Integer stock) {
         Item item = Item.builder()
                 .name(name)
                 .price(price)
-                .stock(quantity)
+                .stock(stock)
                 .build();
 
         return itemRepository.save(item);

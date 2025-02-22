@@ -30,8 +30,9 @@ public class Item {
         this.name = name;
         this.price = price;
     }
+
     public static Item fromDto(ItemDto itemDto) {
-        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
+        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
     }
 
 }

@@ -16,7 +16,7 @@ public class ItemDto {
     private Long id;
     private String name;
     private Integer price;
-    private Integer quantity;
+    private Integer stock;
 
     public static ItemDto from(Item item) {
         return new ItemDto(
