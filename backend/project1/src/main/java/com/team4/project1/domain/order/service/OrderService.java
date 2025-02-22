@@ -48,7 +48,7 @@ public class OrderService {
             orderItemRepository.save(newOrderItem);
         }
         newOrder.setTotalPrice(totalPrice);
-        newOrder.setDeliveryStatus(DeliveryStatus.준비중);
+        newOrder.setDeliveryStatus(DeliveryStatus.PROCESSING);
         orderRepository.save(newOrder);
         return OrderWithOrderItemsDto.from(newOrder);
     }
@@ -86,7 +86,7 @@ public class OrderService {
         List<Order> orders = orderRepository.findAllByCustomerId(customerId);
 
         // 주문을 조회할 때 최신 배송 상태 반영
-        orders.forEach(this::updateSingleOrderStatus);
+        orders.forEach(this::updateOrderStatusOnFetch);
 
 
         return orders.stream()
@@ -116,7 +116,7 @@ public class OrderService {
         for (Order order : ordersToDeliver) {
 
             if (order.getDate().isBefore(today2PM)) {
-                order.setDeliveryStatus(DeliveryStatus.배송);
+                order.setDeliveryStatus(DeliveryStatus.SHIPPED);
             }
         }
         orderRepository.saveAll(ordersToDeliver);
@@ -124,16 +124,18 @@ public class OrderService {
     public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
         return orderRepository.findById(orderId).map(order -> {
             // 특정 주문만 상태 업데이트
-            updateSingleOrderStatus(order);
+            updateOrderStatusOnFetch(order);
             return OrderWithOrderItemsDto.from(order);
         });
     }
-    private void updateSingleOrderStatus(Order order) {
-        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0);
+    private void updateOrderStatusOnFetch(Order order) {
+        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
 
-        if (order.getDate().isBefore(today2PM) && order.getDeliveryStatus() == DeliveryStatus.준비중) {
-            order.setDeliveryStatus(DeliveryStatus.배송);
-            orderRepository.save(order);
+        if (order.getDate().isBefore(today2PM)) {
+            order.setDeliveryStatus(DeliveryStatus.SHIPPED); // 오후 2시 이전 주문 → 배송됨
+        } else {
+            order.setDeliveryStatus(DeliveryStatus.PROCESSING); // 오후 2시 이후 주문 → 배송 준비 중
         }
+        orderRepository.save(order);
     }
-    }
+}
