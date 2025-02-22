@@ -20,7 +20,9 @@ public class OrderWithOrderItemsDto {
                 order.getId(),
                 order.getDate(),
                 order.getTotalPrice(),
-                order.getOrderItems().stream().map(OrderItemDto::from).toList()
+                order.getOrderItems().stream()
+                        .map(OrderItemDto::from)
+                        .toList()
         );
     }
 }

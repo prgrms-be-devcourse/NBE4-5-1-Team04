@@ -2,6 +2,7 @@ package com.team4.project1.domain.order.controller;
 
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.service.OrderItemService;
 import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ApiV1OrderController {
 
     private final OrderService orderService;
+    private final OrderItemService orderItemService;
 
     @PostMapping
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(
@@ -33,4 +35,11 @@ public class ApiV1OrderController {
     public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
     }
+    @GetMapping(value = "", params = "cust_id")
+    public ResponseEntity<ResponseDto<List<OrderWithOrderItemsDto>>> getOrdersByCustomerId(
+            @RequestParam("cust_id") Long customerId) {
+        List<OrderWithOrderItemsDto> orders = orderService.getOrdersByCustomerId(customerId);
+        return ResponseEntity.ok(ResponseDto.ok(orders));
+    }
+
 }

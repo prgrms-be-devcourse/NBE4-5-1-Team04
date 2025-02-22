@@ -77,6 +77,13 @@ public class OrderService {
         return orderId;
     }
 
+    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        return orders.stream()
+                .map(OrderWithOrderItemsDto::from)
+                .toList();
+    }
+
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
                 .filter(dto -> itemRepository.existsById(dto.getItemId()))
