@@ -2,6 +2,9 @@ package com.team4.project1.domain.order.Controller;
 
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
+import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.entity.Order;
+import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.service.OrderItemService;
 import com.team4.project1.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +39,12 @@ public class ApiV1OrderItemController {
         return orderItemDto.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    // 주문 내역이 포함되지 않은 주문 목록 조회
-    @GetMapping
-    public ResponseEntity<ResponseDto<List<OrderDto>>> getOrders(@RequestParam Long customerId) {
-        List<OrderDto> orderDtos = orderItemService.getOrders(customerId);
-        return ResponseEntity.ok(ResponseDto.ok(orderDtos));
+
+
+    // 주문 단건 조회(주문내역 포함)
+    @GetMapping("/customer/{customerId}/orders/{orderId}")
+    public Order getOrderByCustomerIdAndOrderId(@PathVariable Long customerId, @PathVariable Long orderId) {
+        return orderItemService.getOrderWithItems(customerId, orderId);
     }
 
 }

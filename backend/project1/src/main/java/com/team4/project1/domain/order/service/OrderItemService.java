@@ -2,6 +2,7 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
+import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -39,10 +40,9 @@ public class OrderItemService {
                 .map(OrderItemDto::from);
     }
 
-    public List<OrderDto> getOrders(Long customerId) {
-        List<Order> orders = orderItemRepository.findByCustomerId(customerId);
-        return orders.stream()
-                .map(order -> new OrderDto(order.getId(), order.getDate(), order.getTotalPrice()))
-                .collect(Collectors.toList());
+
+
+    public Order getOrderWithItems(Long customerId, Long orderId) {
+        return orderItemRepository.findByOrder_CustomerIdAndId(customerId, orderId); // 주문과 관련된 OrderItem을 함께 조회
     }
 }
