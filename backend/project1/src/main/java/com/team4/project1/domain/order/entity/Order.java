@@ -34,9 +34,14 @@ public class Order {
     @Column(nullable = false)
     private Long totalPrice;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DeliveryStatus deliveryStatus = DeliveryStatus.PENDING;
+
     public Order(Customer customer, LocalDateTime date, Long totalPrice) {
         this.customer = customer;
         this.date = date;
         this.totalPrice = totalPrice;
+        this.deliveryStatus = DeliveryStatus.PENDING;
     }
 }
