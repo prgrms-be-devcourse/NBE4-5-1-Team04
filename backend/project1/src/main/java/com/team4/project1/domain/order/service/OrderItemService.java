@@ -41,8 +41,4 @@ public class OrderItemService {
     }
 
 
-
-    public Order getOrderWithItems(Long customerId, Long orderId) {
-        return orderItemRepository.findByOrder_CustomerIdAndId(customerId, orderId); // 주문과 관련된 OrderItem을 함께 조회
-    }
 }

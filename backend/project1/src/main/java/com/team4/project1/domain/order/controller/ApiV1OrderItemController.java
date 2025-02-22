@@ -41,10 +41,6 @@ public class ApiV1OrderItemController {
     }
 
 
-    // 주문 단건 조회(주문내역 포함)
-    @GetMapping("/customer/{customerId}/orders/{orderId}")
-    public Order getOrderByCustomerIdAndOrderId(@PathVariable Long customerId, @PathVariable Long orderId) {
-        return orderItemService.getOrderWithItems(customerId, orderId);
-    }
+
 
 }

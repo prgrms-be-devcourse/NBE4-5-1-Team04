@@ -2,6 +2,7 @@ package com.team4.project1.domain.order.Controller;
 
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,10 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
     }
 
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderByOrderId(
+            @PathVariable Long orderId) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderWithItems(orderId)));
+    }
 
 }

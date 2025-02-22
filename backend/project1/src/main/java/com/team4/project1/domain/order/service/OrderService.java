@@ -112,4 +112,11 @@ public class OrderService {
                         .anyMatch(orderItem -> orderItem.getItem().getId().equals(dto.getItemId())))  // 아이템 존재 여부 검증
                 .toList();
     }
+
+    public OrderWithOrderItemsDto getOrderWithItems(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+        return OrderWithOrderItemsDto.from(order);
+    }
+
 }
