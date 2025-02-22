@@ -32,25 +32,28 @@ public class SpringSecurityTest {
     @Test
     @DisplayName("CustomUserDetailService - User O")
     public void t1() {
-        Customer customer = new Customer();
-        customer.setUsername("test");
-        customer.setPassword("test1234");
+        String username = "test";
+        String password = "test1234";
 
-        when(customerRepository.findByUsername("test")).thenReturn(Optional.of(customer));
+        Customer customer = new Customer(username, password);
 
-        UserDetails userDetails = customUserDetailService.loadUserByUsername("test");
+        when(customerRepository.findByUsername(username)).thenReturn(Optional.of(customer));
 
-        assertEquals("test", userDetails.getUsername());
-        assertEquals("test1234", userDetails.getPassword());
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
+
+        assertEquals(username, userDetails.getUsername());
+        assertEquals(password, userDetails.getPassword());
     }
 
     @Test
     @DisplayName("CustomUserDetailService - User X")
     void t2() {
-        when(customerRepository.findByUsername("unknown")).thenReturn(Optional.empty());
+        String username = "unknown";
+
+        when(customerRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () ->
-                customUserDetailService.loadUserByUsername("unknown")
+                customUserDetailService.loadUserByUsername(username)
         );
     }
 
