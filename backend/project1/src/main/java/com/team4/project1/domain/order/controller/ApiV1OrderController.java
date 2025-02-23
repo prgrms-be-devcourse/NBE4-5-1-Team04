@@ -1,5 +1,6 @@
 package com.team4.project1.domain.order.Controller;
 
+import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.entity.Order;
@@ -40,5 +41,12 @@ public class ApiV1OrderController {
             @PathVariable Long orderId) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderWithItems(orderId)));
     }
+
+    @GetMapping
+    public ResponseEntity<ResponseDto<List<OrderDto>>> getAllOrders(
+            @RequestParam("cust_id") Long customerId) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId)));
+    }
+
 
 }
