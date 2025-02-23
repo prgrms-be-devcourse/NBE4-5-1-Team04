@@ -42,9 +42,9 @@ public class ApiV1CustomerController {
         );
 
         CustomerDto customerDto = CustomerDto.from(customer);
-
         return ResponseEntity.ok(ResponseDto.ok(customerDto));
     }
+
 
     record LoginReqBody(
             @NotBlank String username,

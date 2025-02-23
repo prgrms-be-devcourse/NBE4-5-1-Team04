@@ -63,6 +63,7 @@ public class BaseInitData {
         itemService.addItem("공유커피",2500,10);
         itemService.addItem("컴포즈커피",38000,10);
     }
+
     @Transactional
     public void orderInit() {
         if (orderRepository.count() > 0) {
@@ -85,8 +86,4 @@ public class BaseInitData {
         // TODO: stdout으로 바로 출력하는 대신 로깅(@Slf4j)으로 출력하게끔 변경을 고려
         System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
     }
-
-
-
-
 }

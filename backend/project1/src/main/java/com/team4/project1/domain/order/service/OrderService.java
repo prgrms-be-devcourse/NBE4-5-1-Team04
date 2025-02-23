@@ -2,6 +2,7 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
@@ -113,19 +114,7 @@ public class OrderService {
         orderRepository.deleteById(orderId);
         return orderId;
     }
-
-    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
-        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
-
-        // 주문을 조회할 때 최신 배송 상태 반영
-        orders.forEach(this::updateOrderStatusOnFetch);
-
-
-        return orders.stream()
-                .map(OrderWithOrderItemsDto::from)
-                .toList();
-    }
-
+  
     // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
@@ -141,13 +130,24 @@ public class OrderService {
                 .toList();
     }
 
-    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
-        return orderRepository.findById(orderId).map(order -> {
-            // 특정 주문만 상태 업데이트
-            updateOrderStatusOnFetch(order);
-            return OrderWithOrderItemsDto.from(order);
-        });
+    // 주문 목록 조회
+    public List<OrderDto> getOrdersByCustomerId(Long customerId) {
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        // 주문을 조회할 때 최신 배송 상태 반영
+        orders.forEach(this::updateOrderStatusOnFetch);
+        return orders.stream()
+                .map(OrderDto::from)
+                .toList();
     }
+
+    // 주문 단건 조회
+    public OrderWithOrderItemsDto getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+        updateOrderStatusOnFetch(order);
+        return OrderWithOrderItemsDto.from(order);
+    }
+
     private void updateOrderStatusOnFetch(Order order) {
         LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
 
