@@ -23,8 +23,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(
-                        (authorizeHttpRequests) ->
-                        authorizeHttpRequests
+                        (authorizeHttpRequests) -> authorizeHttpRequests
                                 .requestMatchers(HttpMethod.GET,
                                         "/api/v1/items",
                                         "/api/v1/items/{itemId:\\d+}",
@@ -33,8 +32,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         "/api/v1/customer/login",
-                                        "api/v1/customer/join",
-                                        "api/v1/customer"
+                                        "/api/v1/customer/join",
+                                        "/api/v1/customer"
                                 )
                                 .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/orders")  // POST 요청 허용
@@ -46,10 +45,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .headers((headers) -> headers
-                        .addHeaderWriter(new XFrameOptionsHeaderWriter(
-                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // ✅ CSRF 비활성화
                 .addFilterBefore(
                         customAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
@@ -84,10 +80,7 @@ public class SecurityConfig {
                                             );
                                         }
                                 )
-                )
-        ;
-
+                );
         return http.build();
     }
-
 }
