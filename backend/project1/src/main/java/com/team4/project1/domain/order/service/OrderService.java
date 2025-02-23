@@ -69,9 +69,14 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
+        updateOrderStatusOnFetch(existingOrder);
+        //SHIPPED 상태이면 수정 불가
+        if(existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
+            throw new IllegalStateException("이미 발송된 주문은 수정할 수 없습니다.");
+        }
+
         orderItemDtos = validateUpdatedOrder(orderItemDtos, existingOrder);
         existingOrder.getOrderItems().clear();
-        orderRepository.save(existingOrder);
 
         long totalPrice = 0L;
 
@@ -98,6 +103,14 @@ public class OrderService {
 
     // 주문 취소 메소드
     public Long cancelOrder(Long orderId) {
+        Order existingOrder = orderRepository.findById(orderId)
+                        .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+
+        updateOrderStatusOnFetch(existingOrder);
+        if(existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
+            throw new IllegalStateException(("이미 발송된 주문은 취소할 수 없습니다."));
+        }
+
         orderRepository.deleteById(orderId);
         return orderId;
     }
@@ -120,6 +133,7 @@ public class OrderService {
     // 주문 목록 조회
     public List<OrderDto> getOrdersByCustomerId(Long customerId) {
         List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        // 주문을 조회할 때 최신 배송 상태 반영
         orders.forEach(this::updateOrderStatusOnFetch);
         return orders.stream()
                 .map(OrderDto::from)
