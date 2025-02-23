@@ -68,6 +68,7 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
+        updateOrderStatusOnFetch(existingOrder);
         //SHIPPED 상태이면 수정 불가
         if(existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
             throw new IllegalStateException("이미 발송된 주문은 수정할 수 없습니다.");
@@ -104,6 +105,7 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(orderId)
                         .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
+        updateOrderStatusOnFetch(existingOrder);
         if(existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
             throw new IllegalStateException(("이미 발송된 주문은 취소할 수 없습니다."));
         }
@@ -123,7 +125,7 @@ public class OrderService {
                 .map(OrderWithOrderItemsDto::from)
                 .toList();
     }
-  
+
     // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
