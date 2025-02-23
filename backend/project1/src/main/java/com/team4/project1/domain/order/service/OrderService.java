@@ -2,11 +2,13 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
+import com.team4.project1.domain.order.dto.OrderDto;
+import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
-import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.entity.DeliveryStatus;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -17,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,10 +30,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ItemService itemService;  // ItemService 의존성 주입
+    private final ItemService itemService;
     private final CustomerService customerService;
-
-
 
     // 주문 생성 메소드
     public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Long customerId) {
@@ -37,6 +39,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));
 
         Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
+
         orderItemDtos = validateNewOrder(orderItemDtos);
         long totalPrice = 0L;
 
@@ -99,6 +102,18 @@ public class OrderService {
         return orderId;
     }
 
+    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+
+        // 주문을 조회할 때 최신 배송 상태 반영
+        orders.forEach(this::updateOrderStatusOnFetch);
+
+
+        return orders.stream()
+                .map(OrderWithOrderItemsDto::from)
+                .toList();
+    }
+  
     // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
         return orderItemDtos.stream()
@@ -114,19 +129,32 @@ public class OrderService {
                 .toList();
     }
 
-    //주문 단건조회
-    public OrderWithOrderItemsDto getOrderWithItems(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
-        return OrderWithOrderItemsDto.from(order);
-    }
-
     // 주문 목록 조회
     public List<OrderDto> getOrdersByCustomerId(Long customerId) {
     List<Order> orders = orderRepository.findByCustomerId(customerId);
 
     return orders.stream()
-            .map(OrderDto ::from)
+            .map(this::updateOrderStatusOnFetch)
+            .map(OrderDto::from)
             .toList();
+
+    // 주문 단건 조회
+    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+        updateOrderStatusOnFetch(order);
+        return OrderWithOrderItemsDto.from(order);
+        });
+    }
+
+    private void updateOrderStatusOnFetch(Order order) {
+        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
+
+        if (order.getDate().isBefore(today2PM)) {
+            order.setDeliveryStatus(DeliveryStatus.SHIPPED); // 오후 2시 이전 주문 → 배송됨
+        } else {
+            order.setDeliveryStatus(DeliveryStatus.PROCESSING); // 오후 2시 이후 주문 → 배송 준비 중
+        }
+        orderRepository.save(order);
     }
 }

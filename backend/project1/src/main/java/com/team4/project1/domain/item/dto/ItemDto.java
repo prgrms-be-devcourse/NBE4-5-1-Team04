@@ -26,4 +26,8 @@ public class ItemDto {
                 item.getStock()
         );
     }
+
+    public static ItemDto of(Long id, String name, Integer price, Integer stock) {
+        return new ItemDto(id, name, price, stock);
+    }
 }

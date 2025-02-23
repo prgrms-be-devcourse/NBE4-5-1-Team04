@@ -34,5 +34,4 @@ public class Item {
     public static Item fromDto(ItemDto itemDto) {
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
     }
-
 }
