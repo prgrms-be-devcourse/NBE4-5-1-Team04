@@ -11,7 +11,6 @@ import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
 import com.team4.project1.domain.order.repository.OrderRepository;
-import com.team4.project1.global.exception.CustomerNotFoundException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import com.team4.project1.global.exception.UnauthorizedAccessException;
 import lombok.RequiredArgsConstructor;
