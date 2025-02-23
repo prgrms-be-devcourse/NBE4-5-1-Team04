@@ -56,25 +56,28 @@ public class OrderService {
         return OrderWithOrderItemsDto.from(newOrder);
     }
 
-    // 주문 수정 메소드
-    public OrderWithOrderItemsDto updateOrder(List<OrderItemDto> orderItemDtos, Long orderId) {
+    public Optional<OrderWithOrderItemsDto> updateOrder(List<OrderItemDto> orderItemDtos, Long orderId, Principal principal) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
-        orderItemDtos = validateUpdatedOrder(orderItemDtos, existingOrder);
+        // 로그인한 사용자의 주문인지 확인
+        String loggedInUsername = principal.getName();
+        if (!existingOrder.getCustomer().getUsername().equals(loggedInUsername)) {
+            throw new UnauthorizedAccessException("이 주문을 수정할 권한이 없습니다.");
+        }
+
+        // 기존 주문 아이템 제거
         existingOrder.getOrderItems().clear();
         orderRepository.save(existingOrder);
 
         long totalPrice = 0L;
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            // ItemDto를 Item으로 변환
             Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(Item::fromDto)  // ItemDto를 Item으로 변환
+                    .map(Item::fromDto)
                     .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
 
-            // ✅ 재고 수량 체크 및 감소
-            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리
+            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());
 
             OrderItem newOrderItem = new OrderItem(existingOrder, item, orderItemDto.getQuantity());
             existingOrder.getOrderItems().add(newOrderItem);
@@ -82,10 +85,11 @@ public class OrderService {
             orderItemRepository.save(newOrderItem);
         }
 
-        existingOrder.setDate(java.time.LocalDateTime.now());
+        existingOrder.setDate(LocalDateTime.now());
         existingOrder.setTotalPrice(totalPrice);
         orderRepository.save(existingOrder);
-        return OrderWithOrderItemsDto.from(existingOrder);
+
+        return Optional.of(OrderWithOrderItemsDto.from(existingOrder));
     }
 
     // 주문 취소 메소드
@@ -113,6 +117,7 @@ public class OrderService {
                 .toList();
     }
 
+
     // 주문 수정 검증
     private List<OrderItemDto> validateUpdatedOrder(List<OrderItemDto> orderItemDtos, Order existingOrder) {
         return orderItemDtos.stream()
@@ -120,6 +125,7 @@ public class OrderService {
                         .anyMatch(orderItem -> orderItem.getItem().getId().equals(dto.getItemId())))  // 아이템 존재 여부 검증
                 .toList();
     }
+
 
     public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId, Principal principal) {
         Order order = orderRepository.findById(orderId)

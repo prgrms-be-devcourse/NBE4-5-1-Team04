@@ -32,9 +32,18 @@ public class ApiV1OrderController {
 
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(@PathVariable Long orderId, @RequestBody List<OrderItemDto> orderItemDtos) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.updateOrder(orderItemDtos, orderId)));
+    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(
+            @PathVariable Long orderId,
+            @RequestBody List<OrderItemDto> orderItemDtos,
+            Principal principal) {
+
+        OrderWithOrderItemsDto updatedOrder = orderService.updateOrder(orderItemDtos, orderId, principal)
+                .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+
+        return ResponseEntity.ok(ResponseDto.ok(updatedOrder));
     }
+
+
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
