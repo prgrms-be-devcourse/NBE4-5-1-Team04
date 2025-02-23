@@ -68,9 +68,13 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
+        //SHIPPED 상태이면 수정 불가
+        if(existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
+            throw new IllegalStateException("이미 발송된 주문은 수정할 수 없습니다.");
+        }
+
         orderItemDtos = validateUpdatedOrder(orderItemDtos, existingOrder);
         existingOrder.getOrderItems().clear();
-        orderRepository.save(existingOrder);
 
         long totalPrice = 0L;
 
