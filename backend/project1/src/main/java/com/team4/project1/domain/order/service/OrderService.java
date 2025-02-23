@@ -48,7 +48,6 @@ public class OrderService {
             orderItemRepository.save(newOrderItem);
         }
         newOrder.setTotalPrice(totalPrice);
-        newOrder.setDeliveryStatus(DeliveryStatus.PROCESSING);
         orderRepository.save(newOrder);
         return OrderWithOrderItemsDto.from(newOrder);
     }

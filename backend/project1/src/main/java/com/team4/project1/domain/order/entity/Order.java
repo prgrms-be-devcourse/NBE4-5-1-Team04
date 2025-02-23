@@ -42,6 +42,5 @@ public class Order {
         this.customer = customer;
         this.date = date;
         this.totalPrice = totalPrice;
-        this.deliveryStatus = DeliveryStatus.PROCESSING;
     }
 }
