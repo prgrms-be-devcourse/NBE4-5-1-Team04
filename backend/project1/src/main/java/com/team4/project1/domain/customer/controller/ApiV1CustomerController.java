@@ -31,7 +31,7 @@ public class ApiV1CustomerController {
     ) {}
 
     @Operation(summary = "회원 가입")
-    @PostMapping(value = "/join", produces = "application/json;charset=UTF-8")
+    @PostMapping
     public ResponseEntity<ResponseDto<CustomerDto>> join(@RequestBody @Valid JoinReqBody reqBody) {
         customerService.findByUsername(reqBody.username())
                 .ifPresent(existingCustomer -> {
