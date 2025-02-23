@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -120,13 +121,23 @@ public class OrderService {
                 .toList();
     }
 
-    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
-        return orderRepository.findById(orderId).map(order -> {
-            // 특정 주문만 상태 업데이트
-            updateOrderStatusOnFetch(order);
-            return OrderWithOrderItemsDto.from(order);
-        });
+    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId, Principal principal) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+
+        // 현재 로그인한 사용자와 주문의 생성자가 일치하는지 확인
+        String loggedInUsername = principal.getName();
+
+        if (!order.getCustomer().getUsername().equals(loggedInUsername)) {
+            throw new UnauthorizedAccessException("이 주문을 열람할 권한이 없습니다.");
+        }
+
+        // 상태 업데이트 처리
+        updateOrderStatusOnFetch(order);
+
+        return Optional.of(OrderWithOrderItemsDto.from(order));
     }
+
     private void updateOrderStatusOnFetch(Order order) {
         LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
 

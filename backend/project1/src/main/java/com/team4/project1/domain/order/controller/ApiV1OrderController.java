@@ -31,7 +31,7 @@ public class ApiV1OrderController {
     }
 
 
-        @PutMapping("/{orderId}")
+    @PutMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(@PathVariable Long orderId, @RequestBody List<OrderItemDto> orderItemDtos) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.updateOrder(orderItemDtos, orderId)));
     }
@@ -40,15 +40,19 @@ public class ApiV1OrderController {
     public ResponseEntity<ResponseDto<Long>> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId)));
     }
+
     @GetMapping(value = "", params = "cust_id")
     public ResponseEntity<ResponseDto<List<OrderWithOrderItemsDto>>> getOrdersByCustomerId(
             @RequestParam("cust_id") Long customerId) {
         List<OrderWithOrderItemsDto> orders = orderService.getOrdersByCustomerId(customerId);
         return ResponseEntity.ok(ResponseDto.ok(orders));
     }
+
     @GetMapping("/{orderId}")
-    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderById(@PathVariable Long orderId) {
-        OrderWithOrderItemsDto order = orderService.getOrderById(orderId)
+    public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderById(
+            @PathVariable Long orderId, Principal principal) {
+
+        OrderWithOrderItemsDto order = orderService.getOrderById(orderId, principal)
                 .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
         return ResponseEntity.ok(ResponseDto.ok(order));
