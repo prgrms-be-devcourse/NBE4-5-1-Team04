@@ -65,4 +65,16 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ResponseDto.badRequest(ex.getMessage()));
     }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ResponseDto<String>> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
+        log.warn("UnauthorizedAccessException: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN) // 403 상태 코드
+                .body(ResponseDto.of(
+                        HttpStatus.FORBIDDEN.value() + "",
+                        ex.getMessage(),
+                        null
+                ));
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,9 +24,10 @@ public class ApiV1OrderController {
 
     @PostMapping
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(
-            @RequestParam("cust_id") Long customerId,
-            @RequestBody List<OrderItemDto> orderItemDtos) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.createOrder(orderItemDtos, customerId)));
+            @RequestBody List<OrderItemDto> orderItemDtos, Principal principal) {
+
+        String username = principal.getName();
+        return ResponseEntity.ok(ResponseDto.ok(orderService.createOrder(orderItemDtos, username)));
     }
 
 

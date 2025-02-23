@@ -2,7 +2,6 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
-import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.domain.order.dto.OrderItemDto;
@@ -14,6 +13,7 @@ import com.team4.project1.domain.order.repository.OrderItemRepository;
 import com.team4.project1.domain.order.repository.OrderRepository;
 import com.team4.project1.global.exception.CustomerNotFoundException;
 import com.team4.project1.global.exception.ItemNotFoundException;
+import com.team4.project1.global.exception.UnauthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,26 +32,19 @@ public class OrderService {
     private final ItemService itemService;
     private final CustomerService customerService;
 
-    // 주문 생성 메소드
-    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Long customerId) {
-        Customer customer = customerService.getCustomerById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, String username) {
+        Customer customer = customerService.findByUsername(username)
+                .orElseThrow(() -> new UnauthorizedAccessException("사용자를 찾을 수 없습니다. (Username: " + username + ")"));
 
-        Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
-
-        orderItemDtos = validateNewOrder(orderItemDtos);
+        Order newOrder = new Order(customer, LocalDateTime.now(), 0L);
         long totalPrice = 0L;
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            // ItemDto를 Item으로 변환
-            Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(Item::fromDto)  // ItemDto를 Item으로 변환
-                    .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
+            Item item = Item.fromDto(itemService.getItemById(orderItemDto.getItemId())
+                    .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId())));
 
-            // ✅ 재고 수량 체크 및 감소
-            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리
+            itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());
 
-            // 주문 아이템 추가
             OrderItem newOrderItem = new OrderItem(newOrder, item, orderItemDto.getQuantity());
             newOrder.getOrderItems().add(newOrderItem);
             totalPrice += (long) newOrderItem.getItem().getPrice() * newOrderItem.getQuantity();
