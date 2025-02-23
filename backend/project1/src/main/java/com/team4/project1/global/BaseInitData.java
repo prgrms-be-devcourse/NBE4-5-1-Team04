@@ -3,7 +3,6 @@ package com.team4.project1.global;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.service.ItemService;
-import com.team4.project1.domain.order.controller.ApiV1OrderController;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.repository.OrderRepository;
