@@ -1,4 +1,4 @@
-package com.team4.project1.global;
+package com.team4.project1.global.init;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
