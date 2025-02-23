@@ -27,7 +27,7 @@ public class ItemDto {
         );
     }
 
-    public static ItemDto of(Long id, String name, Integer price) {
-        return new ItemDto(id, name, price);
+    public static ItemDto of(Long id, String name, Integer price, Integer stock) {
+        return new ItemDto(id, name, price, stock);
     }
 }

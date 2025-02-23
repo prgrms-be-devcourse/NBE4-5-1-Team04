@@ -29,7 +29,7 @@ public class OrderWithOrderItemsDto {
         );
     }
 
-    public static OrderWithOrderItemsDto of(Long id, LocalDateTime date, Long totalPrice, List<OrderItem> orderItems) {
-        return new OrderWithOrderItemsDto(id, date, totalPrice, orderItems.stream().map(OrderItemDto::from).toList());
+    public static OrderWithOrderItemsDto of(Long id, LocalDateTime date, Long totalPrice, String deliveryStatus, List<OrderItem> orderItems) {
+        return new OrderWithOrderItemsDto(id, date, totalPrice, deliveryStatus, orderItems.stream().map(OrderItemDto::from).toList());
     }
 }

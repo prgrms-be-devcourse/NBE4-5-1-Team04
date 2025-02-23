@@ -2,7 +2,6 @@ package com.team4.project1.domain.item.entity;
 
 import com.team4.project1.domain.item.dto.ItemDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -34,5 +33,4 @@ public class Item {
     public static Item fromDto(ItemDto itemDto) {
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
     }
-
 }
