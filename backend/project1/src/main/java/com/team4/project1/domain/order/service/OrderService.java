@@ -101,18 +101,6 @@ public class OrderService {
         orderRepository.deleteById(orderId);
         return orderId;
     }
-
-    public List<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId) {
-        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
-
-        // 주문을 조회할 때 최신 배송 상태 반영
-        orders.forEach(this::updateOrderStatusOnFetch);
-
-
-        return orders.stream()
-                .map(OrderWithOrderItemsDto::from)
-                .toList();
-    }
   
     // 새 주문 검증
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
@@ -131,20 +119,19 @@ public class OrderService {
 
     // 주문 목록 조회
     public List<OrderDto> getOrdersByCustomerId(Long customerId) {
-    List<Order> orders = orderRepository.findByCustomerId(customerId);
-
-    return orders.stream()
-            .map(this::updateOrderStatusOnFetch)
-            .map(OrderDto::from)
-            .toList();
+        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        orders.forEach(this::updateOrderStatusOnFetch);
+        return orders.stream()
+                .map(OrderDto::from)
+                .toList();
+    }
 
     // 주문 단건 조회
-    public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
+    public OrderWithOrderItemsDto getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
         updateOrderStatusOnFetch(order);
         return OrderWithOrderItemsDto.from(order);
-        });
     }
 
     private void updateOrderStatusOnFetch(Order order) {

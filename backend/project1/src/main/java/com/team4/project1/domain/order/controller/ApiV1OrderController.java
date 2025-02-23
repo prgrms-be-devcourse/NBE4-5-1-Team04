@@ -1,4 +1,4 @@
-package com.team4.project1.domain.order.Controller;
+package com.team4.project1.domain.order.controller;
 
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
@@ -20,7 +20,6 @@ import java.util.List;
 public class ApiV1OrderController {
 
     private final OrderService orderService;
-    private final OrderItemService orderItemService;
 
     @PostMapping
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(
@@ -43,10 +42,7 @@ public class ApiV1OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderByOrderId(
             @PathVariable Long orderId) {
-        // TODO: 서비스 레이어에서 예외를 던지도록 수정
-        OrderWithOrderItemsDto order = orderService.getOrderById(orderId)
-                .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderWithItems(orderId)));
+        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId)));
     }
 
     @GetMapping(value = "", params = "cust_id")
