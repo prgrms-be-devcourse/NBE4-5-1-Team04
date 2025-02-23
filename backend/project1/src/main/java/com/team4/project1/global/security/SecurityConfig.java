@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -42,8 +41,10 @@ public class SecurityConfig {
                                         "/api/v1/orders/{orderId:\\d+}"
                                 )
                                 .permitAll()
-                                .anyRequest()
+                                .requestMatchers("/api/*/**")
                                 .authenticated()
+                                .anyRequest()
+                                .permitAll()
                 )
                 .csrf(csrf -> csrf.disable()) // ✅ CSRF 비활성화
                 .addFilterBefore(

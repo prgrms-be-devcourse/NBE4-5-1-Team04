@@ -8,3 +8,6 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
