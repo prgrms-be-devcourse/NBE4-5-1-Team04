@@ -16,12 +16,18 @@ public class ItemDto {
     private Long id;
     private String name;
     private Integer price;
+    private Integer stock;
 
     public static ItemDto from(Item item) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
-                item.getPrice()
+                item.getPrice(),
+                item.getStock()
         );
+    }
+
+    public static ItemDto of(Long id, String name, Integer price) {
+        return new ItemDto(id, name, price);
     }
 }

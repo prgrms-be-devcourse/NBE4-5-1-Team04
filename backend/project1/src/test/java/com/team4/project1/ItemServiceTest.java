@@ -128,7 +128,7 @@ class ItemServiceTest {
         when(itemRepository.save(any(Item.class))).thenReturn(item);
 
         // When
-        Item newItem = itemService.addItem("Test Item", 1000);
+        Item newItem = itemService.addItem("Test Item", 1000,100);
 
         // Then
         assertThat(newItem).isNotNull();

@@ -21,4 +21,8 @@ public class OrderItemDto {
                 orderItem.getItem().getId(),
                 orderItem.getQuantity());
     }
+
+    public static OrderItemDto of(Long itemId, Integer quantity) {
+        return new OrderItemDto(itemId, quantity);
+    }
 }

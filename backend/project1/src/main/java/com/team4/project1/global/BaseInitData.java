@@ -59,10 +59,10 @@ public class BaseInitData {
             return;
         }
 
-        itemService.addItem("스타벅스커피",48000);
-        itemService.addItem("믹스커피",1000);
-        itemService.addItem("공유커피",2500);
-        itemService.addItem("컴포즈커피",38000);
+        itemService.addItem("스타벅스커피",48000,10);
+        itemService.addItem("믹스커피",1000,10);
+        itemService.addItem("공유커피",2500,10);
+        itemService.addItem("컴포즈커피",38000,10);
     }
     @Transactional
     public void orderInit() {
@@ -83,6 +83,7 @@ public class BaseInitData {
 
         // OrderService의 createOrder() 메서드를 호출하여 주문 생성
         OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, customer.getId());
+        // TODO: stdout으로 바로 출력하는 대신 로깅(@Slf4j)으로 출력하게끔 변경을 고려
         System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
     }
 

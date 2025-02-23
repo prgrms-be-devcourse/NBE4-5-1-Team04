@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findAllByNameContainingOrderByNameAsc(String keyword);
     List<Item> findAllByNameContainingOrderByPriceAsc(String keyword);
-    Optional<Item> findByName(String name);
 }

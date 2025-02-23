@@ -3,6 +3,7 @@ package com.team4.project1.domain.item.service;
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
+import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,20 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+
+
+    public void reduceStock(Long itemId, int quantity) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException(itemId)); // 아이템이 없으면 예외 던짐
+
+        if (item.getStock() < quantity) {
+            // 재고 부족 시 예외 던짐
+            throw new InsufficientStockException(itemId, item.getStock());
+        }
+
+        item.setStock(item.getStock() - quantity); // 재고 차감
+        itemRepository.save(item); // 변경된 아이템 저장
+    }
 
     public List<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword) {
         List<Item> items;
@@ -51,10 +66,11 @@ public class ItemService {
         return itemRepository.count();
     }
 
-    public Item addItem(String name, Integer price) {
+    public Item addItem(String name, Integer price,Integer stock) {
         Item item = Item.builder()
                 .name(name)
                 .price(price)
+                .stock(stock)
                 .build();
 
         return itemRepository.save(item);

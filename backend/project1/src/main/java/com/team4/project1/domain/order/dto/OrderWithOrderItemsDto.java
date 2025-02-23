@@ -1,6 +1,7 @@
 package com.team4.project1.domain.order.dto;
 
 import com.team4.project1.domain.order.entity.Order;
+import com.team4.project1.domain.order.entity.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -26,5 +27,9 @@ public class OrderWithOrderItemsDto {
                         .map(OrderItemDto::from)
                         .toList()
         );
+    }
+
+    public static OrderWithOrderItemsDto of(Long id, LocalDateTime date, Long totalPrice, List<OrderItem> orderItems) {
+        return new OrderWithOrderItemsDto(id, date, totalPrice, orderItems.stream().map(OrderItemDto::from).toList());
     }
 }
