@@ -8,15 +8,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -44,12 +41,6 @@ class CustomAuthenticationFilterTest {
     @InjectMocks
     private CustomAuthenticationFilter customAuthenticationFilter;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        SecurityContextHolder.clearContext();
-    }
-
     @Test
     @DisplayName("인증 헤더가 없는 경우 필터 통과")
     void t1() throws ServletException, IOException {
@@ -76,13 +67,9 @@ class CustomAuthenticationFilterTest {
     @DisplayName("유효한 API Key가 있을 때 필터 통과 및 사용자 인증")
     void t3() throws ServletException, IOException {
         String apiKey = "test";
+        Customer customer = new Customer("test", "test1234");
 
-        customerService.join("test", "test1234", "테스트", "test@test.com");
-        Optional<Customer> customer = customerService.findByUsername(apiKey);
-
-        when(customerService.findByApiKey(apiKey)).thenReturn(customer);
-
-        System.out.println(customerService.getAllCustomers());
+        when(customerService.findByApiKey(apiKey)).thenReturn(Optional.of(customer));
 
         doReturn("Bearer " + apiKey).when(request).getHeader("Authorization");
 

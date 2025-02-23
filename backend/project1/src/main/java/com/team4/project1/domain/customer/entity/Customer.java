@@ -48,6 +48,7 @@ public class Customer {
     public Customer(String username, String password) {
         this.username = username;
         this.password = password;
+        this.apiKey = username;
     }
 
     public boolean isAdmin() {
