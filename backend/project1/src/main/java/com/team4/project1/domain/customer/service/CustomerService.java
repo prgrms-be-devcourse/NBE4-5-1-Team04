@@ -4,6 +4,7 @@ import com.team4.project1.domain.customer.dto.CustomerDto;
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.repository.CustomerRepository;
 import com.team4.project1.global.exception.CustomerNotFoundException;
+import com.team4.project1.global.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +18,32 @@ import java.util.Optional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final EmailService emailService;
 
     public Customer join(String username, String password, String name, String email) {
+        // 1) Customer 엔티티 생성
         Customer customer = Customer.builder()
                 .username(username)
                 .password(password)
-                .apiKey(username)
+                .apiKey(username)  // apiKey 임시로 username과 동일하게 설정
                 .name(name)
                 .email(email)
                 .build();
 
-        return customerRepository.save(customer);
+        // 2) DB에 저장
+        Customer savedCustomer = customerRepository.save(customer);
+
+        // 3) 이메일 발송
+        String subject = "회원가입을 환영합니다!";
+        String text = String.format(
+                "안녕하세요, %s 님!\n" +
+                        "서비스를 이용해주셔서 감사합니다.\n" +
+                        "회원가입이 성공적으로 완료되었습니다.",
+                savedCustomer.getName()
+        );
+        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
+
+        return savedCustomer;
     }
 
     public long count() {
@@ -59,4 +75,6 @@ public class CustomerService {
         customer.setEmail(customerDto.getEmail());
         return customer;
     }
+
+
 }
