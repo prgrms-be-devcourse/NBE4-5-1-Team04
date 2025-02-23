@@ -107,20 +107,6 @@ public class OrderService {
                 .toList();
     }
 
-    public void updateDeliveryStatus() {
-        LocalDateTime yesterday2PM = LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0);
-        LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0);
-
-        List<Order> ordersToDeliver = orderRepository.findAllByDateBetween(yesterday2PM, today2PM);
-
-        for (Order order : ordersToDeliver) {
-
-            if (order.getDate().isBefore(today2PM)) {
-                order.setDeliveryStatus(DeliveryStatus.SHIPPED);
-            }
-        }
-        orderRepository.saveAll(ordersToDeliver);
-    }
     public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId) {
         return orderRepository.findById(orderId).map(order -> {
             // 특정 주문만 상태 업데이트
