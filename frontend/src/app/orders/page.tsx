@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { components } from "@/lib/backend/apiV1/schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,12 +19,8 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import moment from "moment";
 
-type OrderDto = {
-  id: number;
-  date: string;
-  totalPrice: number;
-  deliveryStatus: string;
-};
+// ✅ OpenAPI 스키마 기반 타입 적용
+type OrderDto = components["schemas"]["OrderDto"];
 
 export default function OrderListPage() {
   const searchParams = useSearchParams();
@@ -39,19 +36,21 @@ export default function OrderListPage() {
     const fetchOrders = async () => {
       const API_URL =
         process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-      const customerId = 1; // ✅ cust_id 추가 (실제 로그인된 사용자 ID로 변경 필요)
+
+      // ✅ 로그인된 사용자 ID 가져오기 (임시 값 제거)
+      const storedUser = localStorage.getItem("user");
+      const customerId = storedUser ? JSON.parse(storedUser).id : null;
+      if (!customerId) return; // 로그인되지 않은 경우 API 호출 X
 
       const queryParams = new URLSearchParams();
-      queryParams.append("cust_id", customerId.toString()); // ✅ cust_id 추가
+      queryParams.append("cust_id", customerId.toString());
       if (sortBy) queryParams.append("sortBy", sortBy);
       if (searchValue) queryParams.append("searchKeyword", searchValue);
 
       try {
         const response = await fetch(
           `${API_URL}/api/v1/orders?${queryParams.toString()}`,
-          {
-            cache: "no-store",
-          }
+          { cache: "no-store" }
         );
 
         if (!response.ok) {
@@ -66,7 +65,11 @@ export default function OrderListPage() {
         }
 
         const data = await response.json();
-        setOrders(data.data || []);
+        if (!data?.data || !Array.isArray(data.data)) {
+          throw new Error("Invalid API response structure");
+        }
+
+        setOrders(data.data as OrderDto[]);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       }
