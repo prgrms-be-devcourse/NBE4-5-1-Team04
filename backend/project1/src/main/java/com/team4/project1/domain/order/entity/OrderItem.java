@@ -23,9 +23,16 @@ public class OrderItem {
     @Column(nullable = false)
     private Integer quantity;
 
+    public OrderItem(Order order, Item item, Integer quantity) {
+        this.order = order;
+        this.item = item;
+        this.quantity = quantity;
+    }
+
     // PK(id)를 제외하고 필요한 필드만 Builder로 주입받도록 변경
     @Builder
-    public OrderItem(Order order, Item item, Integer quantity) {
+    public OrderItem(Long id, Order order, Item item, Integer quantity) {
+        this.id = id;
         this.order = order;
         this.item = item;
         this.quantity = quantity;
