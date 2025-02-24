@@ -6,12 +6,14 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
 @Getter
 @AllArgsConstructor
 public class OrderDto {
-    private Long id;
-    private LocalDateTime date;
-    private Long totalPrice;
+    private Long id; // 주문 ID
+    private LocalDateTime date; // 주문 날짜
+    private Long totalPrice; // 주문 총액
+
 
     public static OrderDto from(Order order) {
         return new OrderDto(
@@ -20,6 +22,7 @@ public class OrderDto {
                 order.getTotalPrice()
         );
     }
+
 
     public static OrderDto of(Long id, LocalDateTime date, Long totalPrice) {
         return new OrderDto(id, date, totalPrice);

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Locale;
 import java.util.UUID;
 
 @Getter
@@ -14,10 +13,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDto {
+
+
     private Long id;
+
     private String name;
+
     private Integer price;
+
     private Integer stock;
+
     private String imageUri;
 
     public static ItemDto from(Item item) {

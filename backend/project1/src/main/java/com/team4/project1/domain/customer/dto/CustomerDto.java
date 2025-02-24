@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+
+ @Getter
 @AllArgsConstructor
 public class CustomerDto {
 
@@ -24,12 +25,12 @@ public class CustomerDto {
     @NotBlank(message = "email은 필수 입력 값입니다.")
     private String email;
 
-    public CustomerDto(String name, String email) {
+ public CustomerDto(String name, String email) {
         this.name = name;
         this.email = email;
     }
 
-    public static CustomerDto from(Customer customer) {
+ public static CustomerDto from(Customer customer) {
         return new CustomerDto(
             customer.getId(),
             customer.getUsername(),
@@ -39,7 +40,7 @@ public class CustomerDto {
         );
     }
 
-    public static CustomerDto of(Long id, String username, String password, String name, String email) {
+ public static CustomerDto of(Long id, String username, String password, String name, String email) {
         return new CustomerDto(id, username, password, name, email);
     }
 }
