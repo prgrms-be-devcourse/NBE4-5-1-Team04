@@ -37,6 +37,7 @@ public class OrderService {
     private final ItemService itemService;
     private final CustomerService customerService;
 
+    //주문 생성 메소드
     public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Principal principal) {
         // 비로그인 체크
         if (principal == null) {
