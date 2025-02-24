@@ -60,14 +60,6 @@ public class ItemService {
             return itemRepository.findAllByNameContainingOrderByNameAsc(keyword, pageable).map(ItemDto::from);
         }
     }
-
-    // TODO: 메소드 삭제 및 관련 코드 리팩토링
-    @Deprecated
-    public List<ItemDto> getAllItems() {
-        return itemRepository.findAll().stream()
-                .map(ItemDto::from)
-                .collect(Collectors.toList());
-    }
     
     public Optional<ItemDto> getItemById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));

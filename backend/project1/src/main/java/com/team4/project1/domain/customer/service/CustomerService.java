@@ -49,11 +49,10 @@ public class CustomerService {
     }
 
     public Optional<Customer> getCustomerById(Long id) {
-        return Optional.ofNullable(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
+        return Optional.of(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     public List<Customer> getAllCustomers() {
-
         return customerRepository.findAll();
     }
 
