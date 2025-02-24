@@ -114,6 +114,9 @@ public class ItemService {
     public Resource getItemImage(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
+        if(item.getImageUuid() == null) {
+            return null;
+        }
         try {
             Path filePath = Paths.get(imageDir).resolve(item.getImageUuidAsUri());
             Resource resource = new UrlResource(filePath.toUri());
