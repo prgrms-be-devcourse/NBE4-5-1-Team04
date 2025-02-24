@@ -1,11 +1,9 @@
 spring:
   application.name: project1
-
   datasource:
     url: jdbc:mysql://localhost:3306/project1
     username: dbuser
     password: 1234
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -31,5 +29,16 @@ spring:
       # 이미지를 포함한 multipart 요청 크기 제한
       max-request-size: 256KB
 
+  profiles:
+    active: dev
+
+
 # 상품 이미지를 저장할 경로 지정
 file.upload-dir: ${IMAGE_UPLOAD_DIRECTORY}
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
