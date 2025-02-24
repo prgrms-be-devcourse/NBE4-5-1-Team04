@@ -19,8 +19,7 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import moment from "moment";
 
-// ✅ OpenAPI 스키마 기반 타입 적용
-type OrderDto = components["schemas"]["OrderDto"];
+type OrderDto = components["schemas"]["OrderWithOrderItemsDto"];
 
 export default function OrderListPage() {
   const searchParams = useSearchParams();
@@ -37,10 +36,9 @@ export default function OrderListPage() {
       const API_URL =
         process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
-      // ✅ 로그인된 사용자 ID 가져오기 (임시 값 제거)
       const storedUser = localStorage.getItem("user");
       const customerId = storedUser ? JSON.parse(storedUser).id : null;
-      if (!customerId) return; // 로그인되지 않은 경우 API 호출 X
+      if (!customerId) return;
 
       const queryParams = new URLSearchParams();
       queryParams.append("cust_id", customerId.toString());
@@ -78,12 +76,10 @@ export default function OrderListPage() {
     fetchOrders();
   }, [sortBy, searchValue]);
 
-  // 검색 실행 함수
   const handleSearch = () => {
     router.push(`?searchKeyword=${searchValue}&sortBy=${sortBy}`);
   };
 
-  // 정렬 방식 변경
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSortBy = event.target.value;
     setSortBy(newSortBy);
@@ -92,13 +88,11 @@ export default function OrderListPage() {
 
   return (
     <Card className="p-6 shadow-xl rounded-3xl w-full">
-      {/* 헤더 */}
       <div className="grid grid-cols-2 items-center mb-4">
         <h1 className="pl-2 text-2xl font-bold text-gray-800 flex items-center">
           <FontAwesomeIcon icon={faBars} className="pr-3" />
           주문 목록
         </h1>
-        {/* 검색 바 & 정렬 선택 드롭다운 */}
         <div className="flex justify-end gap-2">
           <select
             className="p-2 border rounded-lg"
@@ -126,7 +120,6 @@ export default function OrderListPage() {
         </div>
       </div>
 
-      {/* 주문 목록 테이블 */}
       <Table className="rounded-xl overflow-hidden border border-gray-500">
         <TableHeader>
           <TableRow className="bg-gray-100 text-gray-700">
@@ -163,10 +156,12 @@ export default function OrderListPage() {
                   {moment(order.date).format("YYYY-MM-DD HH:mm:ss")}
                 </TableCell>
                 <TableCell className="text-center p-4 text-gray-800">
-                  {order.totalPrice.toLocaleString()}원
+                  {order.totalPrice
+                    ? order.totalPrice.toLocaleString() + "원"
+                    : "가격 정보 없음"}
                 </TableCell>
                 <TableCell className="text-center p-4 text-gray-800">
-                  {order.deliveryStatus}
+                  {order.deliveryStatus ?? "UNKNOWN"}
                 </TableCell>
               </TableRow>
             ))
