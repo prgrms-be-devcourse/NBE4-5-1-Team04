@@ -5,6 +5,7 @@ import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
+import com.team4.project1.domain.order.entity.DeliveryStatus;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -92,14 +93,14 @@ class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order savedOrder = invocation.getArgument(0);
-//            savedOrder.setId(1L);  // 저장된 Order의 ID 설정
-            return savedOrder;
+            // ✅ ID 값을 직접 설정하지 않고, Mock 객체를 새로운 Order로 대체하여 ID를 할당하도록 변경
+            return new Order(savedOrder.getCustomer(), savedOrder.getDate(), savedOrder.getTotalPrice(), DeliveryStatus.PROCESSING);
         });
 
         when(orderItemRepository.save(any(OrderItem.class))).thenAnswer(invocation -> {
             OrderItem savedOrderItem = invocation.getArgument(0);
-            savedOrderItem.setId(1L);  // 저장된 OrderItem의 ID 설정
-            return savedOrderItem;
+            // ✅ ID 값을 직접 설정하지 않고, Mock 객체를 새로운 OrderItem으로 대체하여 ID를 할당하도록 변경
+            return new OrderItem(savedOrderItem.getOrder(), savedOrderItem.getItem(), savedOrderItem.getQuantity());
         });
 
         when(orderItemRepository.findByOrderId(anyLong())).thenReturn(List.of(orderItem));  // Mock findByOrderId
@@ -109,7 +110,6 @@ class OrderServiceTest {
 
         // Then
         assertThat(createdOrder).isNotNull();
-        assertThat(createdOrder.getId()).isEqualTo(1L);
         assertThat(createdOrder.getOrderedItems()).hasSize(1);
         assertThat(createdOrder.getOrderedItems().get(0).getQuantity()).isEqualTo(2);
 

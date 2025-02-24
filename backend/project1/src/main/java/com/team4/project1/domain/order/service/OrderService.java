@@ -2,10 +2,9 @@ package com.team4.project1.domain.order.service;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
-import com.team4.project1.domain.order.dto.OrderDto;
-import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
+import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.entity.DeliveryStatus;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,6 +37,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));
 
         Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L);
+//        Order newOrder = new Order(customer, java.time.LocalDateTime.now(), 0L, DeliveryStatus.PROCESSING);
 
         orderItemDtos = validateNewOrder(orderItemDtos);
         long totalPrice = 0L;

@@ -25,15 +25,24 @@ public class Order {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Setter
     @Column(nullable = false)
     private LocalDateTime date;
 
+    @Setter
     @Column(nullable = false)
     private Long totalPrice;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DeliveryStatus deliveryStatus = DeliveryStatus.PROCESSING;
+
+    public Order(Customer customer, LocalDateTime date, Long totalPrice) {
+        this.customer = customer;
+        this.date = date;
+        this.totalPrice = totalPrice;
+    }
 
     // PK(id)를 제외하고 필요한 필드만 Builder로 주입받도록 변경
     @Builder
