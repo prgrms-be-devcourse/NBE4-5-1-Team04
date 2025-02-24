@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 고객 관련 API를 처리하는 컨트롤러입니다.
+ * 회원가입, 로그인, 고객 정보 조회 및 수정 기능을 제공합니다
+ * */
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
@@ -27,6 +31,11 @@ public class ApiV1CustomerController {
             @NotBlank String email
     ) {}
 
+
+/**
+ * 회원가입 요청을 처리하는 메서드입니다.
+ * 이미 존재하는 사용자 이름으로 가입을 시도하면 예외가 발생합니다.
+ * */
     @PostMapping
     public ResponseEntity<ResponseDto<CustomerDto>> join(@RequestBody @Valid JoinReqBody reqBody) {
         customerService.findByUsername(reqBody.username())
@@ -56,7 +65,12 @@ public class ApiV1CustomerController {
             String apiKey
     ) {}
 
-    @PostMapping("/login")
+
+/**
+ * 로그인 요청을 처리하는 메서드입니다.
+ * 사용자가 입력한 아이디와 비밀번호가 일치하는지 확인 후, 로그인된 고객의 정보와 API 키를 반환합니다.
+ * */
+ @PostMapping("/login")
     public ResponseEntity<LoginResBody> login(@RequestBody @Valid LoginReqBody reqBody) {
         Customer customer = customerService.findByUsername(reqBody.username()).orElseThrow(
                 () -> new IllegalArgumentException("잘못된 아이디 입니다.")
@@ -73,14 +87,19 @@ public class ApiV1CustomerController {
                 )
         );
     }
-
-    @GetMapping
+/**
+ * 모든 고객의 정보를 조회하는 메서드입니다.
+ */
+ @GetMapping
     public ResponseEntity<ResponseDto<List<Customer>>> getAllCustomers() {
         List<Customer> customer = customerService.getAllCustomers();
         return ResponseEntity.ok(ResponseDto.ok(customer));
     }
-
-    @GetMapping("/{id}")
+/**
+ * 특정 고객 ID에 해당하는 고객 정보를 조회하는 메서드입니다.
+ * 고객이 존재하지 않을 경우 예외를 발생시킵니다.
+ */
+ @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<CustomerDto>> getCustomerById(@PathVariable Long id) {
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
 
@@ -88,8 +107,11 @@ public class ApiV1CustomerController {
                 .map(customer -> ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(customer))))
                 .orElseThrow(() -> new CustomerNotFoundException(id));
     }
-
-    @PutMapping("/{id}")
+/**
+ * 고객 정보를 수정하는 메서드입니다.
+ * 주어진 ID에 해당하는 고객 정보를 업데이트합니다.
+ */
+ @PutMapping("/{id}")
     public ResponseEntity<ResponseDto<CustomerDto>> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         Customer updated = customerService.updateCustomer(id, customerDto);
         return ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(updated)));
