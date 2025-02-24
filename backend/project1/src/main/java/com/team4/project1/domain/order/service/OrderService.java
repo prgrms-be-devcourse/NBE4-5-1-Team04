@@ -23,9 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,17 +36,16 @@ public class OrderService {
     private final CustomerService customerService;
 
     // 주문 생성 메소드
-    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, Long customerId) {
+    public OrderWithOrderItemsDto createOrder(List<OrderItemDto> orderItemDtos, String name) {
         // 비로그인 체크
         if (SecurityContextHolder.getContext().getAuthentication() == null ||
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
             throw new UnauthorizedAccessException("로그인 후 주문을 생성할 수 있습니다.");
         }
 
-        validateCustomerOwnership(customerId);  // 사용자 인증 확인
-
-        Customer customer = customerService.getCustomerById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+        String currentUsername = getCurrentUsername();
+        Customer customer = customerService.findByUsername(currentUsername)
+                .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
 
         Order newOrder = new Order(customer, LocalDateTime.now(), 0L);
 
@@ -71,7 +70,7 @@ public class OrderService {
     }
 
     // 주문 수정 메소드
-    public OrderWithOrderItemsDto updateOrder(List<OrderItemDto> orderItemDtos, Long orderId) {
+    public OrderWithOrderItemsDto updateOrder(List<OrderItemDto> orderItemDtos, Long orderId, Principal principal) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
@@ -111,7 +110,7 @@ public class OrderService {
     }
 
     // 주문 취소 메소드
-    public Long cancelOrder(Long orderId) {
+    public Long cancelOrder(Long orderId, Principal principal) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
@@ -131,13 +130,7 @@ public class OrderService {
     }
 
     // 주문 목록 조회 (Principal 기반)
-    public List<OrderDto> getOrdersByPrincipal() {
-        // 비로그인 체크
-        if (SecurityContextHolder.getContext().getAuthentication() == null ||
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
-            throw new UnauthorizedAccessException("로그인 후 주문 목록을 조회할 수 있습니다.");
-        }
-
+    public List<OrderDto> getOrdersByPrincipal(Principal principal) {
         String currentUsername = getCurrentUsername();
         Customer customer = customerService.findByUsername(currentUsername)
                 .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
@@ -148,33 +141,21 @@ public class OrderService {
                 .map(OrderDto::from)
                 .toList();
     }
-    //주문 단건조회
-    public OrderWithOrderItemsDto getOrderById(Long orderId) {
-        // 로그인된 사용자의 username을 가져오기 전에 예외 처리
-        String currentUsername;
-        try {
-            currentUsername = getCurrentUsername();
-        } catch (UnauthorizedAccessException e) {
-            throw new UnauthorizedAccessException("로그인이 필요합니다.");
-        }
 
-        // 주문 조회
+    // 주문 단건조회
+    public OrderWithOrderItemsDto getOrderById(Long orderId, Principal principal) {
+        String currentUsername = getCurrentUsername();
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
-        // 주문이 현재 사용자와 일치하는지 확인
         if (!order.getCustomer().getUsername().equals(currentUsername)) {
             throw new UnauthorizedAccessException("본인만 자신의 주문을 열람할 수 있습니다.");
         }
 
-        // 주문 상태 업데이트
         updateOrderStatusOnFetch(order);
-
-        // 주문 DTO 반환
         return OrderWithOrderItemsDto.from(order);
     }
-
-
 
     // 새로운 주문 아이템 유효성 검사
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
@@ -194,7 +175,7 @@ public class OrderService {
         long totalQuantity = 0;
         for (OrderItemDto orderItemDto : orderItemDtos) {
             if (orderItemDto.getQuantity() <= 0) {
-                throw new InvalidOrderQuantityException("수량은 1 이상이어야 합니다.");  // 커스텀 예외 사용
+                throw new InvalidOrderQuantityException("수량은 1 이상이어야 합니다.");
             }
             totalQuantity += orderItemDto.getQuantity();
         }
@@ -214,6 +195,7 @@ public class OrderService {
         return orderItemDtos;
     }
 
+    // 로그인된 사용자의 username을 가져오는 메서드
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -230,18 +212,6 @@ public class OrderService {
         throw new UnauthorizedAccessException("인증 정보가 올바르지 않습니다.");
     }
 
-    private void validateCustomerOwnership(Long customerId) {
-        // 인증 정보 확인
-        String currentUsername = getCurrentUsername();
-        Customer customer = customerService.findByUsername(currentUsername)
-                .orElseThrow(() -> new UnauthorizedAccessException("로그인된 사용자 정보가 없습니다."));
-
-        if (!customer.getId().equals(customerId)) {
-            throw new UnauthorizedAccessException("본인만 해당 주문을 처리할 수 있습니다.");
-        }
-    }
-
-    // 주문 상태 업데이트
     private void updateOrderStatusOnFetch(Order order) {
         LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
 
