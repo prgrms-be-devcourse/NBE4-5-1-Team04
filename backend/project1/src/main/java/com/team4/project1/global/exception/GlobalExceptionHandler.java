@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         log.error("Unhandled Exception: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ResponseDto.internalServerError("An unexpected error occurred"));
+                .body(ResponseDto.internalServerError(ex.getMessage()));
     }
     // 재고 부족 예외 처리
     @ExceptionHandler(InsufficientStockException.class)

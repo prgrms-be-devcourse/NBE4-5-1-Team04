@@ -33,7 +33,14 @@ public class CustomUserDetailServiceTest {
         String username = "test";
         String password = "test1234";
 
-        Customer customer = new Customer(username, password);
+        // ✅ @Builder 사용하여 Customer 객체 생성
+        Customer customer = Customer.builder()
+                .username(username)
+                .password(password)
+                .name("Test User")
+                .email("test@example.com")
+                .apiKey("testApiKey")
+                .build();
 
         when(customerRepository.findByUsername(username)).thenReturn(Optional.of(customer));
 

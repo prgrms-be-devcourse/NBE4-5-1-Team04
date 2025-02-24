@@ -8,10 +8,16 @@ import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,5 +62,22 @@ public class ApiV1ItemController {
     public ResponseEntity<ResponseDto<String>> deleteItem(@PathVariable("id") Long id) {
         itemService.deleteItem(id);
         return ResponseEntity.ok(ResponseDto.ok("삭제가 완료되었습니다."));
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Object> getItemImage(@PathVariable("id") Long id) {
+        Resource resource = itemService.getItemImage(id);
+        if (resource == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseDto.notFound("해당 상품 이미지가 존재하지 않습니다. (상품: %d)".formatted(id)));
+        }
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<ResponseDto<String>> addImageToItem(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+        if (!Objects.equals(file.getContentType(), "image/jpeg")) {
+            return ResponseEntity.badRequest().body(ResponseDto.badRequest("이미지는 JPEG 형식만 지원합니다."));
+        }
+        return ResponseEntity.ok(ResponseDto.ok(itemService.addImageToItem(id, file)));
     }
 }

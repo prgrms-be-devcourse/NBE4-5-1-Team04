@@ -8,6 +8,7 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -20,3 +21,24 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+  servlet:
+    multipart:
+      # 이미지 크기 제한
+      max-file-size: 256KB
+      # 이미지를 포함한 multipart 요청 크기 제한
+      max-request-size: 256KB
+
+  profiles:
+    active: dev
+
+
+# 상품 이미지를 저장할 경로 지정
+file.upload-dir: ${IMAGE_UPLOAD_DIRECTORY}
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
