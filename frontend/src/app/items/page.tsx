@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Table,
   TableHeader,
@@ -13,8 +13,16 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationLink,
+} from "@/components/ui/pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 type ItemDto = {
@@ -22,6 +30,7 @@ type ItemDto = {
   name: string;
   price: number;
   stock: number;
+  imageUri: string;
 };
 
 export default function ItemListPage() {
@@ -32,13 +41,19 @@ export default function ItemListPage() {
   const [searchValue, setSearchValue] = useState(
     searchParams.get("searchKeyword") || ""
   );
-  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "name"); // 기본값 "name"
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "name");
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 0);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 5; // 페이지당 표시할 개수
 
   useEffect(() => {
     const fetchItems = async () => {
       const API_URL =
         process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+
       const queryParams = new URLSearchParams();
+      queryParams.append("page", page.toString());
+      queryParams.append("size", pageSize.toString());
       if (sortBy) queryParams.append("sortBy", sortBy);
       if (searchValue) queryParams.append("searchKeyword", searchValue);
 
@@ -56,37 +71,46 @@ export default function ItemListPage() {
           );
         }
 
-        const data = await response.json();
-        setItems(data.data || []);
+        const result = await response.json();
+        setItems(result.data?.content || []);
+        setTotalPages(result.data?.totalPages || 1);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       }
     };
 
     fetchItems();
-  }, [sortBy, searchValue]);
+  }, [sortBy, searchValue, page]);
 
-  // 검색 실행 함수
+  // 🔹 검색 실행 함수
   const handleSearch = () => {
-    router.push(`?searchKeyword=${searchValue}&sortBy=${sortBy}`);
+    setPage(0); // 검색 시 첫 페이지로 이동
+    router.push(`?searchKeyword=${searchValue}&sortBy=${sortBy}&page=0`);
   };
 
-  // 정렬 방식 변경
+  // 🔹 정렬 변경 함수
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newSortBy = event.target.value;
     setSortBy(newSortBy);
-    router.push(`?searchKeyword=${searchValue}&sortBy=${newSortBy}`);
+    setPage(0); // 정렬 변경 시 첫 페이지로 이동
+    router.push(`?searchKeyword=${searchValue}&sortBy=${newSortBy}&page=0`);
+  };
+
+  // 🔹 페이지 변경 함수
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+      router.push(
+        `?searchKeyword=${searchValue}&sortBy=${sortBy}&page=${newPage}`
+      );
+    }
   };
 
   return (
     <Card className="p-6 shadow-xl rounded-3xl w-full">
       {/* 헤더 */}
       <div className="grid grid-cols-2 items-center mb-4">
-        <h1 className="pl-2 text-2xl font-bold text-gray-800 flex items-center">
-          <FontAwesomeIcon icon={faBars} className="pr-3" />
-          상품 목록
-        </h1>
-        {/* 검색 바 & 정렬 선택 드롭다운 */}
+        <h1 className="text-2xl font-bold text-gray-800">상품 목록</h1>
         <div className="flex justify-end gap-2">
           <select
             className="p-2 border rounded-lg"
@@ -160,6 +184,36 @@ export default function ItemListPage() {
           )}
         </TableBody>
       </Table>
+
+      {/* Pagination */}
+      <Pagination className="mt-6">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 0}
+            />
+          </PaginationItem>
+
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink
+                isActive={page === index}
+                onClick={() => handlePageChange(index)}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages - 1}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </Card>
   );
 }
