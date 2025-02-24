@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findAllByCustomerId(Long customerId, Pageable pageable);
-
 }

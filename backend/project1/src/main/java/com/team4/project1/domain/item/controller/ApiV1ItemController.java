@@ -26,12 +26,10 @@ public class ApiV1ItemController {
 
     private final ItemService itemService;
 
-
     @GetMapping("/{itemId}")
     public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Long itemId) {
         return ResponseEntity.ok(ResponseDto.ok(
-                itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId)
-                )
+                itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId))
         ));
     }
 
@@ -48,7 +46,7 @@ public class ApiV1ItemController {
 
     @PostMapping
     public ResponseEntity<ResponseDto<ItemDto>> createItem(@RequestBody ItemDto itemDto) {
-        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice(),itemDto.getStock());
+        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
         return ResponseEntity.ok(ResponseDto.ok(ItemDto.from(item)));
     }
 

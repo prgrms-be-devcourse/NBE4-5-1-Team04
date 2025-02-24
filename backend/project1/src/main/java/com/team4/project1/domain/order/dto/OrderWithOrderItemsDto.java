@@ -8,14 +8,16 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Getter
 @AllArgsConstructor
 public class OrderWithOrderItemsDto {
-    private Long id;
-    private LocalDateTime date;
-    private Long totalPrice;
-    private String deliveryStatus;
-    private List<OrderItemDto> orderedItems;
+    private Long id; // 주문 ID
+    private LocalDateTime date; // 주문 날짜
+    private Long totalPrice; // 총 가격
+    private String deliveryStatus; // 배송 상태
+    private List<OrderItemDto> orderedItems; // 주문 항목 목록
+
 
     public static OrderWithOrderItemsDto from(Order order) {
         return new OrderWithOrderItemsDto(
@@ -28,6 +30,7 @@ public class OrderWithOrderItemsDto {
                         .toList()
         );
     }
+
 
     public static OrderWithOrderItemsDto of(Long id, LocalDateTime date, Long totalPrice, String deliveryStatus, List<OrderItem> orderItems) {
         return new OrderWithOrderItemsDto(id, date, totalPrice, deliveryStatus, orderItems.stream().map(OrderItemDto::from).toList());
