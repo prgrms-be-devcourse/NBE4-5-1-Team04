@@ -6,6 +6,8 @@ import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,17 +36,14 @@ public class ApiV1ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<List<ItemDto>>> sortedItems(
+    public ResponseEntity<ResponseDto<Page<ItemDto>>> sortedItems(
             @RequestParam(value = "sortBy", required = false) String sortBy,
-            @RequestParam(value = "searchKeyword", required = false) String keyword
+            @RequestParam(value = "searchKeyword", required = false) String keyword,
+            Pageable pageable
             ) {
         if (keyword == null) { keyword = ""; }
-        if (sortBy == null || sortBy.isEmpty() && keyword.isEmpty()) {
-            return ResponseEntity.ok(ResponseDto.ok(itemService.getAllItems()));
-        }
-        else {
-            return ResponseEntity.ok(ResponseDto.ok(itemService.searchAllItemsSortedBy(sortBy, keyword)));
-        }
+        Page<ItemDto> items = itemService.searchAllItemsSortedBy(sortBy, keyword, pageable);
+        return ResponseEntity.ok(ResponseDto.ok(items));
     }
 
     @PostMapping

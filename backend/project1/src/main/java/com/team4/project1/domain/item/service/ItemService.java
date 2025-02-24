@@ -6,6 +6,10 @@ import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -47,22 +51,13 @@ public class ItemService {
         itemRepository.save(item); // 변경된 아이템 저장
     }
 
-    public List<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword) {
-        List<Item> items;
-
+    public Page<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword, Pageable pageable) {
         if ("price".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllByNameContainingOrderByPriceAsc(keyword);
-        }
-        else if ("name".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllByNameContainingOrderByNameAsc(keyword);
+            return itemRepository.findAllByNameContainingOrderByPriceAsc(keyword, pageable).map(ItemDto::from);
         }
         else {
-            items = itemRepository.findAll();
+            return itemRepository.findAllByNameContainingOrderByNameAsc(keyword, pageable).map(ItemDto::from);
         }
-
-        return items.stream()
-                .map(ItemDto::from)
-                .collect(Collectors.toList());
     }
 
     public List<ItemDto> getAllItems() {

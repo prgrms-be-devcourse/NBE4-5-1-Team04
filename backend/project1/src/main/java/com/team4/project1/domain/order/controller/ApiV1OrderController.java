@@ -7,6 +7,8 @@ import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +47,11 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId)));
     }
 
-    @GetMapping(value = "", params = "cust_id")
-    public ResponseEntity<ResponseDto<List<OrderDto>>> getAllOrders(
-            @RequestParam("cust_id") Long customerId) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId)));
+    @GetMapping("")
+    public ResponseEntity<ResponseDto<Page<OrderWithOrderItemsDto>>> getAllOrders(
+            @RequestParam("cust_id") Long customerId,
+            Pageable pageable) {
+        Page<OrderWithOrderItemsDto> orders = orderService.getOrdersByCustomerId(customerId, pageable);
+        return ResponseEntity.ok(ResponseDto.ok(orders));
     }
 }
