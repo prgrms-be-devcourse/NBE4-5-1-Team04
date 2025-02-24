@@ -7,7 +7,9 @@ import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,15 +37,12 @@ public class ItemService {
     }
 
     public Page<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword, Pageable pageable) {
-        Page<Item> items;
-
         if ("price".equalsIgnoreCase(sortBy)) {
-            items = itemRepository.findAllByNameContainingOrderByPriceAsc(keyword, pageable);
-        } else {
-            items = itemRepository.findAllByNameContainingOrderByNameAsc(keyword, pageable);
+            return itemRepository.findAllByNameContainingOrderByPriceAsc(keyword, pageable).map(ItemDto::from);
         }
-
-        return items.map(ItemDto::from);
+        else {
+            return itemRepository.findAllByNameContainingOrderByNameAsc(keyword, pageable).map(ItemDto::from);
+        }
     }
 
     public List<ItemDto> getAllItems() {
