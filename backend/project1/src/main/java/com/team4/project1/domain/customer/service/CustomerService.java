@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.ByteBuffer;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -21,8 +24,10 @@ public class CustomerService {
     private final EmailService emailService;
 
     public Customer join(String username, String password, String name, String email) {
+        String apiKey = generateTrimmedBase64StringFromUuid(UUID.randomUUID());
+
         // 1) Customer 엔티티 생성
-        Customer customer = Customer.builder().username(username).password(password).apiKey(username)  // apiKey 임시로 username과 동일하게 설정
+        Customer customer = Customer.builder().username(username).password(password).apiKey(apiKey)
                 .name(name).email(email).build();
 
         // 2) DB에 저장
@@ -62,5 +67,21 @@ public class CustomerService {
         customer.setName(customerDto.getName());
         customer.setEmail(customerDto.getEmail());
         return customer;
+    }
+
+    /**
+     * UUIDv4를 22글자 길이의 base64 인코딩된 문자열로 변환한다. UUIDv4가 아닌 UUID가 주어진 경우, 빈 문자열을 반환한다.
+     *
+     * @param uuid 변환하고자 하는 UUIDv4가 담긴 UUID 오브젝트
+     * @return 주어진 UUIDv4에 해당하는 22글자 길이의 base64 인코딩 문자열 또는 빈 문자열
+     */
+    private String generateTrimmedBase64StringFromUuid(UUID uuid) {
+        if (uuid.version() != 4) {
+            return "";
+        }
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getLeastSignificantBits());
+        bb.putLong(uuid.getMostSignificantBits());
+        return Base64.getEncoder().encodeToString(bb.array()).substring(0, 22);
     }
 }
