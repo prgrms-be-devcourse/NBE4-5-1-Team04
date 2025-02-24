@@ -25,7 +25,7 @@ public class Customer {
     @Column(length = 100, nullable = false)
     private String password;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 22)
     private String apiKey;
 
     @Setter
