@@ -27,7 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-
+/**
+ * {@link OrderService} 클래스에 대한 단위 테스트입니다.
+ * 이 클래스는 주문 생성 및 조회 기능을 포함한 {@link OrderService}의 메서드들이 예상대로 동작하는지 확인하는 테스트 메서드들을 포함하고 있습니다.
+ */
 @Disabled("Missing setter for entity id fields")
 class OrderServiceTest {
 
@@ -48,7 +51,10 @@ class OrderServiceTest {
     private Order order;
     private OrderItem orderItem;
     private OrderItemDto orderItemDto;
-
+    /**
+     * 각 테스트가 실행되기 전에 호출되는 메서드입니다.
+     * 테스트를 위해 사용할 기본 객체들을 초기화합니다.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -70,6 +76,10 @@ class OrderServiceTest {
         orderItemDto = new OrderItemDto(1L, 2); // itemId=1, quantity=2
     }
 
+    /**
+     * 새로운 주문을 성공적으로 생성하는 메서드에 대한 테스트입니다.
+     * 주문 생성 시 주문 항목이 제대로 추가되고, 생성된 주문과 항목들이 올바르게 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("새로운 주문을 성공적으로 생성한다.")
     void createOrder() {
@@ -113,6 +123,10 @@ class OrderServiceTest {
         verify(orderItemRepository, times(1)).findByOrderId(anyLong());
     }
 
+    /**
+     * 존재하지 않는 주문 ID로 조회할 때 발생하는 예외를 테스트합니다.
+     * 존재하지 않는 주문 ID로 조회를 시도할 때, 빈 결과가 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("존재하지 않는 주문 ID를 조회하면 예외 발생")
     void getOrderById_NotFound() {
@@ -125,7 +139,10 @@ class OrderServiceTest {
         // Verify
         verify(orderRepository, times(1)).findById(99L);
     }
-
+    /**
+     * 주문 ID로 주문을 조회하는 메서드에 대한 테스트입니다.
+     * 주문 ID로 조회된 주문이 올바르게 반환되는지, 관련된 주문 항목들이 올바르게 조회되는지 확인합니다.
+     */
     @Test
     @DisplayName("주문 ID로 주문을 조회할 수 있다.")
     void getOrderById_Success() {

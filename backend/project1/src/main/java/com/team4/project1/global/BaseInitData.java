@@ -23,7 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * 애플리케이션 실행 시 기본 데이터를 초기화하는 클래스입니다.
+ * 이 클래스는 고객, 상품, 주문 데이터를 초기화하며,
+ * 기본 데이터가 없을 경우에만 실행됩니다.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class BaseInitData {
@@ -37,7 +41,13 @@ public class BaseInitData {
     @Lazy
     private BaseInitData self;
 
-
+    /**
+     * 애플리케이션 실행 시 초기 데이터를 설정하는 {@link ApplicationRunner} Bean을 제공합니다.
+     * applicationRunner 메서드는 {@link customerInit()}, {@link itemInit()}, {@link orderInit()} 메서드를 순차적으로 실행하여
+     * 고객, 상품, 주문 데이터를 초기화합니다.
+     *
+     * @return {@link ApplicationRunner} Bean
+     */
     @Bean
     public ApplicationRunner applicationRunner() {
         return args -> {
@@ -47,7 +57,10 @@ public class BaseInitData {
         };
     }
 
-
+    /**
+     * 고객 데이터를 초기화합니다.
+     * 기존에 고객 데이터가 없을 경우, 기본 고객 정보를 추가합니다.
+     */
     @Transactional
     public void customerInit() {
         if (customerService.count() > 0) {
@@ -60,7 +73,10 @@ public class BaseInitData {
         customerService.join("maeng9", "maeng1234", "맹구", "maeng9@example.com");
     }
 
-
+    /**
+     * 상품 데이터를 초기화합니다.
+     * 기존에 상품 데이터가 없을 경우, 기본 상품 정보를 추가합니다.
+     */
     @Transactional
     public void itemInit() {
         if (itemService.count() > 0) {
@@ -73,7 +89,11 @@ public class BaseInitData {
         itemService.addItem("컴포즈커피", 38000, 10);
     }
 
-
+    /**
+     * 주문 데이터를 초기화합니다.
+     * 기존에 주문 데이터가 없을 경우, 임의로 고객 1번에 대한 주문을 생성합니다.
+     * 주문 생성 시, 인증된 사용자로 설정되어 실제 주문을 생성하는 예시가 포함됩니다.
+     */
     @Transactional
     public void orderInit() {
         if (orderRepository.count() > 0) {
