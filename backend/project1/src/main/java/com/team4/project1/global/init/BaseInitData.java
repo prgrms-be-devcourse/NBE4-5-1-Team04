@@ -58,10 +58,19 @@ public class BaseInitData {
             return;
         }
 
-        itemService.addItem("스타벅스커피",48000,10);
-        itemService.addItem("믹스커피",1000,10);
-        itemService.addItem("공유커피",2500,10);
-        itemService.addItem("컴포즈커피",38000,10);
+        itemService.addItem("스타벅스", 6800, 10);
+        itemService.addItem("맥심커피", 1000, 10);
+        itemService.addItem("카누커피", 1500, 10);
+        itemService.addItem("컴포즈 커피", 2800, 10);
+        itemService.addItem("이디야 커피", 3000, 10);
+        itemService.addItem("빽다방", 2000, 10);
+        itemService.addItem("커피빈", 4000, 10);
+        itemService.addItem("투썸플레이스", 5000, 10);
+        itemService.addItem("엔젤리너스", 3500, 10);
+        itemService.addItem("더벤티", 4500, 10);
+        itemService.addItem("탐앤탐스", 4200, 10);
+        itemService.addItem("폴바셋", 5500, 10);
+        itemService.addItem("할리스", 4000, 10);
     }
 
     @Transactional
