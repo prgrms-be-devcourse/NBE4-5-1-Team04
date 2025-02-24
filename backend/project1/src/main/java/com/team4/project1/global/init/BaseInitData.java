@@ -69,21 +69,30 @@ public class BaseInitData {
         if (orderRepository.count() > 0) {
             return;
         }
-        // 임의로 고객 id 1번을 사용 (이미 customerInit에서 데이터가 생성되었음)
-        Optional<Customer> customerOpt = customerService.getCustomerById(1L);
-        if (customerOpt.isEmpty()) {
-            return;
+
+        // ✅ ID 1번 고객 주문 생성
+        Optional<Customer> customerOpt1 = customerService.getCustomerById(1L);
+        if (customerOpt1.isPresent()) {
+            Customer customer1 = customerOpt1.get();
+            List<OrderItemDto> orderItemDtos1 = new ArrayList<>();
+            orderItemDtos1.add(new OrderItemDto(1L, 3));
+            orderItemDtos1.add(new OrderItemDto(2L, 2));
+
+            OrderWithOrderItemsDto createdOrder1 = orderService.createOrder(orderItemDtos1, customer1.getId());
+            System.out.println("생성된 주문 (ID 1): " + createdOrder1.getId() + ", 총 가격: " + createdOrder1.getTotalPrice());
         }
-        Customer customer = customerOpt.get();
 
-        // 주문 항목 데이터 생성: 예를 들어, item id 1번 상품을 3개, item id 2번 상품을 2개 주문
-        List<OrderItemDto> orderItemDtos = new ArrayList<>();
-        orderItemDtos.add(new OrderItemDto(1L, 3));
-        orderItemDtos.add(new OrderItemDto(2L, 2));
+        // ✅ ID 2번 고객 주문 생성
+        Optional<Customer> customerOpt2 = customerService.getCustomerById(2L);
+        if (customerOpt2.isPresent()) {
+            Customer customer2 = customerOpt2.get();
+            List<OrderItemDto> orderItemDtos2 = new ArrayList<>();
+            orderItemDtos2.add(new OrderItemDto(3L, 1));  // 3번 상품 1개
+            orderItemDtos2.add(new OrderItemDto(4L, 2));  // 4번 상품 2개
 
-        // OrderService의 createOrder() 메서드를 호출하여 주문 생성
-        OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, customer.getId());
-        // TODO: stdout으로 바로 출력하는 대신 로깅(@Slf4j)으로 출력하게끔 변경을 고려
-        System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
+            OrderWithOrderItemsDto createdOrder2 = orderService.createOrder(orderItemDtos2, customer2.getId());
+            System.out.println("생성된 주문 (ID 2): " + createdOrder2.getId() + ", 총 가격: " + createdOrder2.getTotalPrice());
+        }
     }
+
 }
