@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,22 +51,38 @@ class OrderServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // 기본 객체 생성
-        customer = new Customer();
-//        customer.setId(1L);
+        // Customer 객체 생성 (Builder 사용)
+        customer = Customer.builder()
+                .username("testUser")
+                .password("password123")
+                .name("Test User")
+                .email("test@example.com")
+                .build();
 
-        item = new Item();
-//        item.setId(1L);
-        item.setPrice(10000);
+        // Item 객체 생성 (Builder 사용)
+        item = Item.builder()
+                .name("Test Item")
+                .price(10000)
+                .stock(100)
+                .build();
 
-        order = new Order(customer, LocalDateTime.now(), 0L);
-//        order.setId(1L);
+        // Order 객체 생성 (Builder 사용)
+        order = Order.builder()
+                .customer(customer)
+                .totalPrice(0L)
+                .build();
 
-        orderItem = new OrderItem(order, item, 2);  // 수량 2
-        orderItem.setId(1L);
+        // OrderItem 객체 생성 (ID는 Mockito가 관리하도록 설정)
+        orderItem = OrderItem.builder()
+                .order(order)
+                .item(item)
+                .quantity(2)
+                .build();
 
+        // OrderItemDto 생성
         orderItemDto = new OrderItemDto(1L, 2); // itemId=1, quantity=2
     }
+
 
     @Test
     @DisplayName("새로운 주문을 성공적으로 생성한다.")
