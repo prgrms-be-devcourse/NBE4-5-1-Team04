@@ -46,7 +46,8 @@ public class Order {
 
     // PK(id)를 제외하고 필요한 필드만 Builder로 주입받도록 변경
     @Builder
-    public Order(Customer customer, LocalDateTime date, Long totalPrice, DeliveryStatus deliveryStatus) {
+    public Order(Long id, Customer customer, LocalDateTime date, Long totalPrice, DeliveryStatus deliveryStatus) {
+        this.id = id;
         this.customer = customer;
         this.date = date;
         this.totalPrice = totalPrice;

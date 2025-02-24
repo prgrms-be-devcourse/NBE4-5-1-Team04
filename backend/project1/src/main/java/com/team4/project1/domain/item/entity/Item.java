@@ -31,8 +31,6 @@ public class Item {
     @Setter
     private UUID imageUuid = null;
 
-    @Builder
-    // PK를 제외한 필드만 Builder를 통해 주입할 수 있도록 제한.
     public Item(String name, Integer price, Integer stock, UUID imageUuid) {
         this.name = name;
         this.price = price;
@@ -40,28 +38,22 @@ public class Item {
         this.imageUuid = imageUuid;
     }
 
-    // DTO를 기반으로 Item 객체를 생성하는 정적 팩토리 메서드
-    public static Item fromDto(ItemDto itemDto) {
-        return Item.builder()
-                .name(itemDto.getName())
-                .price(itemDto.getPrice())
-                .stock(itemDto.getStock())
-                .imageUuid(
-                    itemDto.getImageUri().isEmpty() ?
-                        null :
-                        UUID.fromString(itemDto.getImageUri().substring(0, itemDto.getImageUri().length() - ".jpg".length()))
-                )
-                .build();
+    public Item(String name, Integer price, Integer stock) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    @Builder
+    public Item(Long id, String name, Integer price, Integer stock, UUID imageUuid) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.imageUuid = imageUuid;
     }
 
     public String getImageUuidAsUri() {
         return this.imageUuid != null ? this.imageUuid + ".jpg" : "";
-    }
-
-    // 엔티티 값 변경을 위한 메서드 추가
-    public void updateItem(String name, Integer price, Integer stock) {
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
     }
 }

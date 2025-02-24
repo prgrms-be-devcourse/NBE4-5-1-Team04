@@ -4,6 +4,7 @@ import com.team4.project1.domain.customer.entity.Customer;
 import com.team4.project1.domain.customer.service.CustomerService;
 import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.service.ItemService;
+import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
@@ -44,7 +45,7 @@ public class OrderService {
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
             Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(Item::fromDto)
+                    .map(ItemDto::toEntity)
                     .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
 
             itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());
@@ -78,7 +79,7 @@ public class OrderService {
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
             Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(Item::fromDto)
+                    .map(ItemDto::toEntity)
                     .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
 
             itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리

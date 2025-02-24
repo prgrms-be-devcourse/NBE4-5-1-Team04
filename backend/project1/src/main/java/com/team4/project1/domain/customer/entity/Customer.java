@@ -37,8 +37,17 @@ public class Customer {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
-    @Builder
     public Customer(String username, String password, String name, String email, String apiKey) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.apiKey = apiKey;
+    }
+
+    @Builder
+    public Customer(Long id, String username, String password, String name, String email, String apiKey) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
