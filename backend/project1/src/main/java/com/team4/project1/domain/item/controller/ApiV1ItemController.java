@@ -76,7 +76,6 @@ public class ApiV1ItemController {
 
     @PostMapping("/{id}/image")
     public ResponseEntity<ResponseDto<String>> addImageToItem(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-        System.out.println(file.getContentType());
         if (!Objects.equals(file.getContentType(), "image/jpeg")) {
             return ResponseEntity.badRequest().body(ResponseDto.badRequest("이미지는 JPEG 형식만 지원합니다."));
         }
