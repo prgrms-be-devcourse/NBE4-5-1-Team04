@@ -41,7 +41,7 @@ public class CustomerService {
                         "회원가입이 성공적으로 완료되었습니다.",
                 savedCustomer.getName()
         );
-        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
+        //emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
 
         return savedCustomer;
     }
