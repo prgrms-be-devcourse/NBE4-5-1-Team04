@@ -47,7 +47,7 @@ export default function RootLayout({
               로그인
             </Link>
             <Link
-              href="/signup"
+              href="/customer/signup"
               className="text-sm text-gray-700 hover:underline"
             >
               회원가입
