@@ -18,13 +18,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Configuration
 @RequiredArgsConstructor
 public class BaseInitData {
+
     private final OrderService orderService;
     private final CustomerService customerService;
     private final ItemService itemService;
@@ -34,6 +37,7 @@ public class BaseInitData {
     @Lazy
     private BaseInitData self;
 
+
     @Bean
     public ApplicationRunner applicationRunner() {
         return args -> {
@@ -42,6 +46,7 @@ public class BaseInitData {
             self.orderInit();
         };
     }
+
 
     @Transactional
     public void customerInit() {
@@ -55,17 +60,19 @@ public class BaseInitData {
         customerService.join("maeng9", "maeng1234", "맹구", "maeng9@example.com");
     }
 
+
     @Transactional
     public void itemInit() {
         if (itemService.count() > 0) {
             return;
         }
 
-        itemService.addItem("스타벅스커피",48000,10);
-        itemService.addItem("믹스커피",1000,10);
-        itemService.addItem("공유커피",2500,10);
-        itemService.addItem("컴포즈커피",38000,10);
+        itemService.addItem("스타벅스커피", 48000, 10);
+        itemService.addItem("믹스커피", 1000, 10);
+        itemService.addItem("공유커피", 2500, 10);
+        itemService.addItem("컴포즈커피", 38000, 10);
     }
+
 
     @Transactional
     public void orderInit() {
@@ -93,13 +100,18 @@ public class BaseInitData {
         orderItemDtos.add(new OrderItemDto(1L, 3));
         orderItemDtos.add(new OrderItemDto(2L, 2));
 
+        // Principal을 이용하여 주문 생성
+        Principal principal = new Principal() {
+            @Override
+            public String getName() {
+                return customer.getUsername(); // 인증된 사용자 이름 반환
+            }
+        };
+
         // OrderService의 createOrder() 메서드를 호출하여 주문 생성
-        OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, customer.getName());
+        OrderWithOrderItemsDto createdOrder = orderService.createOrder(orderItemDtos, principal);
+
         // TODO: stdout으로 바로 출력하는 대신 로깅(@Slf4j)으로 출력하게끔 변경을 고려
         System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
     }
-
-
-
-
 }

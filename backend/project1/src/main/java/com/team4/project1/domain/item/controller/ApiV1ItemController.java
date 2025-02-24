@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/items")
@@ -22,16 +23,17 @@ public class ApiV1ItemController {
     @GetMapping("/{itemId}")
     public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Long itemId) {
         return ResponseEntity.ok(ResponseDto.ok(
-                itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId)
-                )
+                itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId))
         ));
     }
+
+
 
     @GetMapping
     public ResponseEntity<ResponseDto<List<ItemDto>>> sortedItems(
             @RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "searchKeyword", required = false) String keyword
-            ) {
+    ) {
         if (keyword == null) { keyword = ""; }
         if (sortBy == null || sortBy.isEmpty() && keyword.isEmpty()) {
             return ResponseEntity.ok(ResponseDto.ok(itemService.getAllItems()));
@@ -41,17 +43,20 @@ public class ApiV1ItemController {
         }
     }
 
+
     @PostMapping
     public ResponseEntity<ResponseDto<ItemDto>> createItem(@RequestBody ItemDto itemDto) {
-        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice(),itemDto.getStock());
+        Item item = itemService.addItem(itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
         return ResponseEntity.ok(ResponseDto.ok(ItemDto.from(item)));
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto<ItemDto>> updateItem(@PathVariable("id") Long id, @RequestBody ItemDto itemDto) {
         ItemDto updatedItem = itemService.updateItem(id, itemDto);
         return ResponseEntity.ok(ResponseDto.ok(updatedItem));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto<String>> deleteItem(@PathVariable("id") Long id) {

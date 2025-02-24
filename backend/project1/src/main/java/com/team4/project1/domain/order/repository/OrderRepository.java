@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findAllByCustomerId(Long customerId);
 
+
+    List<Order> findAllByCustomerId(Long customerId);
     List<Order> findAllByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

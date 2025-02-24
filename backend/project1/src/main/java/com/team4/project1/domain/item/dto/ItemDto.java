@@ -6,17 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Locale;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDto {
+
+
     private Long id;
+
+
     private String name;
+
+
     private Integer price;
+
+
     private Integer stock;
+
 
     public static ItemDto from(Item item) {
         return new ItemDto(
@@ -26,6 +34,7 @@ public class ItemDto {
                 item.getStock()
         );
     }
+
 
     public static ItemDto of(Long id, String name, Integer price, Integer stock) {
         return new ItemDto(id, name, price, stock);

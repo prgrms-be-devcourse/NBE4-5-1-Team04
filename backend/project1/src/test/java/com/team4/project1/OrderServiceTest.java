@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +78,7 @@ class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order savedOrder = invocation.getArgument(0);
-//            savedOrder.setId(1L);  // 저장된 Order의 ID 설정
+//        savedOrder.setId(1L);  // 저장된 Order의 ID 설정
             return savedOrder;
         });
 
@@ -89,8 +90,16 @@ class OrderServiceTest {
 
         when(orderItemRepository.findByOrderId(anyLong())).thenReturn(List.of(orderItem));  // Mock findByOrderId
 
+        // Principal mock 객체 생성
+        Principal principal = new Principal() {
+            @Override
+            public String getName() {
+                return "jjang9"; // 인증된 사용자 이름을 지정
+            }
+        };
+
         // When
-        OrderWithOrderItemsDto createdOrder = orderService.createOrder(List.of(orderItemDto), customer.getName());
+        OrderWithOrderItemsDto createdOrder = orderService.createOrder(List.of(orderItemDto), principal);
 
         // Then
         assertThat(createdOrder).isNotNull();

@@ -16,7 +16,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.List;
 import java.util.Optional;
 
-// Request, Response, Session, Cookie, Header
+
 @Component
 @RequiredArgsConstructor
 @RequestScope
@@ -24,6 +24,7 @@ public class Rq {
 
     private final HttpServletRequest request;
     private final CustomerService customerService;
+
 
     public Customer getAuthenticatedActor() {
         String authorizationValue = request.getHeader("Authorization");
@@ -37,6 +38,7 @@ public class Rq {
         return opCustomer.get();
     }
 
+
     public void setLogin(String username) {
         UserDetails user = new User(username, "", List.of());
 
@@ -44,6 +46,7 @@ public class Rq {
                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
         );
     }
+
 
     public Customer getActor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,5 +65,4 @@ public class Rq {
 
         return customerService.findByUsername(username).get();
     }
-
 }

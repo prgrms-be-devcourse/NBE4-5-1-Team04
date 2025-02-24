@@ -17,6 +17,7 @@ import java.util.List;
 @Table(name = "order_tbl") // 테이블 이름 설정
 public class Order {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE) // ID 값은 변경 불가능하도록 설정
@@ -37,6 +38,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DeliveryStatus deliveryStatus = DeliveryStatus.PROCESSING;
+
 
     public Order(Customer customer, LocalDateTime date, Long totalPrice) {
         this.customer = customer;

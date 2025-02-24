@@ -4,6 +4,7 @@ import com.team4.project1.domain.item.dto.ItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @Entity
 @Getter
 @Setter
@@ -11,16 +12,21 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Item {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
 
+
     @Column(nullable = false)
     private String name;
 
+
     @Column(nullable = false)
     private Integer price;
+
 
     @Column(nullable = false)
     private Integer stock;
@@ -29,6 +35,7 @@ public class Item {
         this.name = name;
         this.price = price;
     }
+
 
     public static Item fromDto(ItemDto itemDto) {
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getPrice(), itemDto.getStock());
