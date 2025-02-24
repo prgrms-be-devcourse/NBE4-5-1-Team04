@@ -34,7 +34,6 @@ class CustomerServiceTest {
     @BeforeEach
     void setUp() {
         customer = Customer.builder()
-                .id(1L)
                 .username("testUser")
                 .password("password123")
                 .name("Test Name")

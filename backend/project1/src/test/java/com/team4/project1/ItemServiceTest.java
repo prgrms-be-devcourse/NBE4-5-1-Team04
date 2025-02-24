@@ -34,7 +34,6 @@ class ItemServiceTest {
     @BeforeEach
     void setUp() {
         item = Item.builder()
-                .id(1L)
                 .name("Test Item")
                 .price(1000)
                 .build();
