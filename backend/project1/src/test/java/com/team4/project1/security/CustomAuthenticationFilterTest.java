@@ -67,7 +67,15 @@ class CustomAuthenticationFilterTest {
     @DisplayName("유효한 API Key가 있을 때 필터 통과 및 사용자 인증")
     void t3() throws ServletException, IOException {
         String apiKey = "test";
-        Customer customer = new Customer("test", "test1234");
+
+        // ✅ @Builder 사용하여 Customer 객체 생성
+        Customer customer = Customer.builder()
+                .username("test")
+                .password("test1234")
+                .name("Test User")
+                .email("test@example.com")
+                .apiKey(apiKey)
+                .build();
 
         when(customerService.findByApiKey(apiKey)).thenReturn(Optional.of(customer));
 
