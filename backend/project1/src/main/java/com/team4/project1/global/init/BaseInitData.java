@@ -73,10 +73,6 @@ public class BaseInitData {
         itemService.addItem("컴포즈커피", 38000, 10);
     }
 
-<<<<<<< HEAD:backend/project1/src/main/java/com/team4/project1/global/init/BaseInitData.java
-=======
-
->>>>>>> feature/customer-purchase-auth:backend/project1/src/main/java/com/team4/project1/global/BaseInitData.java
     @Transactional
     public void orderInit() {
         if (orderRepository.count() > 0) {
@@ -117,8 +113,4 @@ public class BaseInitData {
         // TODO: stdout으로 바로 출력하는 대신 로깅(@Slf4j)으로 출력하게끔 변경을 고려
         System.out.println("생성된 주문 ID: " + createdOrder.getId() + ", 총 가격: " + createdOrder.getTotalPrice());
     }
-<<<<<<< HEAD:backend/project1/src/main/java/com/team4/project1/global/init/BaseInitData.java
 }
-=======
-}
->>>>>>> feature/customer-purchase-auth:backend/project1/src/main/java/com/team4/project1/global/BaseInitData.java
