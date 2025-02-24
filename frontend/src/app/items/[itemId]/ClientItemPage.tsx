@@ -98,7 +98,7 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
             </div>
 
             {/* 🔹 총 금액 표시 */}
-            <div className="bg-gray-100 p-2 rounded-md text-gray-700 text-sm">
+            <div className="bg-gray-100 p-3 rounded-md text-gray-700 text-sm">
               <span className="font-semibold">
                 총 금액: {totalPrice.toLocaleString()} 원
               </span>
