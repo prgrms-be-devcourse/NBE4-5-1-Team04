@@ -42,7 +42,7 @@ public class Item {
 
     // DTO를 기반으로 Item 객체를 생성하는 정적 팩토리 메서드
     public static Item fromDto(ItemDto itemDto) {
-        return Item.builder(
+        return Item.builder()
                 .name(itemDto.getName())
                 .price(itemDto.getPrice())
                 .stock(itemDto.getStock())
