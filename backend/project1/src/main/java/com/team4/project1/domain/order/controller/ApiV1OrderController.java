@@ -61,6 +61,7 @@ public class ApiV1OrderController {
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderById(
             @PathVariable Long orderId, Principal principal) {
 
+        // principal을 전달하여 서비스에서 예외 처리
         OrderWithOrderItemsDto order = orderService.getOrderById(orderId, principal)
                 .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 

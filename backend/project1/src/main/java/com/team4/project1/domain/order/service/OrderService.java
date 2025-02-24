@@ -128,19 +128,25 @@ public class OrderService {
 
 
     public Optional<OrderWithOrderItemsDto> getOrderById(Long orderId, Principal principal) {
+        // principal이 null이거나 사용자의 이름이 없는 경우 예외 처리
+        if (principal == null || principal.getName() == null) {
+            throw new UnauthorizedAccessException("로그인이 필요합니다.");
+        }
+
+        // 주문을 DB에서 조회
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
-        // 현재 로그인한 사용자와 주문의 생성자가 일치하는지 확인
+        // 로그인한 사용자와 주문의 소유자가 동일한지 확인
         String loggedInUsername = principal.getName();
-
         if (!order.getCustomer().getUsername().equals(loggedInUsername)) {
             throw new UnauthorizedAccessException("이 주문을 열람할 권한이 없습니다.");
         }
 
-        // 상태 업데이트 처리
+        // 주문 상태를 최신화 (예: 배송 상태 갱신)
         updateOrderStatusOnFetch(order);
 
+        // 주문 정보를 DTO로 변환하여 반환
         return Optional.of(OrderWithOrderItemsDto.from(order));
     }
 
