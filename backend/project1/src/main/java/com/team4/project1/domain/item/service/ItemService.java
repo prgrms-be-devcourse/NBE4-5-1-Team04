@@ -6,18 +6,33 @@ import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
 
-    private final ItemRepository itemRepository;
+    @Value("${file.upload-dir}")
+    private String imageDir;
 
+    private final ItemRepository itemRepository;
 
     public void reduceStock(Long itemId, int quantity) {
         Item item = itemRepository.findById(itemId)
@@ -94,5 +109,69 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
         itemRepository.delete(item);
+    }
+
+    public Resource getItemImage(Long id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+        if(item.getImageUuid() == null) {
+            return null;
+        }
+        try {
+            Path filePath = Paths.get(imageDir).resolve(item.getImageUuidAsUri());
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            }
+        }
+        catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public String addImageToItem(Long id, MultipartFile image) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+        // 이미 존재하는 이미지를 삭제한다
+        if (item.getImageUuid() != null) {
+            deleteImageFromItem(item);
+            item.setImageUuid(null);
+        }
+        UUID newUuid = UUID.randomUUID();
+        String newImageName = newUuid + ".jpg";
+        saveImageAs(image, newImageName);
+        item.setImageUuid(newUuid);
+        itemRepository.save(item);
+        return newImageName;
+    }
+
+    private void deleteImageFromItem(Item item) {
+        Path uploadPath = Paths.get(imageDir);
+        Path filePath = uploadPath.resolve(item.getImageUuidAsUri());
+        if (!Files.exists(filePath)) {
+            throw new RuntimeException("파일이 존재하지 않습니다. (상품: %d, 경로: %s)"
+                    .formatted(item.getId(), filePath.toString()));
+        }
+        try {
+            Files.delete(filePath);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveImageAs(MultipartFile file, String fileName){
+        Path uploadPath = Paths.get(imageDir);
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
