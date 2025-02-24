@@ -39,7 +39,7 @@ export default async function ItemPage({
   }
 
   return (
-    <Card className="p-6 shadow-xl rounded-3xl w-full">
+    <Card className="card">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">상품 정보</CardTitle>
       </CardHeader>

@@ -50,7 +50,7 @@ export default async function Page({ searchParams }: Props) {
   const items = data.data || [];
 
   return (
-    <Card className="p-6 shadow-xl rounded-3xl w-full">
+    <Card className="card">
       <div className="grid grid-cols-2 items-center mb-4">
         <h1 className="pl-2 text-2xl font-bold text-gray-800 flex items-center">
           <FontAwesomeIcon icon={faBars} className="pr-3" />
