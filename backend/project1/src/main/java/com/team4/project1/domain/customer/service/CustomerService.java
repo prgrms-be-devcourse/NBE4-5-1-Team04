@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 고객 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
+ * {@Link Cutomer}엔티티에 대한 비즈니스 로직을 처리하는 서비스 클래스입니다.
  * 고객 가입, 조회, 업데이트 등의 기능을 제공합니다.
  *
  */
