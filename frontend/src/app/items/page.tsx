@@ -22,7 +22,7 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 type ItemDto = {
@@ -110,7 +110,10 @@ export default function ItemListPage() {
     <Card className="p-6 shadow-xl rounded-3xl w-full">
       {/* 헤더 */}
       <div className="grid grid-cols-2 items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">상품 목록</h1>
+        <h1 className="text-2xl font-bold text-gray-800">
+          <FontAwesomeIcon icon={faBars} className="pr-3" />
+          상품 목록
+        </h1>
         <div className="flex justify-end gap-2">
           <select
             className="p-2 border rounded-lg"
@@ -131,7 +134,7 @@ export default function ItemListPage() {
             }}
           />
           <Button onClick={handleSearch}>
-            <FontAwesomeIcon icon={faSearch} className="mr-2" />
+            <FontAwesomeIcon icon={faSearch} className="mr-1" />
             검색
           </Button>
         </div>
@@ -191,7 +194,7 @@ export default function ItemListPage() {
           <PaginationItem>
             <PaginationPrevious
               onClick={() => handlePageChange(page - 1)}
-              disabled={page === 0}
+              // disabled={page === 0}
             />
           </PaginationItem>
 
@@ -209,7 +212,7 @@ export default function ItemListPage() {
           <PaginationItem>
             <PaginationNext
               onClick={() => handlePageChange(page + 1)}
-              disabled={page >= totalPages - 1}
+              // disabled={page >= totalPages - 1}
             />
           </PaginationItem>
         </PaginationContent>
