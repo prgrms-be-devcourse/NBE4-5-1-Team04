@@ -163,11 +163,6 @@ public class OrderService {
         if (orderItemDtos.isEmpty()) {
             throw new IllegalArgumentException("주문 아이템이 비어 있을 수 없습니다.");
         }
-        for (OrderItemDto item : orderItemDtos) {
-            if (item.getQuantity() <= 0) {
-                throw new IllegalArgumentException("아이템 수량은 1 이상이어야 합니다.");
-            }
-        }
         return orderItemDtos;
     }
 
