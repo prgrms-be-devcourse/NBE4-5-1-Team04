@@ -27,6 +27,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,
                                         "/api/v1/items",
                                         "/api/v1/items/{itemId:\\d+}",
+                                        "/api/v1/items/{itemId:\\d+}/image",
                                         "/api/v1/orders/**"
                                 )
                                 .permitAll()
@@ -36,7 +37,9 @@ public class SecurityConfig {
                                         "/api/v1/customer"
                                 )
                                 .permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/orders")  // POST 요청 허용
+                                .requestMatchers(HttpMethod.POST,
+                                        "/api/v1/orders",
+                                        "/api/v1/items/{itemId:\\d+}/image")  // POST 요청 허용
                                 .permitAll()
                                 .requestMatchers(
                                         "/api/v1/orders/{orderId:\\d+}"
