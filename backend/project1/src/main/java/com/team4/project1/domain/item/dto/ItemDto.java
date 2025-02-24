@@ -17,22 +17,22 @@ import lombok.Setter;
 public class ItemDto {
 
     /**
-     * 아이템의 ID
+     * 상품의 ID
      */
     private Long id;
 
     /**
-     * 아이템 이름
+     * 상품의 이름
      */
     private String name;
 
     /**
-     * 아이템 가격
+     * 상품의 가격
      */
     private Integer price;
 
     /**
-     * 아이템 재고 수량
+     * 상품의 재고 수량
      */
     private Integer stock;
 
@@ -52,10 +52,10 @@ public class ItemDto {
 
     /**
      * 주어진 파라미터로 ItemDto 객체를 생성하는 메서드입니다.
-     * @param id 아이템 ID
-     * @param name 아이템 이름
-     * @param price 아이템 가격
-     * @param stock 아이템 재고 수량
+     * @param id 상품 ID
+     * @param name 상품 이름
+     * @param price 상품 가격
+     * @param stock 상품 재고 수량
      * @return 생성된 ItemDto 객체를 반환합니다.
      */
     public static ItemDto of(Long id, String name, Integer price, Integer stock) {
