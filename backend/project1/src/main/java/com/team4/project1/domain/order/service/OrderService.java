@@ -16,6 +16,8 @@ import com.team4.project1.domain.order.repository.OrderRepository;
 import com.team4.project1.global.exception.CustomerNotFoundException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,13 +133,13 @@ public class OrderService {
     }
 
     // 주문 목록 조회
-    public List<OrderDto> getOrdersByCustomerId(Long customerId) {
-        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
-        // 주문을 조회할 때 최신 배송 상태 반영
-        orders.forEach(this::updateOrderStatusOnFetch);
-        return orders.stream()
-                .map(OrderDto::from)
-                .toList();
+    public Page<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId, Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findAllByCustomerId(customerId, pageable);
+
+        // 주문 목록 조회 시 배송 상태 최신화
+        orderPage.forEach(this::updateOrderStatusOnFetch);
+
+        return orderPage.map(OrderWithOrderItemsDto::from);
     }
 
     // 주문 단건 조회
