@@ -30,7 +30,6 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ItemService itemService;
@@ -66,7 +65,6 @@ public class OrderService {
             totalPrice += (long) newOrderItem.getItem().getPrice() * newOrderItem.getQuantity();
             orderItemRepository.save(newOrderItem);
         }
-
         newOrder.setTotalPrice(totalPrice);
         orderRepository.save(newOrder);
         return OrderWithOrderItemsDto.from(newOrder);
@@ -132,36 +130,51 @@ public class OrderService {
         return orderId;
     }
 
-    // 주문 목록 조회
-    public List<OrderDto> getOrdersByCustomerId(Long customerId) {
+    // 주문 목록 조회 (Principal 기반)
+    public List<OrderDto> getOrdersByPrincipal() {
         // 비로그인 체크
         if (SecurityContextHolder.getContext().getAuthentication() == null ||
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
             throw new UnauthorizedAccessException("로그인 후 주문 목록을 조회할 수 있습니다.");
         }
 
-        validateCustomerOwnership(customerId);  // 사용자 인증 확인
+        String currentUsername = getCurrentUsername();
+        Customer customer = customerService.findByUsername(currentUsername)
+                .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
 
-        List<Order> orders = orderRepository.findAllByCustomerId(customerId);
+        List<Order> orders = orderRepository.findAllByCustomerId(customer.getId());
         orders.forEach(this::updateOrderStatusOnFetch);
         return orders.stream()
                 .map(OrderDto::from)
                 .toList();
     }
-
-    // 주문 단건 조회
+    //주문 단건조회
     public OrderWithOrderItemsDto getOrderById(Long orderId) {
+        // 로그인된 사용자의 username을 가져오기 전에 예외 처리
+        String currentUsername;
+        try {
+            currentUsername = getCurrentUsername();
+        } catch (UnauthorizedAccessException e) {
+            throw new UnauthorizedAccessException("로그인이 필요합니다.");
+        }
+
+        // 주문 조회
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
 
-        String currentUsername = getCurrentUsername();
+        // 주문이 현재 사용자와 일치하는지 확인
         if (!order.getCustomer().getUsername().equals(currentUsername)) {
             throw new UnauthorizedAccessException("본인만 자신의 주문을 열람할 수 있습니다.");
         }
 
+        // 주문 상태 업데이트
         updateOrderStatusOnFetch(order);
+
+        // 주문 DTO 반환
         return OrderWithOrderItemsDto.from(order);
     }
+
+
 
     // 새로운 주문 아이템 유효성 검사
     private List<OrderItemDto> validateNewOrder(List<OrderItemDto> orderItemDtos) {
@@ -201,18 +214,20 @@ public class OrderService {
         return orderItemDtos;
     }
 
-    // 로그인된 사용자의 username을 반환하는 메소드
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null || authentication.getPrincipal() == null) {
             throw new UnauthorizedAccessException("로그인이 필요합니다.");
         }
+
         if (authentication.getPrincipal() instanceof String) {
             return (String) authentication.getPrincipal();
         } else if (authentication.getPrincipal() instanceof UserDetails) {
             return ((UserDetails) authentication.getPrincipal()).getUsername();
         }
-        return null;
+
+        throw new UnauthorizedAccessException("인증 정보가 올바르지 않습니다.");
     }
 
     private void validateCustomerOwnership(Long customerId) {

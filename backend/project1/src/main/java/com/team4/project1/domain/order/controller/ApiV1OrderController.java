@@ -1,4 +1,4 @@
-package com.team4.project1.domain.order.controller;
+package com.team4.project1.domain.order.Controller;
 
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
@@ -25,7 +25,6 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.createOrder(orderItemDtos, customerId)));
     }
 
-
     @PutMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(@PathVariable Long orderId, @RequestBody List<OrderItemDto> orderItemDtos) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.updateOrder(orderItemDtos, orderId)));
@@ -42,9 +41,9 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId)));
     }
 
-    @GetMapping(value = "", params = "cust_id")
-    public ResponseEntity<ResponseDto<List<OrderDto>>> getAllOrders(
-            @RequestParam("cust_id") Long customerId) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId)));
+    @GetMapping("")
+    public ResponseEntity<ResponseDto<List<OrderDto>>> getOrdersByPrincipal() {
+        List<OrderDto> orders = orderService.getOrdersByPrincipal();
+        return ResponseEntity.ok(ResponseDto.ok(orders));
     }
 }
