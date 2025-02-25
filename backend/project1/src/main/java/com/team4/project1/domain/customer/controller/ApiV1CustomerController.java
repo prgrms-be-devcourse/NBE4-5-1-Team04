@@ -126,9 +126,9 @@ public class ApiV1CustomerController {
      */
     @Operation(summary = "전체 회원 정보 조회")
     @GetMapping
-    public ResponseEntity<ResponseDto<List<Customer>>> getAllCustomers() {
-        List<Customer> customer = customerService.getAllCustomers();
-        return ResponseEntity.ok(ResponseDto.ok(customer));
+    public ResponseEntity<ResponseDto<List<CustomerDto>>> getAllCustomers() {
+        List<CustomerDto> customerDtos = customerService.getAllCustomers();
+        return ResponseEntity.ok(ResponseDto.ok(customerDtos));
     }
 
     /**
