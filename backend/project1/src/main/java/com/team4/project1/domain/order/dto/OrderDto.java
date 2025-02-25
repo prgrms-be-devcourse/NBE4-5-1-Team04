@@ -1,6 +1,5 @@
 package com.team4.project1.domain.order.dto;
 
-import com.team4.project1.domain.order.entity.DeliveryStatus;
 import com.team4.project1.domain.order.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +35,7 @@ public class OrderDto {
                 order.getId(),
                 order.getDate(),
                 order.getTotalPrice(),
-                order.getDeliveryStatus().name()
+                order.getOrderStatus().name()
         );
     }
 

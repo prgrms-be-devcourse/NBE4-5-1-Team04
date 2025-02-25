@@ -38,7 +38,7 @@ public class OrderWithOrderItemsDto {
                 order.getId(),
                 order.getDate(),
                 order.getTotalPrice(),
-                order.getDeliveryStatus().name(),
+                order.getOrderStatus().name(),
                 order.getOrderItems().stream()
                         .map(OrderItemDto::from)
                         .toList()
