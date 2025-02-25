@@ -48,7 +48,7 @@ public class CustomerService {
         // 3) 이메일 발송
         String subject = "회원가입을 환영합니다!";
         String text = String.format("안녕하세요, %s 님!\n" + "서비스를 이용해주셔서 감사합니다.\n" + "회원가입이 성공적으로 완료되었습니다.", savedCustomer.getName());
-//        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
+        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
 
         return savedCustomer;
     }
@@ -88,6 +88,12 @@ public class CustomerService {
      */
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
+    }
+
+    public Customer getCustomerByIdWithNewApiKey(Long id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
+        customer.setApiKey(generateTrimmedBase64StringFromUuid(UUID.randomUUID()));
+        return customer;
     }
 
     /**
