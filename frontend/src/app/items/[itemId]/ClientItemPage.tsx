@@ -89,19 +89,29 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
         quantity: orderCount,
       };
 
-      const url = latestOrderId
-        ? `${API_URL}/api/v1/orders/${latestOrderId}` // 기존 주문에 추가
-        : `${API_URL}/api/v1/orders`; // 새 주문 생성
+      // const url = latestOrderId
+      //   ? `${API_URL}/api/v1/orders/${latestOrderId}` // 기존 주문에 추가
+      //   : `${API_URL}/api/v1/orders`; // 새 주문 생성
 
-      console.log(requestBody);
+      // console.log(requestBody);
 
+      // const response = await fetch(url, {
+      //   method: latestOrderId ? "PUT" : "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
+      //   },
+      //   body: JSON.stringify(latestOrderId ? requestBody : [requestBody]), // 새 주문 생성 시 배열 필요
+      // });
+
+      const url = `${API_URL}/api/v1/orders`;
       const response = await fetch(url, {
-        method: latestOrderId ? "PUT" : "POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
         },
-        body: JSON.stringify(latestOrderId ? requestBody : [requestBody]), // 새 주문 생성 시 배열 필요
+        body: JSON.stringify([requestBody]), // 새 주문 생성 시 배열 필요
       });
 
       if (!response.ok) throw new Error("장바구니 추가 실패");
