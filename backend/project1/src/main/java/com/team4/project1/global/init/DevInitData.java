@@ -1,5 +1,6 @@
 package com.team4.project1.global.init;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,22 +24,22 @@ public class DevInitData {
 
     @Bean
     public ApplicationRunner devApplicationRunner() {
+        List<String> commands;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            commands = List.of("cmd.exe", "/c",
+                    "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o frontend/src/lib/backend/apiV1/schema.d.ts");
+        }
+        else {
+            commands = List.of("ls", "-l",
+                    "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o frontend/src/lib/backend/apiV1/schema.d.ts");
+        }
         return args -> {
             genApiJsonFile("http://localhost:8080/v3/api-docs/apiV1", "apiV1.json");
-            runCmd(
-                    List.of(
-                            "cmd.exe",
-                            "/c",
-                            "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o ../frontend/src/lib/backend/apiV1/schema.d.ts")
-            );
+            runCmd(commands);
         };
     }
 
     public void runCmd(List<String> command) {
-        // 실행할 터미널 명령어 (예: ls -l 또는 dir)
-//        List<String> command = List.of("ls", "-l"); // macOS/Linux
-//        List<String> command = List.of("cmd.exe", "/c", "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o schema.d.ts"); // Windows
-
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             processBuilder.redirectErrorStream(true); // 표준 에러를 표준 출력과 합침

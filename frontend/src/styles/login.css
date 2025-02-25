@@ -1,0 +1,80 @@
+/* login.css */
+
+/* 전역 스타일 */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* 로그인 컨테이너 스타일 */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 폼 스타일 */
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 입력 필드 그룹 스타일 */
+.input-group {
+  margin-bottom: 1rem;
+}
+
+/* 레이블 스타일 */
+.label {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* 입력 필드 스타일 */
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+/* 로그인 버튼 스타일 */
+.submit-button {
+  padding: 10px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* 푸터 링크 스타일 */
+.footer-links {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.footer-links a {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}

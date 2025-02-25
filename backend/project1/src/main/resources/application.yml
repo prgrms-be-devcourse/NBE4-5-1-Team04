@@ -1,9 +1,9 @@
 spring:
   application.name: project1
   datasource:
-    url: jdbc:mysql://localhost:3306/project1
-    username: dbuser
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create
@@ -31,7 +31,6 @@ spring:
 
   profiles:
     active: dev
-
 
 # 상품 이미지를 저장할 경로 지정
 file.upload-dir: ${IMAGE_UPLOAD_DIRECTORY}

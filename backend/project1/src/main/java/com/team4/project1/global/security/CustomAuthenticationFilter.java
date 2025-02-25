@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,14 +42,14 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         String apiKey = authorizationHeader.substring("Bearer ".length());
 
-        Optional<Customer> opCustomer = customerService.findByApiKey(apiKey);
+        Customer opCustomer = customerService.findByApiKey(apiKey);
 
-        if (opCustomer.isEmpty()) {
+        if (opCustomer== null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Customer actor = opCustomer.get();
+        Customer actor = opCustomer;
 
          rq.setLogin(actor.getUsername());
 
