@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.UUID;
 
 
 /**
@@ -102,7 +102,7 @@ public class ApiV1CustomerController {
             new IllegalArgumentException("잘못된 아이디 입니다.");
         }
 
-        Customer customer = customerService.getCustomerById(customerDto.getId());
+        Customer customer = customerService.getCustomerByIdWithNewApiKey(customerDto.getId());
         if (!customer.getPassword().equals(reqBody.password())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
@@ -135,7 +135,7 @@ public class ApiV1CustomerController {
      */
     @Operation(summary = "내 정보 조회")
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto<CustomerDto>> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDto<CustomerDto>> getCustomerById(@PathVariable("id") Long id) {
         Customer customer = customerService.getCustomerById(id);
 
         return ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(customer)));
@@ -153,7 +153,7 @@ public class ApiV1CustomerController {
      */
     @Operation(summary = "내 정보 수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto<CustomerDto>> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto<CustomerDto>> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto customerDto) {
         Customer updated = customerService.updateCustomer(id, customerDto);
         return ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(updated)));
     }

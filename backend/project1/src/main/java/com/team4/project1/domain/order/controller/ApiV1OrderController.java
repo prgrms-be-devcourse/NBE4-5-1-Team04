@@ -54,7 +54,7 @@ public class ApiV1OrderController {
     @Operation(summary = "주문 수정")
     @PutMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(
-            @PathVariable Long orderId,
+            @PathVariable("orderId") Long orderId,
             @RequestBody List<OrderItemDto> orderItemDtos,
             Principal principal) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.updateOrder(orderItemDtos, orderId, principal)));
@@ -70,7 +70,7 @@ public class ApiV1OrderController {
     @Operation(summary = "주문 삭제")
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ResponseDto<Long>> cancelOrder(
-            @PathVariable Long orderId,
+            @PathVariable("orderId") Long orderId,
             Principal principal) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.cancelOrder(orderId, principal)));
     }
@@ -88,7 +88,7 @@ public class ApiV1OrderController {
     )
     @GetMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderByOrderId(
-            @PathVariable Long orderId,
+            @PathVariable("orderId") Long orderId,
             Principal principal) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId, principal)));
     }
@@ -110,7 +110,7 @@ public class ApiV1OrderController {
      }
 
     @PostMapping("/{orderId}/confirm")
-    public ResponseEntity<ResponseDto<Long>> confirmOrder(@PathVariable Long orderId, Principal principal) {
+    public ResponseEntity<ResponseDto<Long>> confirmOrder(@PathVariable("orderId") Long orderId, Principal principal) {
         Long confirmedOrderId = orderService.confirmOrder(orderId, principal);
         return ResponseEntity.ok(ResponseDto.ok(confirmedOrderId));
     }

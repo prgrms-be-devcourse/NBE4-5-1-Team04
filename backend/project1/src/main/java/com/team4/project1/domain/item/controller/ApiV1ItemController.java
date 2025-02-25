@@ -41,7 +41,7 @@ public class ApiV1ItemController {
      */
     @Operation(summary = "개별 상품 조회")
     @GetMapping("/{itemId}")
-    public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Long itemId) {
+    public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable("itemId") Long itemId) {
         return ResponseEntity.ok(ResponseDto.ok(itemService.getItemById(itemId)));
     }
 
@@ -60,7 +60,7 @@ public class ApiV1ItemController {
     )
     @GetMapping
     public ResponseEntity<ResponseDto<Page<ItemDto>>> sortedItems(
-            @RequestParam(value = "sortBy", required = false, defaultValue = "NAME") ItemSortType sortType,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortType,
             @RequestParam(value = "searchKeyword", required = false) String keyword,
             Pageable pageable
     ) {
