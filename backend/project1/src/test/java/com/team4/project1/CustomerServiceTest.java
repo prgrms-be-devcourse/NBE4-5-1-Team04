@@ -23,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-
+/**
+ * {@link CustomerService} 클래스에 대한 단위 테스트입니다.
+ * 이 클래스는 {@link CustomerService}의 메서드들이 예상대로 동작하는지 확인하는 테스트 메서드들을 포함하고 있습니다.
+ */
 @ExtendWith(MockitoExtension.class) // Mockito 확장 기능 활성화
 class CustomerServiceTest {
 
@@ -37,7 +40,10 @@ class CustomerServiceTest {
     private CustomerService customerService; // customerRepository를 주입받을 실제 서비스 객체 생성
 
     private Customer customer;
-
+    /**
+     * 각 테스트가 실행되기 전에 호출되는 메서드입니다.
+     * 테스트를 위해 사용할 고객 객체를 초기화합니다.
+     */
     @BeforeEach
     void setUp() {
         customer = Customer.builder()
@@ -49,7 +55,10 @@ class CustomerServiceTest {
                 .apiKey("testApiKey")
                 .build();
     }
-
+    /**
+     * 새로운 고객을 등록하는 메서드에 대한 테스트입니다.
+     * 고객 정보를 입력하여 새로운 고객을 등록하고, 저장된 고객이 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("새로운 고객을 등록할 수 있다.")
     void joinCustomer() {
@@ -82,7 +91,10 @@ class CustomerServiceTest {
                 any(String.class)
         );
     }
-
+    /**
+     * 고객 ID로 고객을 조회하는 메서드에 대한 테스트입니다.
+     * 주어진 고객 ID로 해당 고객을 조회하고, 정상적으로 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("고객 ID로 고객을 조회할 수 있다.")
     void getCustomerById() {
@@ -101,7 +113,10 @@ class CustomerServiceTest {
         assertThat(foundCustomer.getApiKey()).isEqualTo(customer.getApiKey());
         then(customerRepository).should().findById(1L);
     }
-
+    /**
+     * 존재하지 않는 고객 ID를 조회할 때 발생하는 예외를 테스트합니다.
+     * 존재하지 않는 고객 ID로 조회를 시도할 때 {@link CustomerNotFoundException} 예외가 발생하는지 확인합니다.
+     */
     @Test
     @DisplayName("존재하지 않는 고객 ID 조회 시 예외가 발생한다.")
     void getCustomerByIdNotFound() {
@@ -192,6 +207,10 @@ class CustomerServiceTest {
         then(customerRepository).should().findByApiKey(testApiKey);
     }
 
+    /**
+     * 모든 고객의 목록을 조회하는 메서드에 대한 테스트입니다.
+     * 전체 고객 목록을 조회하고, 조회된 고객의 정보가 올바른지 확인합니다.
+     */
     @Test
     @DisplayName("고객의 전체 목록을 조회할 수 있다.")
     void getAllCustomers() {
@@ -213,6 +232,10 @@ class CustomerServiceTest {
         then(customerRepository).should().findAll();
     }
 
+    /**
+     * 고객 정보를 수정하는 메서드에 대한 테스트입니다.
+     * 주어진 고객 ID와 수정된 정보로 고객을 수정하고, 수정된 정보가 제대로 반영되는지 확인합니다.
+     */
     @Test
     @DisplayName("고객 정보를 수정할 수 있다.")
     void updateCustomer() {
@@ -242,7 +265,10 @@ class CustomerServiceTest {
         assertThat(exception.getMessage()).isEqualTo("해당 고객을 찾을 수 없습니다. (ID: " + 0L + ")");
         then(customerRepository).should().findById(0L);
     }
-
+    /**
+     * 고객 수를 조회하는 메서드에 대한 테스트입니다.
+     * 고객 수를 조회하고, 반환된 고객 수가 예상대로 맞는지 확인합니다.
+     */
     @Test
     @DisplayName("고객 수를 조회할 수 있다.")
     void countCustomers() {

@@ -24,7 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-
+/**
+ * {@link ItemService} 클래스에 대한 단위 테스트입니다.
+ * 이 클래스는 {@link ItemService}의 메서드들이 예상대로 동작하는지 확인하는 테스트 메서드들을 포함하고 있습니다.
+ */
 @ExtendWith(MockitoExtension.class)
 class ItemServiceTest {
 
@@ -40,7 +43,10 @@ class ItemServiceTest {
     void setUp() {
         items.add(new Item("Aardvark", 1, 1));
     }
-
+    /**
+     * 아이템을 가격 기준으로 정렬하여 조회하는 메서드에 대한 테스트입니다.
+     * 정렬 기준이 'price'일 때, 아이템 목록이 가격에 따라 올바르게 정렬되어 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("정렬 기준(price)에 따라 아이템을 정렬하여 조회할 수 있다.")
     void getAllItemsSortedByPrice() {
@@ -57,7 +63,10 @@ class ItemServiceTest {
         then(itemRepository).should().findAllByNameContainingOrderByPriceAsc("Test", pageable);
     }
 
-
+    /**
+     * 아이템을 이름 기준으로 정렬하여 조회하는 메서드에 대한 테스트입니다.
+     * 정렬 기준이 'name'일 때, 아이템 목록이 이름에 따라 올바르게 정렬되어 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("정렬 기준(name)에 따라 아이템을 정렬하여 조회할 수 있다.")
     void getAllItemsSortedByName() {
@@ -74,7 +83,10 @@ class ItemServiceTest {
         then(itemRepository).should().findAllByNameContainingOrderByNameAsc("Test", pageable);
     }
 
-
+    /**
+     * 특정 ID의 아이템을 조회하는 메서드에 대한 테스트입니다.
+     * 아이템 ID로 아이템을 조회하고, 올바른 아이템이 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("존재하는 특정 ID의 아이템을 조회할 수 있다.")
     void getItemById() {
@@ -90,6 +102,10 @@ class ItemServiceTest {
         then(itemRepository).should().findById(0L);
     }
 
+    /**
+     * 존재하지 않는 ID의 아이템을 조회할 때 발생하는 예외를 테스트합니다.
+     * 존재하지 않는 아이템 ID로 조회를 시도할 때 {@link ItemNotFoundException} 예외가 발생하는지 확인합니다.
+     */
     @Test
     @DisplayName("존재하지 않는 ID의 아이템을 조회하면 예외가 발생한다.")
     void getItemByIdNotFound() {
@@ -100,7 +116,10 @@ class ItemServiceTest {
         assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(0L));
         then(itemRepository).should().findById(0L);
     }
-
+    /**
+     * 새로운 아이템을 추가하는 메서드에 대한 테스트입니다.
+     * 새로운 아이템을 추가하고, 추가된 아이템이 반환되는지 확인합니다.
+     */
     @Test
     @DisplayName("새로운 아이템을 추가할 수 있다.")
     void addItem() {
@@ -119,7 +138,10 @@ class ItemServiceTest {
         assertThat(newItem.getStock()).isEqualTo(mockItem.getStock());
         then(itemRepository).should().save(any(Item.class));
     }
-
+    /**
+     * 전체 아이템 개수를 조회하는 메서드에 대한 테스트입니다.
+     * 아이템 수를 조회하고, 결과가 예상한 값과 일치하는지 확인합니다.
+     */
     @Test
     @DisplayName("전체 아이템 개수를 조회할 수 있다.")
     void countItems() {
