@@ -94,11 +94,11 @@ class ItemServiceTest {
         given(itemRepository.findById(0L)).willReturn(Optional.of(items.getFirst()));
 
         // When
-        Optional<ItemDto> foundItem = itemService.getItemById(0L);
+        ItemDto foundItem = itemService.getItemById(0L);  // 반환값을 ItemDto로 받기
 
         // Then
         assertThat(foundItem).isPresent();
-        assertThat(foundItem.get().getName()).isEqualTo(items.getFirst().getName());
+        assertThat(foundItem.getName()).isEqualTo(items.getFirst().getName());
         then(itemRepository).should().findById(0L);
     }
 

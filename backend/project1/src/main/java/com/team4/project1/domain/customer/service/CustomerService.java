@@ -66,29 +66,30 @@ public class CustomerService {
     /**
      * 사용자 이름을 통해 고객을 조회하는 메서드입니다.
      * @param username 조회할 고객의 사용자 이름
-     * @return {@Link Optional<Customer>}객체, 해당 사용자 이름을 가진 고객이 있으면 반환합니다.
+     * @return {@Link Customer}객체, 해당 사용자 이름을 가진 고객이 있으면 반환합니다.
      */
-    public Optional<Customer> findByUsername(String username) {
-        return customerRepository.findByUsername(username);
+    public Customer findByUsername(String username) {
+        return customerRepository.findByUsername(username).orElseThrow(() -> new CustomerNotFoundException(username));
     }
-
+  
     /**
      * API 키를 통해 고객을 조회하는 메서드입니다.
      * @param apiKey 조회할 고객의 API키
-     * @return {@Link Optional<Customer>} 객체, 해당 API 키를 가진 고객이 있으면 반환합니다.
+     * @return {@Link Customer} 객체, 해당 API 키를 가진 고객이 있으면 반환합니다.
      */
-    public Optional<Customer> findByApiKey(String apiKey) {
-        return customerRepository.findByApiKey(apiKey);
-    }
+    public Customer findByApiKey(String apiKey) {
+        return customerRepository.findByApiKey(apiKey).orElseThrow(() -> new CustomerNotFoundException(apiKey));
 
+    }
+  
     /**
      * 고객 ID를 통해 고객의 정보를 조회하는 메서드입니다.
-      * @param id 조회할 고객의 ID
-     * @return  {@Link Optional<Customer>} 객체, 해당 ID를 가진 고객이 있으면 반환합니다.
+     * @param id 조회할 고객의 ID
+     * @return  {@Link Customer} 객체, 해당 ID를 가진 고객이 있으면 반환합니다.
      * @throws CustomerNotFoundException 고객이 존재하지 않는 경우에 예외 발생합니다.
      */
-    public Optional<Customer> getCustomerById(Long id) {
-        return Optional.of(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     /**

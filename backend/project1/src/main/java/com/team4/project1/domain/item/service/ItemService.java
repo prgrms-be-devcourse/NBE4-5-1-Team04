@@ -90,16 +90,15 @@ public class ItemService {
                 .map(ItemDto::from)
                 .collect(Collectors.toList());
     }
-
+  
     /**
      * 주어진 ID로 상품을 조회하여 DTO 형태로 반환합니다.
      * @param itemId 조회할 상품의 ID
      * @return 상품의 DTO를 반환합니다.
      * @throws ItemNotFoundException 상품을 찾을 수 없는 경우 예외가 발생합니다.
      */
-    public Optional<ItemDto> getItemById(Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
-        return Optional.of(ItemDto.from(item));
+    public ItemDto getItemById(Long itemId) {
+        return ItemDto.from(itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId)));
     }
 
     /**

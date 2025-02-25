@@ -102,7 +102,7 @@ class CustomerServiceTest {
         given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
 
         // When
-        Customer foundCustomer = customerService.getCustomerById(customer.getId()).orElseThrow();
+        Customer foundCustomer = customerService.getCustomerById(1L);
 
         // Then
         assertThat(foundCustomer.getId()).isEqualTo(customer.getId());
