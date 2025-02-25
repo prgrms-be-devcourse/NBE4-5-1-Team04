@@ -1,5 +1,6 @@
 package com.team4.project1.domain.customer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.project1.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
@@ -70,7 +71,9 @@ public class Customer {
      * 고객과 주문 간의 1:N의 관계를 매핑합니다.
      * 주문 목록이 필요한 시점에만 로딩되도록 지연방식을 사용하고 있습니다.
      */
+
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
     public Customer(String username, String password, String name, String email) {
