@@ -51,7 +51,7 @@ public class ItemService {
         item.setStock(item.getStock() - quantity); // 재고 차감
         itemRepository.save(item); // 변경된 아이템 저장
     }
-    
+
     public Page<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword, Pageable pageable) {
         if ("price".equalsIgnoreCase(sortBy)) {
             return itemRepository.findAllByNameContainingOrderByPriceAsc(keyword, pageable).map(ItemDto::from);
@@ -69,9 +69,8 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
     
-    public Optional<ItemDto> getItemById(Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
-        return Optional.of(ItemDto.from(item));
+    public ItemDto getItemById(Long itemId) {
+        return ItemDto.from(itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId)));
     }
     
     public long count() {

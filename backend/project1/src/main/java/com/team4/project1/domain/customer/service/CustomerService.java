@@ -31,7 +31,7 @@ public class CustomerService {
         // 3) 이메일 발송
         String subject = "회원가입을 환영합니다!";
         String text = String.format("안녕하세요, %s 님!\n" + "서비스를 이용해주셔서 감사합니다.\n" + "회원가입이 성공적으로 완료되었습니다.", savedCustomer.getName());
-        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
+//        emailService.sendSimpleEmail(savedCustomer.getEmail(), subject, text);
 
         return savedCustomer;
     }
@@ -40,16 +40,17 @@ public class CustomerService {
         return customerRepository.count();
     }
 
-    public Optional<Customer> findByUsername(String username) {
-        return customerRepository.findByUsername(username);
+    public Customer findByUsername(String username) {
+        return customerRepository.findByUsername(username).orElseThrow(() -> new CustomerNotFoundException(username));
     }
 
-    public Optional<Customer> findByApiKey(String apiKey) {
-        return customerRepository.findByApiKey(apiKey);
+    public Customer findByApiKey(String apiKey) {
+        return customerRepository.findByApiKey(apiKey).orElseThrow(() -> new CustomerNotFoundException(apiKey));
+
     }
 
-    public Optional<Customer> getCustomerById(Long id) {
-        return Optional.ofNullable(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     public List<Customer> getAllCustomers() {

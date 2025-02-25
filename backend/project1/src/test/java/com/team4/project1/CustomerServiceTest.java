@@ -59,7 +59,7 @@ class CustomerServiceTest {
     void getCustomerById() {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-        Customer foundCustomer = customerService.getCustomerById(1L).orElseThrow();
+        Customer foundCustomer = customerService.getCustomerById(1L);
 
         assertThat(foundCustomer).isNotNull();
         assertThat(foundCustomer.getId()).isEqualTo(1L);

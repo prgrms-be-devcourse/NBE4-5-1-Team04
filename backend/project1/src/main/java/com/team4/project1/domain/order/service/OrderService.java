@@ -42,8 +42,10 @@ public class OrderService {
         }
 
         String currentUsername = principal.getName();  // Principal에서 사용자 이름을 가져옵니다.
-        Customer customer = customerService.findByUsername(currentUsername)
-                .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
+        Customer customer = customerService.findByUsername(currentUsername);
+        if (customer == null) {
+            throw new CustomerNotFoundException("사용자를 찾을 수 없습니다.");
+        }
 
         Order newOrder = new Order(customer, LocalDateTime.now(), 0L);
 
@@ -51,9 +53,7 @@ public class OrderService {
         long totalPrice = 0L;
 
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(ItemDto::toEntity)
-                    .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
+            Item item = itemService.getItemById(orderItemDto.getItemId()).toEntity();
 
             itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());
 
@@ -90,9 +90,7 @@ public class OrderService {
 
         long totalPrice = 0L;
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            Item item = itemService.getItemById(orderItemDto.getItemId())
-                    .map(ItemDto::toEntity)
-                    .orElseThrow(() -> new ItemNotFoundException(orderItemDto.getItemId()));
+            Item item = itemService.getItemById(orderItemDto.getItemId()).toEntity();
 
             itemService.reduceStock(orderItemDto.getItemId(), orderItemDto.getQuantity());  // 재고 감소 처리
 
@@ -136,8 +134,11 @@ public class OrderService {
         }
 
         String currentUsername = principal.getName();
-        Customer customer = customerService.findByUsername(currentUsername)
-                .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
+        Customer customer = customerService.findByUsername(currentUsername);
+        if (customer == null) {
+            throw new CustomerNotFoundException("사용자를 찾을 수 없습니다.");
+        }
+
 
         Page<Order> orders = orderRepository.findAllByCustomerId(customer.getId(), pageable);
         orders.forEach(this::updateOrderStatusOnFetch);
@@ -167,7 +168,10 @@ public class OrderService {
             throw new IllegalArgumentException("주문 아이템이 비어 있을 수 없습니다.");
         }
         return orderItemDtos.stream()
-                .filter(dto -> itemService.getItemById(dto.getItemId()).isPresent())
+                .map(dto -> {
+                    itemService.getItemById(dto.getItemId()); // 존재 여부 확인, 존재하지 않으면 예외 발생
+                    return dto;
+                })
                 .toList();
     }
 

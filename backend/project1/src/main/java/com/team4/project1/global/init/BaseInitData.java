@@ -88,11 +88,11 @@ public class BaseInitData {
         }
 
         // 임의로 고객 id 1번을 사용 (이미 customerInit에서 데이터가 생성되었음)
-        Optional<Customer> customerOpt = customerService.getCustomerById(1L);
-        if (customerOpt.isEmpty()) {
+        Customer customerOpt = customerService.getCustomerById(1L);
+        if (customerOpt == null) {
             return;
         }
-        Customer customer = customerOpt.get();
+        Customer customer = customerOpt;
 
         // 인증된 사용자로 설정
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

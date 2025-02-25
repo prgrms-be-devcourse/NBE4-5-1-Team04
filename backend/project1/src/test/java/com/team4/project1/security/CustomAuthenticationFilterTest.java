@@ -77,7 +77,7 @@ class CustomAuthenticationFilterTest {
                 .apiKey(apiKey)
                 .build();
 
-        when(customerService.findByApiKey(apiKey)).thenReturn(Optional.of(customer));
+        when(customerService.findByApiKey(apiKey)).thenReturn(customer);
 
         doReturn("Bearer " + apiKey).when(request).getHeader("Authorization");
 

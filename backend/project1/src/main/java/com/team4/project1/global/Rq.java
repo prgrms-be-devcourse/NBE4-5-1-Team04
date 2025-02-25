@@ -29,13 +29,14 @@ public class Rq {
     public Customer getAuthenticatedActor() {
         String authorizationValue = request.getHeader("Authorization");
         String apiKey = authorizationValue.substring("Bearer ".length());
-        Optional<Customer> opCustomer = customerService.findByApiKey(apiKey);
 
-        if (opCustomer.isEmpty()) {
+        Customer customer = customerService.findByApiKey(apiKey);
+
+        if (customer == null) {
             throw new AuthenticationException("잘못된 인증키 입니다.") {};
         }
 
-        return opCustomer.get();
+        return customer;
     }
 
 
@@ -63,6 +64,6 @@ public class Rq {
 
         String username = user.getUsername();
 
-        return customerService.findByUsername(username).get();
+        return customerService.findByUsername(username);
     }
 }
