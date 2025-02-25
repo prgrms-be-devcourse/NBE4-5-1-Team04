@@ -186,7 +186,7 @@ public class OrderService {
 
         if (existingOrder.getOrderStatus() == OrderStatus.SHIPPED ||
                 existingOrder.getOrderStatus() == OrderStatus.PROCESSING) {
-            throw new IllegalStateException("이미 접수됐거나 발송된 주문은 취소할 수 없습니다.");
+            throw new IllegalStateException("이미 접수됐거나 발송된 주문은 또 접수할 수 없습니다.");
         }
 
         existingOrder.setOrderStatus(OrderStatus.PROCESSING);
