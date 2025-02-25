@@ -5,19 +5,22 @@ import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
 import com.team4.project1.domain.order.service.OrderService;
 import com.team4.project1.global.dto.ResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
+import java.security.Principal;
 
 /**
  * 주문 관련 APi를 처리하는 컨트롤러입니다.
  * 주문 생성, 수정 취소 , 조회 기능을 제공합니다.
  */
+@Tag(name = "ApiV1CustomerController", description = "주문 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
@@ -32,6 +35,7 @@ public class ApiV1OrderController {
      * @param principal 현재 로그인한 사용자의 정보(주문을 생성한 사용자를 나타냄)
      * @return 생성된 주문과 주문 항목들의 DTO를 포함하는 응답을 반환합니다.
      */
+    @Operation(summary = "주문 생성")
     @PostMapping
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> createOrder(
             @RequestBody List<OrderItemDto> orderItemDtos,
@@ -47,6 +51,7 @@ public class ApiV1OrderController {
      * @param principal 현재 로그인한 사용자의 정보 (주문을 수정한 사용자를 나타냄)
      * @return 수정된 주문과 주문 항목들의 DTO를 포함하는 응답을 반환합니다.
      */
+    @Operation(summary = "주문 수정")
     @PutMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> updateOrder(
             @PathVariable Long orderId,
@@ -62,6 +67,7 @@ public class ApiV1OrderController {
      * @param principal 현재 로그인한 사용자의 정보 (주문을 최소한 사용자를 나타냄)
      * @return 취소된 주문의 ID를 포함하는 응답을 반환합니다.
      */
+    @Operation(summary = "주문 삭제")
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ResponseDto<Long>> cancelOrder(
             @PathVariable Long orderId,
@@ -76,12 +82,25 @@ public class ApiV1OrderController {
      * @param principal 현재 로그인한 사용자의 정보( 주문을 조회한 사용자를 나타냄)
      * @return 조회된 주문과 주문 항목들의 DTO를 포함하는 응답을 반환합니다.
      */
+    @Operation(
+            summary = "주문 불러오기",
+            description = "orderId를 통해 특정 주문 불러오기"
+    )
     @GetMapping("/{orderId}")
     public ResponseEntity<ResponseDto<OrderWithOrderItemsDto>> getOrderByOrderId(
             @PathVariable Long orderId,
             Principal principal) {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId, principal)));
     }
+
+    @Operation(
+            summary = "특정 회원의 전체 주문 불러오기",
+            description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
+    )
+    @GetMapping(value = "", params = "cust_id")
+    public ResponseEntity<ResponseDto<List<OrderDto>>> getAllOrders(
+            @RequestParam("cust_id") Long customerId) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId)));
 
     /**
      * 현재 로그인한 사용자의 모든 주문을 조회하는 메서드입니다.
