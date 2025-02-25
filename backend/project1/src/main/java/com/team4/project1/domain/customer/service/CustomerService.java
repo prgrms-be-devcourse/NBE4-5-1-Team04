@@ -111,6 +111,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
         customer.setName(customerDto.getName());
         customer.setEmail(customerDto.getEmail());
+        customer.setPassword(customerDto.getPassword());
         return customer;
     }
 
