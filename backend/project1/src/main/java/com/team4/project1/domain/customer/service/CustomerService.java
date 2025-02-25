@@ -96,8 +96,10 @@ public class CustomerService {
      * 모든 고객 정보를 반환하는 메서드입니다.
      * @return 모든 고객을 담고 있는 {@Link List<Customer>}객체를 반환합니다.
      */
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDto> getAllCustomers() {
+        return customerRepository.findAll().stream()
+                .map(CustomerDto::from)
+                .toList();
     }
 
     /**
