@@ -6,7 +6,10 @@ package com.team4.project1.domain.order.entity;
  * 이 열거형은 주문이 현재 어떤 배송 상태에 있는지를 나타내며,
  * 주문이 처리 중인지 또는 이미 배송되었는지를 구분합니다.
  */
-public enum DeliveryStatus {
+public enum OrderStatus {
+    /** 주문이 장바구니 상태로 미접수된 상태 */
+    TEMPORARY,
+
     /** 주문이 접수되어 처리 중인 상태 */
     PROCESSING,
 
