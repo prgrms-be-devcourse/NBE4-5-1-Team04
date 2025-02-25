@@ -161,14 +161,10 @@ export default function ItemListPage() {
               <TableRow
                 key={item.id}
                 className="border-b hover:bg-gray-50 transition cursor-pointer"
+                onClick={() => router.push(`/items/${item.id}`)}
               >
                 <TableCell className="text-left p-4 text-gray-800">
-                  <Link
-                    href={`/items/${item.id}`}
-                    className="block w-full h-full"
-                  >
-                    {item.name}
-                  </Link>
+                  {item.name}
                 </TableCell>
                 <TableCell className="text-center p-4 text-gray-800">
                   {item.price.toLocaleString()}원

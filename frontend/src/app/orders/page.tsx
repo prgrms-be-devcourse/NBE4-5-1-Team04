@@ -15,7 +15,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faTruck, faSearch } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import moment from "moment";
 
@@ -74,7 +74,8 @@ export default function OrderListPage() {
         }
 
         const data = await response.json();
-        setOrders(data.data as OrderDto[]);
+        console.log(data);
+        setOrders(data.data.content as OrderDto[]);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       } finally {
@@ -106,7 +107,7 @@ export default function OrderListPage() {
     <Card className="p-6 shadow-xl rounded-3xl w-full">
       <div className="grid grid-cols-2 items-center mb-4">
         <h1 className="pl-2 text-2xl font-bold text-gray-800 flex items-center">
-          <FontAwesomeIcon icon={faBars} className="pr-3" />
+          <FontAwesomeIcon icon={faTruck} className="pr-3" />
           주문 목록
         </h1>
         <div className="flex justify-end gap-2">
@@ -130,9 +131,9 @@ export default function OrderListPage() {
         </div>
       </div>
 
-      <Table>
+      <Table className="rounded-xl overflow-hidden">
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-gray-100 text-gray-700">
             <TableHead>주문 ID</TableHead>
             <TableHead>주문 날짜</TableHead>
             <TableHead>총 금액</TableHead>
@@ -142,10 +143,11 @@ export default function OrderListPage() {
         <TableBody>
           {orders.length > 0 ? (
             orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>
-                  <Link href={`/orders/${order.id}`}>#{order.id}</Link>
-                </TableCell>
+              <TableRow
+                key={order.id}
+                onClick={() => router.push(`/orders/${order.id}`)}
+              >
+                <TableCell>#{order.id}</TableCell>
                 <TableCell>
                   {moment(order.date).format("YYYY-MM-DD HH:mm:ss")}
                 </TableCell>
