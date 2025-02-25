@@ -94,13 +94,14 @@ class ItemServiceTest {
         given(itemRepository.findById(0L)).willReturn(Optional.of(items.getFirst()));
 
         // When
-        ItemDto foundItem = itemService.getItemById(0L);  // 반환값을 Optional이 아닌 ItemDto로 받기
+        ItemDto foundItem = itemService.getItemById(0L);  // 반환값을 ItemDto로 받기
 
         // Then
-        assertThat(foundItem).isNotNull();
+        assertThat(foundItem).isPresent();
         assertThat(foundItem.getName()).isEqualTo(items.getFirst().getName());
         then(itemRepository).should().findById(0L);
     }
+
     /**
      * 존재하지 않는 ID의 아이템을 조회할 때 발생하는 예외를 테스트합니다.
      * 존재하지 않는 아이템 ID로 조회를 시도할 때 {@link ItemNotFoundException} 예외가 발생하는지 확인합니다.
