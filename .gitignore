@@ -37,6 +37,5 @@ out/
 .vscode/
 
 ### custom ###
-apiV1.json
-schema.d.ts
 .env
+*.env
