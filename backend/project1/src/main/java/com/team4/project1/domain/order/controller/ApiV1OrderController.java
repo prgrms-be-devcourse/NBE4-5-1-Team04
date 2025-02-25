@@ -93,16 +93,16 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId, principal)));
     }
 
-    @Operation(
-            summary = "특정 회원의 전체 주문 불러오기",
-            description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
-    )
-    @GetMapping(value = "", params = "cust_id")
-    public ResponseEntity<ResponseDto<Page<OrderWithOrderItemsDto>>> getAllOrders(
-            @RequestParam("cust_id") Long customerId,
-            Pageable pageable) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId, pageable)));
-    }
+//    @Operation(
+//            summary = "특정 회원의 전체 주문 불러오기",
+//            description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
+//    )
+//    @GetMapping(value = "", params = "cust_id")
+//    public ResponseEntity<ResponseDto<Page<OrderWithOrderItemsDto>>> getAllOrders(
+//            @RequestParam("cust_id") Long customerId,
+//            Pageable pageable) {
+//        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId, pageable)));
+//    }
   
     /**
      * 현재 로그인한 사용자의 모든 주문을 조회하는 메서드입니다.
