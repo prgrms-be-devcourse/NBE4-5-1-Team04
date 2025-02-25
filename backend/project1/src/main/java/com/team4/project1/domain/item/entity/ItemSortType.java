@@ -1,31 +1,27 @@
 package com.team4.project1.domain.item.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 
-@Getter
-@RequiredArgsConstructor
 public enum ItemSortType {
-    NAME(Sort.by(Sort.Direction.ASC, "name")),
-    PRICE(Sort.by(Sort.Direction.ASC, "price"));
+    NAME("name"),
+    PRICE("price");
 
-    private final Sort sort;
+    private final String fieldName;
 
-    ItemSortType(Sort sort) {
-        this.sort = sort;
+    ItemSortType(String fieldName) {
+        this.fieldName = fieldName;
     }
 
-    public Sort toSort() {
-        return sort;
+    public Sort getSort(Sort.Direction direction) {
+        return Sort.by(direction, this.fieldName);
     }
 
     public static ItemSortType fromString(String value) {
         return Arrays.stream(values())
                 .filter(type -> type.name().equalsIgnoreCase(value))
                 .findFirst()
-                .orElse(NAME);  // 기본값은 NAME
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 정렬 기준: " + value));
     }
 }
