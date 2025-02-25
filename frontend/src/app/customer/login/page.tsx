@@ -52,7 +52,7 @@ export default function Page() {
   return (
     <Card className="w-full max-w-sm shadow-lg rounded-lg">
       <CardHeader className="my-4">
-        <CardTitle className="text-center text-xl font-semibold">
+        <CardTitle className="text-center text-2xl font-bold">
           <FontAwesomeIcon icon={faLock} />
         </CardTitle>
       </CardHeader>

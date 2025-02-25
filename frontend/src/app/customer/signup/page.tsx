@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Form } from "@/components/ui/form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const BASE_URL = "http://localhost:8080/api/v1/customer"; // API 경로
 
@@ -44,10 +46,10 @@ export default function Page() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-xl rounded-lg bg-white">
-      <CardHeader className="bg-gray-100 rounded-t-lg py-4">
-        <CardTitle className="text-center text-2xl font-bold text-gray-800">
-          회원가입
+    <Card className="w-full max-w-sm shadow-lg rounded-lg">
+      <CardHeader className="my-4">
+        <CardTitle className="text-center text-2xl font-bold">
+          <FontAwesomeIcon icon={faUser} />
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
@@ -97,7 +99,7 @@ export default function Page() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full py-2 text-lg font-semibold">
+            <Button type="submit" className="w-full mt-2">
               가입하기
             </Button>
           </form>
