@@ -1,5 +1,6 @@
 package com.team4.project1.domain.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.project1.domain.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,7 @@ public class Order {
      * 지연방식을 사용하고 있습니다.
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Customer customer;
 
     /**
@@ -43,6 +45,7 @@ public class Order {
      * 주문 항목이 리스트에서 제거되면 자동으로 삭제된다.
      * 주문이 삭제되면 관련 주문 항목도 함께 삭제된다.
      */
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
