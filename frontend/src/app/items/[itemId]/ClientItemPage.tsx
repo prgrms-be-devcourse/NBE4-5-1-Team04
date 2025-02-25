@@ -41,20 +41,16 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
     fetchLatestOrderId();
   }, []);
 
-  // 🔹 가장 최신의 TEMPORARY 상태 orderId 가져오기
   const fetchLatestOrderId = async () => {
     try {
       const apiKey = localStorage.getItem("apiKey");
-      const response = await fetch(
-        `${API_URL}/api/v1/orders?status=TEMPORARY`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/v1/orders`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
+        },
+      });
 
       if (!response.ok)
         throw new Error("최신 장바구니 주문을 가져오지 못했습니다.");
