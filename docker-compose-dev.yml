@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.4.1
+    ports: 
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file: ".env"
+
+  backend:
+    build:
+      context: ./backend/project1
+      dockerfile: Dockerfile
+      args:
+        - 'JAR_FILE=build/libs/\*.jar'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+    env_file: ".env"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
