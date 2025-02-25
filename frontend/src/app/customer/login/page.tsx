@@ -39,6 +39,10 @@ export default function Page() {
       // 로그인 성공 시, apiKey와 userId를 로컬 스토리지에 저장
       localStorage.setItem("apiKey", responseData.apiKey || "");
       localStorage.setItem("userId", responseData.item?.id?.toString() || "");
+      localStorage.setItem(
+        "userName",
+        responseData.item?.name?.toString() || ""
+      );
 
       alert("로그인 성공!");
       location.href = "/items";

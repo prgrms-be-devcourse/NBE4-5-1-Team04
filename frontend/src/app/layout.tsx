@@ -78,7 +78,7 @@ export default function RootLayout({
             {user ? (
               <>
                 <span className="text-sm font-semibold">
-                  {user.userId || "사용자"} 님 환영합니다!
+                  {user.userName || "사용자"} 님 환영합니다!
                 </span>
                 <Link
                   href={`/customer/${user.userId}`}
