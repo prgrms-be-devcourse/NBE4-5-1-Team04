@@ -25,10 +25,5 @@ export default function UpdatePage() {
     return <p>로딩 중...</p>;
   }
 
-  return (
-    <div>
-      <h1>회원 정보 수정</h1>
-      <ClientCustomerUpdatePage userId={userId} />
-    </div>
-  );
+  return <ClientCustomerUpdatePage userId={userId} />;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { components } from "@/lib/backend/apiV1/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
@@ -14,37 +14,119 @@ import {
 type ItemDto = components["schemas"]["ItemDto"];
 
 export default function ClientItemPage({ item }: { item: ItemDto }) {
-  // 🔹 상태 추가: 주문 개수 (orderCount)
   const [orderCount, setOrderCount] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [latestOrderId, setLatestOrderId] = useState<number | null>(null);
 
-  // 🔹 개수 조절 함수
+  // 🛒 개수 증가
   const handleIncrease = () => setOrderCount((prev) => prev + 1);
+
+  // 🛒 개수 감소 (최소 1개)
   const handleDecrease = () =>
     setOrderCount((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // 🔹 직접 입력 핸들러
+  // 🛒 수량 직접 입력 핸들러
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
     setOrderCount(isNaN(value) || value < 1 ? 1 : value);
   };
 
-  // 🔹 총 금액 계산
+  // 🛒 총 금액 계산
   const totalPrice = (item.price ? item.price : 0) * orderCount;
 
-  // 🔹 이미지 URL 처리
   const API_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-  const imageUrl = item.imageUri
-    ? item.imageUri
-    : `${API_URL}/api/v1/items/${item.id}/image`;
+
+  useEffect(() => {
+    fetchLatestOrderId();
+  }, []);
+
+  const fetchLatestOrderId = async () => {
+    try {
+      const apiKey = localStorage.getItem("apiKey");
+      const response = await fetch(`${API_URL}/api/v1/orders`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
+        },
+      });
+
+      if (!response.ok)
+        throw new Error("최신 장바구니 주문을 가져오지 못했습니다.");
+
+      const data = await response.json();
+      const orders = data.data.content;
+      if (orders.length === 0) {
+        setLatestOrderId(null);
+        return;
+      }
+
+      // 🔹 가장 최근 orderId 찾기
+      const latestOrder = orders.reduce(
+        (prev, curr) => (prev.id > curr.id ? prev : curr),
+        orders[0]
+      );
+      setLatestOrderId(latestOrder.id);
+    } catch (error) {
+      console.error("최신 장바구니 주문 가져오기 실패:", error);
+    }
+  };
+
+  // 🔹 장바구니 추가 요청
+  const addToCart = async () => {
+    setLoading(true);
+    try {
+      const apiKey = localStorage.getItem("apiKey");
+
+      // 🔹 요청 본문 데이터
+      const requestBody = {
+        itemId: item.id,
+        quantity: orderCount,
+      };
+
+      // const url = latestOrderId
+      //   ? `${API_URL}/api/v1/orders/${latestOrderId}` // 기존 주문에 추가
+      //   : `${API_URL}/api/v1/orders`; // 새 주문 생성
+
+      // console.log(requestBody);
+
+      // const response = await fetch(url, {
+      //   method: latestOrderId ? "PUT" : "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
+      //   },
+      //   body: JSON.stringify(latestOrderId ? requestBody : [requestBody]), // 새 주문 생성 시 배열 필요
+      // });
+
+      const url = `${API_URL}/api/v1/orders`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
+        },
+        body: JSON.stringify([requestBody]), // 새 주문 생성 시 배열 필요
+      });
+
+      if (!response.ok) throw new Error("장바구니 추가 실패");
+
+      alert("✅ 장바구니에 추가되었습니다!");
+    } catch (error) {
+      console.error("장바구니 추가 오류:", error);
+      alert("❌ 장바구니 추가에 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="card">
       <div className="flex flex-col md:flex-row">
-        {/* 🔹 왼쪽: 상품 이미지 */}
         <div className="w-full h-auto md:w-1/2 rounded-lg flex overflow-hidden items-center justify-center">
           <Image
-            src={imageUrl}
+            src={item.imageUri || `${API_URL}/api/v1/items/${item.id}/image`}
             alt={item.name || "상품 이미지"}
             width={0}
             height={0}
@@ -54,7 +136,6 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
           />
         </div>
 
-        {/* 🔹 오른쪽: 상품 정보 */}
         <div className="w-full md:w-1/2 p-6">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">{item.name}</CardTitle>
@@ -105,9 +186,13 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
             </div>
 
             {/* 장바구니 추가 버튼 */}
-            <button className="w-full mt-4 bg-black text-white py-2 rounded-md hover:bg-gray-800 transition">
+            <button
+              onClick={addToCart}
+              className="w-full mt-4 bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
+              disabled={loading}
+            >
               <FontAwesomeIcon icon={faCartShopping} className="pr-2" />
-              장바구니 추가
+              {loading ? "추가 중..." : "장바구니 추가"}
             </button>
           </CardContent>
         </div>
