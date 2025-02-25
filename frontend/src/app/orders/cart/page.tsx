@@ -41,6 +41,7 @@ export default function CartPage() {
     null
   );
   const [loading, setLoading] = useState(true);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   useEffect(() => {
     fetchCartOrder();
@@ -132,6 +133,37 @@ export default function CartPage() {
     }
   };
 
+  // 🛒 주문 확정 요청
+  const confirmOrder = async () => {
+    if (!cartOrder) return;
+    setIsConfirming(true);
+
+    try {
+      const API_KEY = localStorage.getItem("apiKey");
+
+      const response = await fetch(
+        `${API_URL}/api/v1/orders/${cartOrder.id}/confirm`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("주문을 확정하는 데 실패했습니다.");
+
+      alert("✅ 주문이 완료되었습니다!");
+      location.href = "/orders/list"; // 주문 내역 페이지로 이동
+    } catch (error) {
+      console.error("주문 확정 오류:", error);
+      alert("❌ 주문 확정에 실패했습니다.");
+    } finally {
+      setIsConfirming(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -152,7 +184,7 @@ export default function CartPage() {
   );
 
   return (
-    <Card className="p-4 max-w-2xl mx-auto">
+    <Card className="card">
       <CardHeader>
         <CardTitle className="text-xl font-bold">장바구니</CardTitle>
       </CardHeader>
@@ -180,10 +212,14 @@ export default function CartPage() {
 
         <div className="flex justify-between items-center mt-6">
           <span className="text-lg font-semibold">
-            총 금액: {totalAmount} 원
+            총 금액: {totalAmount.toLocaleString()} 원
           </span>
-          <Button className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition">
-            주문하기
+          <Button
+            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
+            onClick={confirmOrder}
+            disabled={isConfirming}
+          >
+            {isConfirming ? "주문 처리 중..." : "주문하기"}
           </Button>
         </div>
       </CardContent>
