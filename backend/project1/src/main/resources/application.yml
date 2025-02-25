@@ -32,7 +32,6 @@ spring:
   profiles:
     active: dev
 
-
 # 상품 이미지를 저장할 경로 지정
 file.upload-dir: ${IMAGE_UPLOAD_DIRECTORY}
 
