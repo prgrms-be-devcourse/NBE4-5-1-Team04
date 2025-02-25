@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -26,7 +25,6 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-
     private final EmailService emailService;
 
     /**
@@ -37,9 +35,9 @@ public class CustomerService {
      * @param email 고객의 이메일
      * @return 새로 생성된 {@Link Customer} 객체
      */
-    public Customer join(String username, String password, String name, String email) {
+    public Customer join(String username, String password,
+                         String name, String email) {
         String apiKey = generateTrimmedBase64StringFromUuid(UUID.randomUUID());
-
         // 1) Customer 엔티티 생성
         Customer customer = Customer.builder().username(username).password(password).apiKey(apiKey)
                 .name(name).email(email).build();

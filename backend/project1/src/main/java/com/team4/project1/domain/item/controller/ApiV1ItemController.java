@@ -2,22 +2,22 @@ package com.team4.project1.domain.item.controller;
 
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
+import com.team4.project1.domain.item.entity.ItemSortType;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,28 +45,30 @@ public class ApiV1ItemController {
         return ResponseEntity.ok(ResponseDto.ok(itemService.getItemById(itemId)));
     }
 
-    
+
     /**
      * 상품 목록을 조회, 검색 및 정렬 기능을 제공하는 API 엔드포인트입니다.
      *
-     * @param sortBy  정렬기준(가격, 이름)
-     * @param keyword 검색 키워드
-     * @return 정렬되고, 검색된 상품 목록을 포함한 {@Link List<ItemDto>}객체를 반환합니다.
+     * @param sortType 정렬 기준 ({@link ItemSortType} 사용 가능)
+     * @param keyword  검색 키워드 (이름을 기준으로 검색)
+     * @return 정렬 및 검색된 상품 목록을 포함한 {@link Page<ItemDto>} 객체를 반환합니다.
      */
+
     @Operation(
             summary = "전체 상품 조회",
             description = "페이징 처리와 검색 및 정렬 기능"
     )
     @GetMapping
     public ResponseEntity<ResponseDto<Page<ItemDto>>> sortedItems(
-            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "NAME") ItemSortType sortType,
             @RequestParam(value = "searchKeyword", required = false) String keyword,
             Pageable pageable
-            ) {
+    ) {
         if (keyword == null) { keyword = ""; }
-        Page<ItemDto> items = itemService.searchAllItemsSortedBy(sortBy, keyword, pageable);
+        Page<ItemDto> items = itemService.searchAllItemsSortedBy(sortType, keyword, pageable);
         return ResponseEntity.ok(ResponseDto.ok(items));
     }
+
 
     /**
      * 새로운 상품을 등록하는 API 엔드포인트입니다.

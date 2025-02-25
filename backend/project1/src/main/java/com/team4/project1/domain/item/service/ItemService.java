@@ -2,19 +2,19 @@ package com.team4.project1.domain.item.service;
 
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
+import com.team4.project1.domain.item.entity.ItemSortType;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.global.exception.InsufficientStockException;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,8 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -66,18 +64,18 @@ public class ItemService {
 
     /**
      * 주어진 키워드로 상품을 검색하고, 주어진 정렬 기준에 따라서 상품을 정렬하여 반환합니다.
-     * @param sortBy 정렬 기준(price 또는 name으로 정렬합니다.)
+     * @param sortType 정렬 기준 ({@link ItemSortType} 사용 가능)
      * @param keyword 검색할 키워드
      * @return 검색된 상품의 DTO 목록을 반환합니다.
      */
-    public Page<ItemDto> searchAllItemsSortedBy(String sortBy, String keyword, Pageable pageable) {
-        if ("price".equalsIgnoreCase(sortBy)) {
-            return itemRepository.findAllByNameContainingOrderByPriceAsc(keyword, pageable).map(ItemDto::from);
-        }
-        else {
-            return itemRepository.findAllByNameContainingOrderByNameAsc(keyword, pageable).map(ItemDto::from);
-        }
+    public Page<ItemDto> searchAllItemsSortedBy(ItemSortType sortType, String keyword, Pageable pageable) {
+        Sort sort = sortType.getSort(Sort.Direction.ASC);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        return itemRepository.findAllByNameContaining(keyword, sortedPageable)
+                .map(ItemDto::from);
     }
+
 
     // TODO: 메소드 삭제 및 관련 코드 리팩토링
     /**
