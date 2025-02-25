@@ -58,15 +58,6 @@ public class Order {
     private LocalDateTime date;
 
     /**
-     * 배송 상태
-     * 주문의 배송 상태를 나타냅니다.
-     * {@link OrderStatus} 열거형을 사용하여 배송 상태를 나타냅니다.
-     */
-    @Enumerated(EnumType.STRING)  // Enum을 String으로 저장
-    @Column(name = "delivery_status", nullable = false)
-    private OrderStatus deliveryStatus;
-
-    /**
      * 주문 총 가격
      * 주문에 포함된 모든 아이템의 총 가격을 저장하며, 반드시 값이 있어야 합니다.
      */

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS customer (
     password VARCHAR(512) NOT NULL, -- 🔹 길이 증가
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE
+    apiKey VARCHAR(50) UNIQUE  -- 🔹 apiKey 컬럼 추가
     );
 
 CREATE TABLE IF NOT EXISTS item (
@@ -46,6 +47,7 @@ VALUES
     (2, 'cheolsu', 'cheolsu1234', '철수', 'cheolsu@example.com'),
     (3, 'yuli', 'yuli1234', '유리', 'yuli@example.com'),
     (4, 'maeng9', 'maeng1234', '맹구', 'maeng9@example.com');
+
 
 -- 상품 데이터 삽입
 INSERT INTO item (id, name, price, stock, image_uuid)
