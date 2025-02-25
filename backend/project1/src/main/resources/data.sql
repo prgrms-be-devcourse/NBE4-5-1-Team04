@@ -1,3 +1,44 @@
+-- 기존 데이터 삭제
+DELETE FROM order_item;
+DELETE FROM order_tbl;
+DELETE FROM customer;
+DELETE FROM item;
+
+-- 테이블 생성
+CREATE TABLE IF NOT EXISTS customer (
+                                        id INT PRIMARY KEY AUTO_INCREMENT,
+                                        username VARCHAR(255) NOT NULL,
+    password VARCHAR(512) NOT NULL, -- 🔹 길이 증가
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE
+    );
+
+CREATE TABLE IF NOT EXISTS item (
+                                    id INT PRIMARY KEY AUTO_INCREMENT,
+                                    name VARCHAR(255) NOT NULL,
+    price INT NOT NULL,
+    stock INT NOT NULL DEFAULT 10,
+    image_uuid BINARY(16) NULL
+    );
+
+CREATE TABLE IF NOT EXISTS order_tbl (
+                                         id INT PRIMARY KEY AUTO_INCREMENT,
+                                         customer_id INT NOT NULL,
+                                         total_price INT NOT NULL,
+                                         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 🔹 `NOT NULL` 추가
+                                         delivery_status VARCHAR(20) DEFAULT 'PENDING',
+    FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS order_item (
+                                          id INT PRIMARY KEY AUTO_INCREMENT,
+                                          order_id INT NOT NULL,
+                                          item_id INT NOT NULL,
+                                          quantity INT NOT NULL,
+                                          CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES order_tbl(id) ON DELETE CASCADE, -- 🔹 `CONSTRAINT` 명시
+    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
+    );
+
 -- 고객 데이터 삽입
 INSERT INTO customer (id, username, password, name, email)
 VALUES
@@ -7,29 +48,23 @@ VALUES
     (4, 'maeng9', 'maeng1234', '맹구', 'maeng9@example.com');
 
 -- 상품 데이터 삽입
-INSERT INTO item (id, name, price, stock_quantity)
+INSERT INTO item (id, name, price, stock, image_uuid)
 VALUES
-    (1, '스타벅스', 6800, 10),
-    (2, '맥심커피', 1000, 10),
-    (3, '카누커피', 1500, 10),
-    (4, '컴포즈 커피', 2800, 10),
-    (5, '이디야 커피', 3000, 10),
-    (6, '빽다방', 2000, 10),
-    (7, '커피빈', 4000, 10),
-    (8, '투썸플레이스', 5000, 10),
-    (9, '엔젤리너스', 3500, 10),
-    (10, '더벤티', 4500, 10),
-    (11, '탐앤탐스', 4200, 10),
-    (12, '폴바셋', 5500, 10),
-    (13, '할리스', 4000, 10);
+    (1, '스타벅스커피', 48000, 7, NULL),
+    (2, '믹스커피', 1000, 8, NULL),
+    (3, '공유커피', 2500, 9, NULL),
+    (4, '컴포즈커피', 38000, 8, NULL);
 
--- 주문 데이터 삽입
-INSERT INTO orders (id, customer_id, total_price)
+-- 주문 데이터 삽입 (`date` 값 추가)
+INSERT INTO order_tbl (id, customer_id, total_price, date, delivery_status)
 VALUES
-    (1, 1, 28400);
+    (1, 1, 146000, NOW(), 'SHIPPED'),
+    (2, 2, 78500, NOW(), 'SHIPPED');
 
 -- 주문 항목 데이터 삽입
 INSERT INTO order_item (id, order_id, item_id, quantity)
 VALUES
     (1, 1, 1, 3),
-    (2, 1, 2, 2);
+    (2, 1, 2, 2),
+    (3, 2, 3, 5),
+    (4, 2, 4, 1);
