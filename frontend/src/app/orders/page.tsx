@@ -35,6 +35,14 @@ export default function OrderListPage() {
     const fetchOrders = async () => {
       const API_URL =
         process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+      const API_KEY =
+        process.env.NEXT_PUBLIC_API_KEY || localStorage.getItem("apiKey");
+
+      if (!API_KEY) {
+        console.error("API Key가 없습니다. 로그인 페이지로 이동합니다.");
+        router.push("/login");
+        return;
+      }
 
       const storedUser = localStorage.getItem("user");
       const customerId = storedUser ? JSON.parse(storedUser).id : null;
@@ -48,17 +56,19 @@ export default function OrderListPage() {
       try {
         const response = await fetch(
           `${API_URL}/api/v1/orders?${queryParams.toString()}`,
-          { cache: "no-store" }
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_KEY}`,
+            },
+            cache: "no-store",
+          }
         );
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error(
-            `API 요청 실패: ${response.status} ${response.statusText}`,
-            errorText
-          );
           throw new Error(
-            `API 요청 실패: ${response.status} ${response.statusText}\n${errorText}`
+            `API 요청 실패: ${response.status} ${response.statusText}`
           );
         }
 
@@ -80,12 +90,6 @@ export default function OrderListPage() {
     router.push(`?searchKeyword=${searchValue}&sortBy=${sortBy}`);
   };
 
-  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSortBy = event.target.value;
-    setSortBy(newSortBy);
-    router.push(`?searchKeyword=${searchValue}&sortBy=${newSortBy}`);
-  };
-
   return (
     <Card className="p-6 shadow-xl rounded-3xl w-full">
       <div className="grid grid-cols-2 items-center mb-4">
@@ -94,15 +98,6 @@ export default function OrderListPage() {
           주문 목록
         </h1>
         <div className="flex justify-end gap-2">
-          <select
-            className="p-2 border rounded-lg"
-            value={sortBy}
-            onChange={handleSortChange}
-          >
-            <option value="date">주문 날짜순</option>
-            <option value="totalPrice">총 금액순</option>
-            <option value="deliveryStatus">배송 상태순</option>
-          </select>
           <Input
             type="text"
             placeholder="검색어를 입력하세요"
@@ -120,54 +115,32 @@ export default function OrderListPage() {
         </div>
       </div>
 
-      <Table className="rounded-xl overflow-hidden border border-gray-500">
+      <Table>
         <TableHeader>
-          <TableRow className="bg-gray-100 text-gray-700">
-            <TableHead className="text-left p-4 font-semibold">
-              주문 ID
-            </TableHead>
-            <TableHead className="text-center p-4 font-semibold">
-              주문 날짜
-            </TableHead>
-            <TableHead className="text-center p-4 font-semibold">
-              총 금액
-            </TableHead>
-            <TableHead className="text-center p-4 font-semibold">
-              배송 상태
-            </TableHead>
+          <TableRow>
+            <TableHead>주문 ID</TableHead>
+            <TableHead>주문 날짜</TableHead>
+            <TableHead>총 금액</TableHead>
+            <TableHead>배송 상태</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {orders.length > 0 ? (
             orders.map((order) => (
-              <TableRow
-                key={order.id}
-                className="border-b hover:bg-gray-50 transition cursor-pointer"
-              >
-                <TableCell className="text-left p-4 text-gray-800">
-                  <Link
-                    href={`/orders/${order.id}`}
-                    className="block w-full h-full"
-                  >
-                    #{order.id}
-                  </Link>
+              <TableRow key={order.id}>
+                <TableCell>
+                  <Link href={`/orders/${order.id}`}>#{order.id}</Link>
                 </TableCell>
-                <TableCell className="text-center p-4 text-gray-800">
+                <TableCell>
                   {moment(order.date).format("YYYY-MM-DD HH:mm:ss")}
                 </TableCell>
-                <TableCell className="text-center p-4 text-gray-800">
-                  {order.totalPrice
-                    ? order.totalPrice.toLocaleString() + "원"
-                    : "가격 정보 없음"}
-                </TableCell>
-                <TableCell className="text-center p-4 text-gray-800">
-                  {order.deliveryStatus ?? "UNKNOWN"}
-                </TableCell>
+                <TableCell>{order.totalPrice?.toLocaleString()}원</TableCell>
+                <TableCell>{order.deliveryStatus ?? "UNKNOWN"}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className="text-center py-6 text-gray-500">
+              <TableCell colSpan={4} className="text-center">
                 주문 내역이 없습니다.
               </TableCell>
             </TableRow>
