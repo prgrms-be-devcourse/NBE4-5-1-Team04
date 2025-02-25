@@ -24,6 +24,7 @@ export default function Page() {
 
   async function handleLogin(data: components["schemas"]["LoginReqBody"]) {
     try {
+      console.log(data);
       const res = await fetch(BASE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

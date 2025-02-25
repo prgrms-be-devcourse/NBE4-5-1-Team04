@@ -101,7 +101,7 @@ export default function ClientCustomerUpdatePage({ userId }: Props) {
     );
 
   return (
-    <Card className="max-w-lg mx-auto shadow-lg p-6 rounded-lg">
+    <Card className="w-full max-w-sm shadow-2xl rounded-xl bg-white">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-center">
           정보 수정
