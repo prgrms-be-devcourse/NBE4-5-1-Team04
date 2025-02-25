@@ -2,22 +2,22 @@ package com.team4.project1.domain.item.controller;
 
 import com.team4.project1.domain.item.dto.ItemDto;
 import com.team4.project1.domain.item.entity.Item;
+import com.team4.project1.domain.item.entity.ItemSortType;
 import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.global.dto.ResponseDto;
 import com.team4.project1.global.exception.ItemNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -66,6 +66,7 @@ public class ApiV1ItemController {
             Pageable pageable
             ) {
         if (keyword == null) { keyword = ""; }
+        ItemSortType sortType = ItemSortType.fromString(sortBy);
         Page<ItemDto> items = itemService.searchAllItemsSortedBy(sortBy, keyword, pageable);
         return ResponseEntity.ok(ResponseDto.ok(items));
     }
