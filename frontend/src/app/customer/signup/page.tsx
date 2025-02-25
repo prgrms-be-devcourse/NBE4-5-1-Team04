@@ -39,7 +39,7 @@ export default function Page() {
       if (!res.ok) throw new Error("회원가입 실패");
 
       alert("회원가입 성공!");
-      router.push("/customer/login");
+      location.href = "/customer/login";
     } catch (error) {
       alert("회원가입 실패: " + error);
     }

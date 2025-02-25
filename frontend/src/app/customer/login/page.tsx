@@ -41,7 +41,7 @@ export default function Page() {
       localStorage.setItem("userId", responseData.item?.id?.toString() || "");
 
       alert("로그인 성공!");
-      router.push(`/customer/${responseData.item?.id}`);
+      location.href = "/items";
     } catch (error) {
       setError("username", {
         type: "manual",
