@@ -48,7 +48,7 @@ public class Customer {
      * 고객을 식별하기 위한 API이며 유일해야합니다.
      * API키는 최대 100자까지 입력 가능합니다.
      */
-    @Column(length = 100, unique = true)
+    @Column(length = 22)
     private String apiKey;
 
     /**
