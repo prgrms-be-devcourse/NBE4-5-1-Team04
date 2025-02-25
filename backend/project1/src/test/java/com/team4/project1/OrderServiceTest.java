@@ -5,7 +5,6 @@ import com.team4.project1.domain.item.entity.Item;
 import com.team4.project1.domain.item.repository.ItemRepository;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
-import com.team4.project1.domain.order.entity.DeliveryStatus;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -28,11 +27,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
 /**
  * {@link OrderService} 클래스에 대한 단위 테스트입니다.
  * 이 클래스는 주문 생성 및 조회 기능을 포함한 {@link OrderService}의 메서드들이 예상대로 동작하는지 확인하는 테스트 메서드들을 포함하고 있습니다.
  */
-@Disabled("Missing setter for entity id fields")
 class OrderServiceTest {
 
     @Mock
@@ -104,9 +103,6 @@ class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order savedOrder = invocation.getArgument(0);
-            // ✅ ID 값을 직접 설정하지 않고, Mock 객체를 새로운 Order로 대체하여 ID를 할당하도록 변경
-            //return new Order(savedOrder.getCustomer(), savedOrder.getDate(), savedOrder.getTotalPrice(), DeliveryStatus.PROCESSING);
-//        savedOrder.setId(1L);  // 저장된 Order의 ID 설정
             return savedOrder;
         });
 

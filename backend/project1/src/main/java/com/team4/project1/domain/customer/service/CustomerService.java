@@ -88,7 +88,7 @@ public class CustomerService {
      * @throws CustomerNotFoundException 고객이 존재하지 않는 경우에 예외 발생합니다.
      */
     public Optional<Customer> getCustomerById(Long id) {
-        return Optional.ofNullable(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
+        return Optional.of(customerRepository.findById(id)).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     /**
