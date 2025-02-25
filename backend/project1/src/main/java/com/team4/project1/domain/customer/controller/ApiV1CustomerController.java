@@ -42,7 +42,8 @@ public class ApiV1CustomerController {
             @NotBlank String password,
             @NotBlank String name,
             @NotBlank String email
-    ) {}
+    ) {
+    }
 
     /**
      *  회원가입을 처리하는 메서드입니다.
@@ -52,10 +53,12 @@ public class ApiV1CustomerController {
     @Operation(summary = "회원 가입")
     @PostMapping
     public ResponseEntity<ResponseDto<CustomerDto>> join(@RequestBody @Valid JoinReqBody reqBody) {
-        customerService.findByUsername(reqBody.username())
-                .ifPresent(existingCustomer -> {
-                    throw new IllegalStateException("Username already exists");
-                });
+        // TODO: username 필드에 이미 unique가 걸려있다. 리파지토리에서 던지는 예외를 핸들링하거나 밑에 주석처리된 로직을 추후에 보완하도록 한다.
+//        CustomerDto existingCustomer = CustomerDto.from(customerService.findByUsername(reqBody.username()));
+//
+//        if (existingCustomer != null) {
+//            throw new IllegalStateException("Username already exists");
+//        }
 
         Customer customer = customerService.join(
                 reqBody.username(),
@@ -76,7 +79,8 @@ public class ApiV1CustomerController {
     record LoginReqBody(
             @NotBlank String username,
             @NotBlank String password
-    ) {}
+    ) {
+    }
 
     /**
      * 로그인 응답을 위한 DTo(Data Transfer Object)입니다.
@@ -86,7 +90,8 @@ public class ApiV1CustomerController {
     record LoginResBody(
             CustomerDto item,
             String apiKey
-    ) {}
+    ) {
+    }
 
     /**
      * 로그인 요청을 처리하는 메서드입니다.
@@ -98,12 +103,14 @@ public class ApiV1CustomerController {
     @Operation(summary = "로그인", description = "로그인 성공 시 ApiKey와 DTO 반환")
     @PostMapping("/login")
     public ResponseEntity<LoginResBody> login(@RequestBody @Valid LoginReqBody reqBody) {
-        Customer customer = customerService.findByUsername(reqBody.username()).orElseThrow(
-                () -> new IllegalArgumentException("잘못된 아이디 입니다.")
-        );
+        CustomerDto customerDto = CustomerDto.from(customerService.findByUsername(reqBody.username()));
+        if (customerDto == null) {
+            new IllegalArgumentException("잘못된 아이디 입니다.");
+        }
 
+        Customer customer = customerService.getCustomerById(customerDto.getId());
         if (!customer.getPassword().equals(reqBody.password())) {
-            throw new IllegalArgumentException ("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
         return ResponseEntity.ok(
@@ -120,9 +127,9 @@ public class ApiV1CustomerController {
      */
     @Operation(summary = "전체 회원 정보 조회")
     @GetMapping
-    public ResponseEntity<ResponseDto<List<Customer>>> getAllCustomers() {
-        List<Customer> customer = customerService.getAllCustomers();
-        return ResponseEntity.ok(ResponseDto.ok(customer));
+    public ResponseEntity<ResponseDto<List<CustomerDto>>> getAllCustomers() {
+        List<CustomerDto> customerDtos = customerService.getAllCustomers();
+        return ResponseEntity.ok(ResponseDto.ok(customerDtos));
     }
 
     /**
@@ -135,11 +142,9 @@ public class ApiV1CustomerController {
     @Operation(summary = "내 정보 조회")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<CustomerDto>> getCustomerById(@PathVariable Long id) {
-        Optional<Customer> opCustomer = customerService.getCustomerById(id);
+        Customer customer = customerService.getCustomerById(id);
 
-        return opCustomer
-                .map(customer -> ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(customer))))
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+        return ResponseEntity.ok(ResponseDto.ok(CustomerDto.from(customer)));
     }
 
     /**

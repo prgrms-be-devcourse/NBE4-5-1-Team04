@@ -4,6 +4,7 @@ import com.team4.project1.domain.customer.entity.Customer;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 고객 정보를 담는 데이터 전송 객체(DTO)입니다.
@@ -11,6 +12,7 @@ import lombok.Getter;
  */
  @Getter
 @AllArgsConstructor
+ @NoArgsConstructor
 public class CustomerDto {
     /**
      * 고객의 고유 ID

@@ -42,9 +42,7 @@ public class ApiV1ItemController {
     @Operation(summary = "개별 상품 조회")
     @GetMapping("/{itemId}")
     public ResponseEntity<ResponseDto<ItemDto>> item(@PathVariable Long itemId) {
-        return ResponseEntity.ok(ResponseDto.ok(
-                itemService.getItemById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId))
-        ));
+        return ResponseEntity.ok(ResponseDto.ok(itemService.getItemById(itemId)));
     }
 
     

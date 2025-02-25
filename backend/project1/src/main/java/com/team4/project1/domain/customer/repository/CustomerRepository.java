@@ -2,6 +2,7 @@ package com.team4.project1.domain.customer.repository;
 
 import com.team4.project1.domain.customer.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
  * 고객의 사용자 이름과 API 키로 고객을 조회하는 메서드를 추가로 제공합니다.
  */
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+  
     /**
      * 사용자 이름을 기반으로 고객을 조회하는 메서드입니다.
      * @param username 조회할 고객의 사용자 이름

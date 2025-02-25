@@ -18,6 +18,7 @@ public class Project1Application {
 	 * @param args 커맨드라인 인수
 	 */
 	public static void main(String[] args) {
+
 		SpringApplication.run(Project1Application.class, args);
 	}
 

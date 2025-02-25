@@ -1,5 +1,6 @@
 package com.team4.project1.domain.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.project1.domain.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,7 @@ public class Order {
      * 지연방식을 사용하고 있습니다.
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Customer customer;
 
     /**
@@ -43,6 +45,7 @@ public class Order {
      * 주문 항목이 리스트에서 제거되면 자동으로 삭제된다.
      * 주문이 삭제되면 관련 주문 항목도 함께 삭제된다.
      */
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -64,14 +67,14 @@ public class Order {
 
     /**
      * 주문의 배송 상태
-     * {@link DeliveryStatus} 열거형을 사용하여 주문의 현재 상태를 나타냅니다
+     * {@link OrderStatus} 열거형을 사용하여 주문의 현재 상태를 나타냅니다
      * {@code PROCESSING}: 주문이 처리 중인 상태를 의미합니다.
      * {@code SHIPPED}: 주문이 배송된 상태를 의미합니다
      */
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DeliveryStatus deliveryStatus = DeliveryStatus.PROCESSING;
+    private OrderStatus orderStatus = OrderStatus.TEMPORARY;
 
     /**
      * 새로운 주문을 생성하는 생성자입니다.
@@ -86,17 +89,17 @@ public class Order {
     }
 
     @Builder
-    public Order(Long id, Customer customer, LocalDateTime date, Long totalPrice, DeliveryStatus deliveryStatus) {
+    public Order(Long id, Customer customer, LocalDateTime date, Long totalPrice, OrderStatus orderStatus) {
         this.id = id;
         this.customer = customer;
         this.date = date;
         this.totalPrice = totalPrice;
-        this.deliveryStatus = deliveryStatus != null ? deliveryStatus : DeliveryStatus.PROCESSING;
+        this.orderStatus = orderStatus != null ? orderStatus : OrderStatus.TEMPORARY;
     }
 
     // 주문 정보 변경 메서드 추가
-    public void updateOrder(Long totalPrice, DeliveryStatus deliveryStatus) {
+    public void updateOrder(Long totalPrice, OrderStatus orderStatus) {
         this.totalPrice = totalPrice;
-        this.deliveryStatus = deliveryStatus;
+        this.orderStatus = orderStatus;
     }
 }
