@@ -1,9 +1,9 @@
-"use client";
+"use client"; // <-- Add this at the top of your file
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { components } from "@/lib/backend/apiV1/schema"; // schema.d.ts 기반 타입
-import "../../../styles/login.css";
+import "../../styles/login.css"; // CSS 파일 import
 
 const BASE_URL = "http://localhost:8080/api/v1/customer/login"; // 정확한 로그인 API 경로 설정
 
@@ -42,7 +42,7 @@ export default function ClientLoginPage() {
 
   return (
     <div>
-      <h2></h2>
+      <h2>로그인</h2>
       <form onSubmit={handleLogin}>
         <input
           type="text"

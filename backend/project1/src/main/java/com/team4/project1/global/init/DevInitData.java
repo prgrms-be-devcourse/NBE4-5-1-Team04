@@ -29,7 +29,7 @@ public class DevInitData {
                     List.of(
                             "cmd.exe",
                             "/c",
-                            "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o C:/NBE4-5-1-Team04/frontend/src/lib/backend/apiV1/schema.d.ts")
+                            "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o frontend/src/lib/backend/apiV1/schema.d.ts")
             );
         };
     }
