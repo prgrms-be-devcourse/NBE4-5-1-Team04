@@ -93,24 +93,25 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId, principal)));
     }
 
-    @Operation(
-            summary = "특정 회원의 전체 주문 불러오기",
-            description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
-    )
-    @GetMapping(value = "", params = "cust_id")
-    public ResponseEntity<ResponseDto<List<OrderDto>>> getAllOrders(
-            @RequestParam("cust_id") Long customerId) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId)));
-
     /**
      * 현재 로그인한 사용자의 모든 주문을 조회하는 메서드입니다.
      * 로그인된 사용자의 모든 주문을 조회하여 목록을 반환합니다.
      * @param principal 현재 로그인한 사용자의 정보
      * @return 사용자의 모든 주문의 DTO 목록을 포함하는 응답을 반환합니다.
      */
+    @Operation(
+            summary = "특정 회원의 전체 주문 불러오기",
+            description = "회원 인증값을 통해 특정 회원에 대한 주문 전체 불러오기"
+    )
     @GetMapping
     public ResponseEntity<ResponseDto<Page<OrderDto>>> getOrdersByPrincipal(Principal principal, Pageable pageable) {
         Page<OrderDto> orders = orderService.getOrdersByPrincipal(principal, pageable);
         return ResponseEntity.ok(ResponseDto.ok(orders));
+    }
+
+    @PostMapping("/{orderId}/confirm")
+    public ResponseEntity<ResponseDto<Long>> confirmOrder(@PathVariable Long orderId, Principal principal) {
+        Long confirmedOrderId = orderService.confirmOrder(orderId, principal);
+        return ResponseEntity.ok(ResponseDto.ok(confirmedOrderId));
     }
 }
