@@ -53,33 +53,35 @@ export default function CartPage() {
     try {
       const API_KEY = localStorage.getItem("apiKey");
 
-      // 1️⃣ 최신 orderId 가져오기
-      const response = await fetch(
-        `${API_URL}/api/v1/orders?status=TEMPORARY`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
-          },
-        }
-      );
+      // 1️⃣ 전체 주문 가져오기
+      const response = await fetch(`${API_URL}/api/v1/orders`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
+        },
+      });
 
       if (!response.ok) throw new Error("장바구니 정보를 불러오지 못했습니다.");
 
       const data = await response.json();
-      const orders: OrderWithOrderItemsDto[] = data.data.content;
+      const allOrders = data.data.content; // 전체 주문 목록
 
-      if (orders.length === 0) {
+      // 2️⃣ `deliveryStatus === "TEMPORARY"` 인 주문만 필터링
+      const temporaryOrders = allOrders.filter(
+        (order) => order.deliveryStatus === "TEMPORARY"
+      );
+
+      if (temporaryOrders.length === 0) {
         setCartOrder(null);
         setLoading(false);
         return;
       }
 
-      // 🔹 최신 주문 찾기 (가장 높은 id)
-      const latestOrder = orders.reduce(
+      // 3️⃣ 최신 주문 찾기 (가장 높은 orderId)
+      const latestOrder = temporaryOrders.reduce(
         (prev, curr) => (prev.id > curr.id ? prev : curr),
-        orders[0]
+        temporaryOrders[0]
       );
 
       // 2️⃣ 최신 주문 상세 정보 가져오기
@@ -155,7 +157,9 @@ export default function CartPage() {
       if (!response.ok) throw new Error("주문을 확정하는 데 실패했습니다.");
 
       alert("✅ 주문이 완료되었습니다!");
-      location.href = "/orders/list"; // 주문 내역 페이지로 이동
+
+      setCartOrder(null);
+      location.href = "/orders/list";
     } catch (error) {
       console.error("주문 확정 오류:", error);
       alert("❌ 주문 확정에 실패했습니다.");
@@ -178,10 +182,7 @@ export default function CartPage() {
     );
   }
 
-  const totalAmount = cartOrder.orderedItems.reduce(
-    (sum, item) => sum + (item.price ?? 0) * item.quantity,
-    0
-  );
+  const totalAmount = 0;
 
   return (
     <Card className="card">
@@ -212,7 +213,7 @@ export default function CartPage() {
 
         <div className="flex justify-between items-center mt-6">
           <span className="text-lg font-semibold">
-            총 금액: {totalAmount.toLocaleString()} 원
+            총 금액: {totalAmount} 원
           </span>
           <Button
             className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
