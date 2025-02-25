@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * 주문 관련 APi를 처리하는 컨트롤러입니다.
@@ -93,32 +93,21 @@ public class ApiV1OrderController {
         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrderById(orderId, principal)));
     }
 
-   // TODO: 리팩토링 대상
-//     @Operation(
-//             summary = "특정 회원의 전체 주문 불러오기",
-//             description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
-//     )
-//     @GetMapping(value = "", params = "cust_id")
-//     public ResponseEntity<ResponseDto<Page<OrderDto>>> getAllOrders(
-//             Principal principal, Pageable pageable) {
-//         return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByPrincipal(principal, pageable)));
-//     }
-  
-//     /**
-//      * 현재 로그인한 사용자의 모든 주문을 조회하는 메서드입니다.
-//      * 로그인된 사용자의 모든 주문을 조회하여 목록을 반환합니다.
-//      * @param principal 현재 로그인한 사용자의 정보
-//      * @return 사용자의 모든 주문의 DTO 목록을 포함하는 응답을 반환합니다.
-//      */
-//     @Operation(
-//             summary = "특정 회원의 전체 주문 불러오기",
-//             description = "회원 인증값을 통해 특정 회원에 대한 주문 전체 불러오기"
-//     )
-//     @GetMapping
-//     public ResponseEntity<ResponseDto<Page<OrderDto>>> getOrdersByPrincipal(Principal principal, Pageable pageable) {
-//         Page<OrderDto> orders = orderService.getOrdersByPrincipal(principal, pageable);
-//         return ResponseEntity.ok(ResponseDto.ok(orders));
-//     }
+     /**
+      * 현재 로그인한 사용자의 모든 주문을 조회하는 메서드입니다.
+      * 로그인된 사용자의 모든 주문을 조회하여 목록을 반환합니다.
+      * @param principal 현재 로그인한 사용자의 정보
+      * @return 사용자의 모든 주문의 DTO 목록을 포함하는 응답을 반환합니다.
+      */
+     @Operation(
+             summary = "특정 회원의 전체 주문 불러오기",
+             description = "회원 인증값을 통해 특정 회원에 대한 주문 전체 불러오기"
+     )
+     @GetMapping
+     public ResponseEntity<ResponseDto<Page<OrderDto>>> getOrdersByPrincipal(Principal principal, Pageable pageable) {
+         Page<OrderDto> orders = orderService.getOrdersByPrincipal(principal, pageable);
+         return ResponseEntity.ok(ResponseDto.ok(orders));
+     }
 
     @PostMapping("/{orderId}/confirm")
     public ResponseEntity<ResponseDto<Long>> confirmOrder(@PathVariable Long orderId, Principal principal) {
