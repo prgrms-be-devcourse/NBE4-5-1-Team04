@@ -130,16 +130,6 @@ export default function ClientCustomerUpdatePage({ userId }: Props) {
           disabled
         />
       </div>
-      <div>
-        <label htmlFor="password">비밀번호</label>
-        <input
-          id="password"
-          name="password"
-          type="text"
-          value={customer.password}
-          onChange={handleChange}
-        />
-      </div>
       {/* 비밀번호는 수정 폼에 없음 (또는 별도 구현) */}
       <div>
         <label htmlFor="name">이름</label>

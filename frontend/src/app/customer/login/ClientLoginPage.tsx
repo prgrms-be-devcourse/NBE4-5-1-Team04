@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { components } from "@/lib/backend/apiV1/schema"; // schema.d.ts 기반 타입
-import "../../../styles/login.css"; // CSS 파일 import
+import "../../styles/login.css"; // CSS 파일 import
 
 const BASE_URL = "http://localhost:8080/api/v1/customer/login"; // 정확한 로그인 API 경로 설정
 
