@@ -8,7 +8,7 @@ import com.team4.project1.domain.item.service.ItemService;
 import com.team4.project1.domain.order.dto.OrderDto;
 import com.team4.project1.domain.order.dto.OrderItemDto;
 import com.team4.project1.domain.order.dto.OrderWithOrderItemsDto;
-import com.team4.project1.domain.order.entity.DeliveryStatus;
+import com.team4.project1.domain.order.entity.OrderStatus;
 import com.team4.project1.domain.order.entity.Order;
 import com.team4.project1.domain.order.entity.OrderItem;
 import com.team4.project1.domain.order.repository.OrderItemRepository;
@@ -105,8 +105,8 @@ public class OrderService {
             throw new UnauthorizedAccessException("본인만 자신의 주문을 수정할 수 있습니다.");
         }
 
-        updateOrderStatusOnFetch(existingOrder);
-        if (existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
+        updateOrderStatus(existingOrder);
+        if (existingOrder.getOrderStatus() == OrderStatus.SHIPPED) {
             throw new IllegalStateException("이미 발송된 주문은 수정할 수 없습니다.");
         }
 
@@ -154,12 +154,44 @@ public class OrderService {
             throw new UnauthorizedAccessException("본인만 자신의 주문을 취소할 수 있습니다.");
         }
 
-        updateOrderStatusOnFetch(existingOrder);
-        if (existingOrder.getDeliveryStatus() == DeliveryStatus.SHIPPED) {
+        updateOrderStatus(existingOrder);
+        if (existingOrder.getOrderStatus() == OrderStatus.SHIPPED) {
             throw new IllegalStateException("이미 발송된 주문은 취소할 수 없습니다.");
         }
 
         orderRepository.deleteById(orderId);
+        return orderId;
+    }
+
+    /**
+     * 주문을 접수합니다.
+     * @param orderId   취소할 주문 ID
+     * @param principal 현재 로그인한 사용자 정보
+     * @return 접수된 주문 ID을 반환합니다.
+     * @throws UnauthorizedAccessException 본인이 아닌 사용자가 접근할 경우 예외발생
+     * @throws IllegalStateException       이미 접수됐거나 발송된 주문을 접수하려 할 경우 예외발생
+     */
+    public Long confirmOrder(Long orderId, Principal principal) {
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다. (ID: " + orderId + ")"));
+
+        if (principal == null) {
+            throw new UnauthorizedAccessException("로그인 후 주문을 접수할 수 있습니다.");
+        }
+
+        String currentUsername = principal.getName();
+        if (!existingOrder.getCustomer().getUsername().equals(currentUsername)) {
+            throw new UnauthorizedAccessException("본인만 자신의 주문을 접수할 수 있습니다.");
+        }
+
+        if (existingOrder.getOrderStatus() == OrderStatus.SHIPPED ||
+                existingOrder.getOrderStatus() == OrderStatus.PROCESSING) {
+            throw new IllegalStateException("이미 접수됐거나 발송된 주문은 취소할 수 없습니다.");
+        }
+
+        existingOrder.setOrderStatus(OrderStatus.PROCESSING);
+        existingOrder.setDate(LocalDateTime.now());
+        orderRepository.save(existingOrder);
         return orderId;
     }
 
@@ -170,7 +202,7 @@ public class OrderService {
      */
     public Page<OrderDto> getOrdersByPrincipal(Principal principal, Pageable pageable) {
         if (principal == null) {
-            throw new UnauthorizedAccessException("로그인 후 주문을 취소할 수 있습니다.");
+            throw new UnauthorizedAccessException("로그인 후 주문을 조회할 수 있습니다.");
         }
 
         String currentUsername = principal.getName();
@@ -178,7 +210,7 @@ public class OrderService {
                 .orElseThrow(() -> new CustomerNotFoundException("사용자를 찾을 수 없습니다."));
 
         Page<Order> orders = orderRepository.findAllByCustomerId(customer.getId(), pageable);
-        orders.forEach(this::updateOrderStatusOnFetch);
+        orders.forEach(this::updateOrderStatus);
         return orders.map(OrderDto::from);
     }
 
@@ -191,7 +223,7 @@ public class OrderService {
      */
     public OrderWithOrderItemsDto getOrderById(Long orderId, Principal principal) {
         if (principal == null) {
-            throw new UnauthorizedAccessException("로그인 후 주문을 취소할 수 있습니다.");
+            throw new UnauthorizedAccessException("로그인 후 주문을 조회할 수 있습니다.");
         }
 
         String currentUsername = principal.getName();
@@ -203,7 +235,7 @@ public class OrderService {
             throw new UnauthorizedAccessException("본인만 자신의 주문을 열람할 수 있습니다.");
         }
 
-        updateOrderStatusOnFetch(order);
+        updateOrderStatus(order);
         return OrderWithOrderItemsDto.from(order);
     }
 
@@ -238,7 +270,6 @@ public class OrderService {
             totalQuantity += orderItemDto.getQuantity();
         }
 
-
         for (OrderItem existingItem : existingOrder.getOrderItems()) {
             boolean isValidItem = orderItemDtos.stream()
                     .anyMatch(dto -> dto.getItemId().equals(existingItem.getItem().getId()));
@@ -250,29 +281,22 @@ public class OrderService {
         return orderItemDtos;
     }
 
-    // 주문 목록 조회
-    @Deprecated
-    // TODO: getOrdersByPrinciple 사용
-    public Page<OrderWithOrderItemsDto> getOrdersByCustomerId(Long customerId, Pageable pageable) {
-        Page<Order> orderPage = orderRepository.findAllByCustomerId(customerId, pageable);
-        // 주문 목록 조회 시 배송 상태 최신화
-        orderPage.forEach(this::updateOrderStatusOnFetch);
-
-        return orderPage.map(OrderWithOrderItemsDto::from);
-    }
-
     /**
      * 주문 상태를 조회하여, 발송 여부를 결정합니다.
      * 주문 날짜가 오늘 오후 2시 이전이라면 'SHIPPED' 상태로 설정됩니다. 그 외에는 'PROCESSING' 상태로 설정됩니다.
      * @param order 상태를 갱신할 주문 정보
      */
-    private void updateOrderStatusOnFetch(Order order) {
+    private void updateOrderStatus(Order order) {
+        // 아직 주문이 장바구니 상태라면 배송 상태를 업데이트 하지 않는다.
+        if (order.getOrderStatus() == OrderStatus.TEMPORARY) {
+            return;
+        }
         LocalDateTime today2PM = LocalDateTime.now().withHour(14).withMinute(0).withSecond(0).withNano(0);
 
         if (order.getDate().isBefore(today2PM)) {
-            order.setDeliveryStatus(DeliveryStatus.SHIPPED);
+            order.setOrderStatus(OrderStatus.SHIPPED);
         } else {
-            order.setDeliveryStatus(DeliveryStatus.PROCESSING);
+            order.setOrderStatus(OrderStatus.PROCESSING);
         }
         orderRepository.save(order);
     }
