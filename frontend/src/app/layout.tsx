@@ -80,11 +80,24 @@ export default function RootLayout({
                 <span className="text-sm font-semibold">
                   {user.userName || "사용자"} 님 환영합니다!
                 </span>
+
                 <Link
                   href={`/customer/${user.userId}`}
                   className="text-sm text-gray-700 hover:underline"
                 >
-                  마이페이지
+                  내정보
+                </Link>
+                <Link
+                  href="/orders/cart"
+                  className="text-sm text-gray-700 hover:underline"
+                >
+                  장바구니
+                </Link>
+                <Link
+                  href="/orders/list"
+                  className="text-sm text-gray-700 hover:underline"
+                >
+                  주문내역
                 </Link>
                 <button
                   onClick={handleLogout}
