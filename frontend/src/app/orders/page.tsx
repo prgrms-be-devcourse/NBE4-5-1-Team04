@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // ✅ React import 추가
 import { useSearchParams, useRouter } from "next/navigation";
 import { components } from "@/lib/backend/apiV1/schema";
 import { Input } from "@/components/ui/input";
@@ -30,41 +30,42 @@ export default function OrderListPage() {
     searchParams.get("searchKeyword") || ""
   );
   const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "date");
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-      const API_KEY =
-        process.env.NEXT_PUBLIC_API_KEY || localStorage.getItem("apiKey");
+    const checkAuthentication = () => {
+      const API_KEY = localStorage.getItem("apiKey");
 
       if (!API_KEY) {
-        console.error("API Key가 없습니다. 로그인 페이지로 이동합니다.");
+        console.error("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
         router.push("/login");
         return;
       }
 
-      const storedUser = localStorage.getItem("user");
-      const customerId = storedUser ? JSON.parse(storedUser).id : null;
-      if (!customerId) return;
+      setIsAuthenticated(true);
+    };
 
-      const queryParams = new URLSearchParams();
-      queryParams.append("cust_id", customerId.toString());
-      if (sortBy) queryParams.append("sortBy", sortBy);
-      if (searchValue) queryParams.append("searchKeyword", searchValue);
+    checkAuthentication();
+  }, [router]); // ✅ router 의존성 추가
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const fetchOrders = async () => {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+      const API_KEY = localStorage.getItem("apiKey");
 
       try {
-        const response = await fetch(
-          `${API_URL}/api/v1/orders?${queryParams.toString()}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${API_KEY}`,
-            },
-            cache: "no-store",
-          }
-        );
+        const response = await fetch(`${API_URL}/api/v1/orders`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${API_KEY}`,
+          },
+          cache: "no-store",
+        });
 
         if (!response.ok) {
           throw new Error(
@@ -73,22 +74,33 @@ export default function OrderListPage() {
         }
 
         const data = await response.json();
-        if (!data?.data || !Array.isArray(data.data)) {
-          throw new Error("Invalid API response structure");
-        }
-
         setOrders(data.data as OrderDto[]);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrders();
-  }, [sortBy, searchValue]);
+  }, [isAuthenticated, sortBy, searchValue]);
 
-  const handleSearch = () => {
+  const handleSearch = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    event.preventDefault();
     router.push(`?searchKeyword=${searchValue}&sortBy=${sortBy}`);
   };
+
+  if (!isAuthenticated) {
+    return <p className="text-center text-lg">로그인 확인 중...</p>;
+  }
+
+  if (loading) {
+    return <p className="text-center text-lg">로딩 중...</p>;
+  }
 
   return (
     <Card className="p-6 shadow-xl rounded-3xl w-full">
@@ -105,7 +117,10 @@ export default function OrderListPage() {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearch(e);
+              }
             }}
           />
           <Button onClick={handleSearch}>

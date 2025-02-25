@@ -98,10 +98,9 @@ public class ApiV1OrderController {
             description = "회원 id 값을 통해 특정 회원에 대한 주문 전체 불러오기"
     )
     @GetMapping(value = "", params = "cust_id")
-    public ResponseEntity<ResponseDto<Page<OrderWithOrderItemsDto>>> getAllOrders(
-            @RequestParam("cust_id") Long customerId,
-            Pageable pageable) {
-        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByCustomerId(customerId, pageable)));
+    public ResponseEntity<ResponseDto<Page<OrderDto>>> getAllOrders(
+            Principal principal, Pageable pageable) {
+        return ResponseEntity.ok(ResponseDto.ok(orderService.getOrdersByPrincipal(principal, pageable)));
     }
   
     /**
