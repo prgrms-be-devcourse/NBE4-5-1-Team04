@@ -41,7 +41,7 @@ export default function RootLayout({
           </Link>
           <div className="flex gap-4">
             <Link
-              href="/login"
+              href="/customer/login"
               className="text-sm text-gray-700 hover:underline"
             >
               로그인
