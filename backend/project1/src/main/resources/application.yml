@@ -4,16 +4,12 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -28,9 +24,6 @@ spring:
       max-file-size: 256KB
       # 이미지를 포함한 multipart 요청 크기 제한
       max-request-size: 256KB
-
-  profiles:
-    active: dev
 
 # 상품 이미지를 저장할 경로 지정
 file.upload-dir: ${IMAGE_UPLOAD_DIRECTORY}
