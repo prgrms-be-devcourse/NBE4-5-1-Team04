@@ -76,23 +76,27 @@ export default function OrderDetailPage() {
   }, [params.orderId]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>주문 상세 정보</CardTitle>
+    <Card className="w-full max-w-sm shadow-2xl rounded-xl bg-white">
+      <CardHeader className="bg-gray-100 rounded-t-xl py-6">
+        <CardTitle className="text-center text-3xl font-bold text-gray-800">
+          주문 상세 정보
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-8">
         {loading ? (
           <p>로딩 중...</p>
         ) : error ? (
           <p>{error}</p>
         ) : (
-          <>
-            <p>주문 ID: #{order?.id}</p>
-            <p>
+          <div>
+            <p className="mb-3">주문 ID: #{order?.id}</p>
+            <p className="mb-3">
               주문 날짜: {moment(order?.date).format("YYYY-MM-DD HH:mm:ss")}
             </p>
-            <p>총 금액: {order?.totalPrice?.toLocaleString()}원</p>
-          </>
+            <p className="mb-3">
+              총 금액: {order?.totalPrice?.toLocaleString()}원
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>
