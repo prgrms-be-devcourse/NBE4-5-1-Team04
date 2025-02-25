@@ -99,6 +99,7 @@ public class Customer {
      * @return관리자면 true, 아니면 false를 반환합니다.
      */
     public boolean isAdmin() {
+
         return username.equals("admin");
     }
 }

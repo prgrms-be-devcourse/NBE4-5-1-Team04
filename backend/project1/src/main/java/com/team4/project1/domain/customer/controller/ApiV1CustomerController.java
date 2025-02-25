@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 
@@ -52,13 +51,8 @@ public class ApiV1CustomerController {
      */
     @Operation(summary = "회원 가입")
     @PostMapping
-    public ResponseEntity<ResponseDto<CustomerDto>> join(@RequestBody @Valid JoinReqBody reqBody) {
-        // TODO: username 필드에 이미 unique가 걸려있다. 리파지토리에서 던지는 예외를 핸들링하거나 밑에 주석처리된 로직을 추후에 보완하도록 한다.
-//        CustomerDto existingCustomer = CustomerDto.from(customerService.findByUsername(reqBody.username()));
-//
-//        if (existingCustomer != null) {
-//            throw new IllegalStateException("Username already exists");
-//        }
+    public ResponseEntity<ResponseDto<CustomerDto>> join(
+            @RequestBody @Valid JoinReqBody reqBody) {
 
         Customer customer = customerService.join(
                 reqBody.username(),
