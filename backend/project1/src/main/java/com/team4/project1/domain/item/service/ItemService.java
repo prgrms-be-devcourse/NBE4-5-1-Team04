@@ -68,8 +68,8 @@ public class ItemService {
      * @param keyword 검색할 키워드
      * @return 검색된 상품의 DTO 목록을 반환합니다.
      */
-    public Page<ItemDto> searchAllItemsSortedBy(ItemSortType sortType, String keyword, Pageable pageable) {
-        Sort sort = sortType.getSort(Sort.Direction.ASC);
+    public Page<ItemDto> searchAllItemsSortedBy(String sortType, String keyword, Pageable pageable) {
+        Sort sort = ItemSortType.fromString(sortType).getSort(Sort.Direction.ASC);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         return itemRepository.findAllByNameContaining(keyword, sortedPageable)
