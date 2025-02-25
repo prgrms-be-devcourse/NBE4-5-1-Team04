@@ -27,7 +27,7 @@ public class DevInitData {
         List<String> commands;
         if (SystemUtils.IS_OS_WINDOWS) {
             commands = List.of("cmd.exe", "/c",
-                    "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o frontend/src/lib/backend/apiV1/schema.d.ts");
+                    "npx --package typescript --package openapi-typescript --package punycode openapi-typescript apiV1.json -o  C:/NBE4-5-1-Team04/frontend/src/lib/backend/apiV1/schema.d.ts");
         }
         else {
             commands = List.of("ls", "-l",
