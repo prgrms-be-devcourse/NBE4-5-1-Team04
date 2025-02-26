@@ -126,7 +126,7 @@ export default function ClientItemPage({ item }: { item: ItemDto }) {
       <div className="flex flex-col md:flex-row">
         <div className="w-full h-auto md:w-1/2 rounded-lg flex overflow-hidden items-center justify-center">
           <Image
-            src={item.imageUri || `${API_URL}/api/v1/items/${item.id}/image`}
+            src={`${API_URL}/api/v1/items/${item.id}/image`}
             alt={item.name || "상품 이미지"}
             width={0}
             height={0}
